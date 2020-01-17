@@ -1,0 +1,42 @@
+{
+  "name": "university_reviews_collection",
+  "version": "1.0.0",
+  "description": "A university group work project",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "clientinstall": "npm install --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "prod": "set NODE_ENV='production' && node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mdLn1/UniversityWebDev.git"
+  },
+  "keywords": [
+    "MongoDb",
+    "React",
+    "NodeJs"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mdLn1/UniversityWebDev/issues"
+  },
+  "homepage": "https://github.com/mdLn1/UniversityWebDev#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "config": "^3.2.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.3.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.8.7"
+  },
+  "devDependencies": {
+    "concurrently": "^5.0.2",
+    "nodemon": "^2.0.2"
+  }
+}
