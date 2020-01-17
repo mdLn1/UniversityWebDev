@@ -15,7 +15,7 @@ University group project for Enterprise Web Development Module
    
    **npm run dev** - starts both, the client on 3000 and the server on 5000
 
-### Environment Setup instructions
+## Environment Setup instructions
 
 1. Install git => [link](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
