@@ -27,7 +27,7 @@ University group project for Enterprise Web Development Module
    
 5. Once everything is downloaded run:
 
-   **npm install** in the root directory
+   **npm install** then **npm clientinstall**
    
-   then go inside client folder and run same command again; this command installs the node modules for server and client
+   
 
