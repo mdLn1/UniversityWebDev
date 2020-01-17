@@ -19,7 +19,7 @@ University group project for Enterprise Web Development Module
    
    **-g means that everything is installed globally**
    
-3. Create a folder and go to its location in a terminal (Command Prompt for windows)
+3. Create a folder then go inside the folder location through a terminal (Command Prompt for windows)
 
 4. Type in the console: 
 
