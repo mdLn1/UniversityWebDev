@@ -29,5 +29,5 @@ University group project for Enterprise Web Development Module
 
    **npm install** in the root directory
    
-   then go inside client folder anr run same command again; this command installs the node modules for server and client
+   then go inside client folder and run same command again; this command installs the node modules for server and client
 
