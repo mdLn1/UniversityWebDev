@@ -5,7 +5,7 @@ University group project for Enterprise Web Development Module
 
 1. Install git => [link](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
-2. Install node and  npm => [link] (https://nodejs.org/en/download/)
+2. Install node and  npm => [link](https://nodejs.org/en/download/)
 
    Select LTS and choose your Operating System, download and install accordingly
 
