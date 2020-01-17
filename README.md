@@ -3,7 +3,7 @@ University group project for Enterprise Web Development Module
 
 ## Running the React client and the node API
 
-   **!!! Be advised running these comands means that you have already setup your environment, if not scroll down***
+### !!! Be advised running these comands means that you have already setup your environment, if not scroll down
    
    **The server runs on port 5000 and the react client runs on 3000**
    
