@@ -31,9 +31,15 @@ University group project for Enterprise Web Development Module
 
    git clone https://github.com/mdLn1/UniversityWebDev/
    
+   or
+   
+   git pull https://github.com/mdLn1/UniversityWebDev/
+   
 5. Once everything is downloaded run:
 
    **npm install** then **npm clientinstall**
+   
+6. I think it would be better if you create a local branch and a remote branch for yourself before pushing to the master
    
    
 
