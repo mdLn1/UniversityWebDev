@@ -21,14 +21,14 @@ app.use((req, res, next) => {
 
 // Global error handling through middleware
 app.use((err, req, res, next) => {
-	console.log(err);
+	// console.log(err);
 	if (err.code) {
 		if (err.code === 11000)
 			res
 				.status(400)
 				.json({ feedback: 'Resource already exists, cannot create duplicate' });
 	}
-	res.status(500).json({ feedback: writeFeedback('Internal Server Error') });
+	res.status(500).json({ feedback: writeFeedback(err.message) });
 });
 
 

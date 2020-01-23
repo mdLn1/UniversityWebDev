@@ -33,11 +33,11 @@ describe("POST /api/auth/register/", () => {
       })
       .expect(400)
       .expect(res => {
-        expect(res.headers["x-auth-token"]).toBeUndefined()
+        expect(res.headers["x-auth-token"]).toBeUndefined();
       })
       .end(done);
   });
-  
+
   it("should create a new user", done => {
     request(app)
       .post("/api/auth/register/")
@@ -56,29 +56,38 @@ describe("POST /api/auth/register/", () => {
 
 // Login Tests
 describe("POST /api/auth/login/", () => {
-  it("Returns user not found error if name/password does not match dummy data", (done) => {
+  it("Returns whether or not the user password is at least 6 characters long", done => {
     request(app)
-    .post("/api/auth/login/")
-    .send( {name: "hamza", password: "unsafepassword123"} )
-    .expect("User not found").end(done)
-  })
-})
+      .post("/api/auth/login")
+      .send({ name: "hamza", password: "unsaf" })
+      .expect(400)
+      .expect(res => {
+        expect(res.body.feedback[0].msg).toEqual(
+          "Password needs to be at least 6 characters long"
+        );
+      })
+      .end(done);
+  });
 
-describe("POST /api/auth/login/", () => {
-  it("Returns whether or not the user password is atleast 6 characters long", (done) => {
+  it("Returns parsing error based on whether or not the name key is empty", done => {
     request(app)
-    .post("/api/auth/login")
-    .send( {name: "hamza", password: "unsaf"} )
-    .expect("Password needs to be at least 6 characters long").expect(400).end(done)
-  })
-})
+      .post("/api/auth/login")
+      .send({ name: "", password: "Jimenez" })
+      .expect(400)
+      .expect(res => {
+        expect(res.body.feedback[0].msg).toEqual("Name missing");
+      })
+      .end(done);
+  });
 
-describe("POST /api/auth/login/", () => {
-  it("Returns parsing error based on whether or not the name key is empty"), (done) => {
+  it("Returns user not found error if name/password does not match dummy data", done => {
     request(app)
-    .post("/api/auth/login")
-    .send( {name: "", password: "Jimenez"} )
-    .expect(400)
-    .expect("Name missing").end(done)
-  }
-})
+      .post("/api/auth/login/")
+      .send({ name: "hamza", password: "unsafepassword123" })
+      .expect(500)
+      .expect(res => {
+        expect(res.body.feedback.msg).toEqual("User not found");
+      })
+      .end(done);
+  });
+});
