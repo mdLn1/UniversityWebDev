@@ -11,6 +11,7 @@ app.get('/', (req,res) => res.status(200).json({msg: "Hello World"}));
 
 // WARNING! Errors may show if the routes files don't have module.exports = router;
 app.use('/api/user', require('./routes/user.js'));
+app.use('/api/auth', require('./routes/auth.js'));
 
 // Handling pages not found
 app.use((req, res, next) => {
