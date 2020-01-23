@@ -21,6 +21,7 @@ describe("POST /hello", () => {
   });
 });
 
+// Register tests
 describe("POST /api/auth/register/", () => {
   // await beforeEach(populateUsers);
   it("should return validation errors if request is invaild", done => {
@@ -51,6 +52,33 @@ describe("POST /api/auth/register/", () => {
       })
       .end(done);
   });
-
- 
 });
+
+// Login Tests
+describe("POST /api/auth/login/", () => {
+  it("Returns user not found error if name/password does not match dummy data", (done) => {
+    request(app)
+    .post("/api/auth/login/")
+    .send( {name: "hamza", password: "unsafepassword123"} )
+    .expect("User not found").end(done)
+  })
+})
+
+describe("POST /api/auth/login/", () => {
+  it("Returns whether or not the user password is atleast 6 characters long", (done) => {
+    request(app)
+    .post("/api/auth/login")
+    .send( {name: "hamza", password: "unsaf"} )
+    .expect("Password needs to be at least 6 characters long").expect(400).end(done)
+  })
+})
+
+describe("POST /api/auth/login/", () => {
+  it("Returns parsing error based on whether or not the name key is empty"), (done) => {
+    request(app)
+    .post("/api/auth/login")
+    .send( {name: "", password: "Jimenez"} )
+    .expect(400)
+    .expect("Name missing").end(done)
+  }
+})
