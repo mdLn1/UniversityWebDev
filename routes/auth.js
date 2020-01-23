@@ -42,20 +42,27 @@ router.post(
       const err1 = users.find(el => el.name === name)
         ? "User already exists"
         : "";
-      if (err1) throw new Error(err1);
+      if (err1)
+        return res
+          .status(400)
+          .json({ feedback: writeFeedback("User already exists") });
       newUser.name = name;
       const salt = await bcrypt.genSalt(10);
 
       const hashedPassword = await bcrypt.hash(password, salt);
       newUser.password = hashedPassword;
-      const payload = { user: {name: newUser.name}, token: null };
+      const payload = { user: { name: newUser.name }, token: null };
       const token = jwt.sign(payload, config.get("jwtSecret"), {
         expiresIn: 36000
       });
 
       res
         .status(200)
-        .json({ user: payload.user, token, feedback: writeFeedback("All good", "success") });
+        .json({
+          user: payload.user,
+          token,
+          feedback: writeFeedback("All good", "success")
+        });
     } catch (err) {
       next(err);
     }
@@ -98,14 +105,18 @@ router.post(
         throw new Error("Password does not match");
       }
 
-      const payload = { user: {name}, token: null };
+      const payload = { user: { name }, token: null };
       const token = jwt.sign(payload, config.get("jwtSecret"), {
         expiresIn: 36000
       });
 
       res
         .status(200)
-        .json({ user: payload.user, token, feedback: writeFeedback("All good", "success") });
+        .json({
+          user: payload.user,
+          token,
+          feedback: writeFeedback("All good", "success")
+        });
     } catch (err) {
       next(err);
     }

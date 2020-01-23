@@ -7,7 +7,7 @@ const writeFeedback = require("./utils/writeFeedback");
 // Initialise middleware
 app.use(express.json({ extended: false }));
 
-app.get('/', (req,res) => res.status(200).json({msg: "Hello World"}));
+app.get('/hello', (req,res) => res.status(200).json({msg: "Hello World"}));
 
 // WARNING! Errors may show if the routes files don't have module.exports = router;
 app.use('/api/user', require('./routes/user.js'));
@@ -33,3 +33,5 @@ app.use((err, req, res, next) => {
 
 
 app.listen(PORT, () => console.log("API is listening on port " + PORT));
+
+module.exports = {app}
