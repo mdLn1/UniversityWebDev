@@ -62,6 +62,9 @@ router.post(
   }
 );
 
+//@route POST api/login/
+//@desc Receive login details
+//@access Public
 router.post(
   "/login",
   [
