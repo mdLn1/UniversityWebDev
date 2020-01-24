@@ -2,23 +2,40 @@ import React from 'react';
 import styles from './LoginForm.module.css';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-
+import axios from 'axios';
 
 export class RegisterForm extends React.Component{
 
   constructor(props) {
       super(props);
       this.state = {
+        email: "",
         text: 'Login'
       }
   }
 
   onClick(e){
-    
+    async () => {
+      try {
+        let obj = {name: 'mdln', password: 'password'};
+        let result = await axios.post("http://localhost:5000/api/auth/register/", obj);
+        console.log(result);
+      } catch (error) {
+        console.log(error);
+      }
+      
+
+    }
   }
+  
+  onChangeEmail(e){
+
+  }
+  
 
   render(){
-      return(
+    let {email} = this.state;
+    return(
         <div className = {styles.page}>
           <div className = {styles.registerDivContainer}>
               <img src = "https://www.nicepng.com/png/full/335-3355144_seller-registration-icon-class-register-icon-png.png" alt={"Person and Locker"}/>
@@ -34,6 +51,8 @@ export class RegisterForm extends React.Component{
                 id="email-input"
                 label="Email"
                 type="email"
+                value={email}
+                onChange = {this.onChangeEmail}
                 variant ="filled"
               /> 
               <br/>
@@ -53,6 +72,7 @@ export class RegisterForm extends React.Component{
                 type="password"
                 autoComplete="current-password"
                 variant ="filled"
+                
               />  
               <br/>
               <br/>
