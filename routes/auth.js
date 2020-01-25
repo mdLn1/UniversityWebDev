@@ -6,7 +6,7 @@ const config = require("config");
 const jwt = require("jsonwebtoken");
 const writeFeedback = require("../utils/writeFeedback");
 const CustomError = require("../utils/CustomError");
-const { userLogin } = require("../db/queries/users")
+const { userLogin } = require("../db/queries/users");
 //const users = require("../testObjects/users");
 
 //@route POST api/register/
@@ -106,35 +106,34 @@ router.post(
           "There is no user registered with this email address",
           400
         );
-      
+
       userLogin(email, password, (nouser, nopassword, success) => {
         if (nouser) {
-          res.status(400).send({
-            errors: "There is no user registered with this email address"
-          })
+          throw new CustomError(
+            "There is no user registered with this email address",
+            400
+          );
         }
 
         if (nopassword) {
-          res.status(400).send({
-            errors: "Password does not match"
-          })
+          throw new CustomError("Password does not match", 400);
         }
 
-        if (success) {
-          const name = success.name;
-          const email = success.email;
-          
-          const payload = { user: { name, email } };
-          const token = jwt.sign(payload, config.get("jwtSecret"), {
-            expiresIn: 36000
-          });
-    
-          if (!token)
-            res.status(400).send({ errors: "Could not create token, please try again later"});
-          
-          res.status(200).json({ user: { name, email }, token });
-        }
-      })
+        if (!success) throw new Error("Something went wrong with your request");
+
+        const name = success.name;
+        const email = success.email;
+
+        const payload = { user: { name, email } };
+        const token = jwt.sign(payload, config.get("jwtSecret"), {
+          expiresIn: 36000
+        });
+
+        if (!token)
+          throw new CustomError("Could not create token, please try again later", 400);
+
+        res.status(200).json({ user: { name, email }, token });
+      });
     } catch (err) {
       next(err);
     }
