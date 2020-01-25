@@ -6,8 +6,8 @@ const config = require("config");
 const jwt = require("jsonwebtoken");
 const writeFeedback = require("../utils/writeFeedback");
 const CustomError = require("../utils/CustomError");
-
-const users = require("../testObjects/users");
+const { userLogin } = require("../db/queries/users")
+//const users = require("../testObjects/users");
 
 //@route POST api/register/
 //@desc Receive registration details
@@ -34,7 +34,7 @@ router.post(
           .json(writeFeedback(errors.array().map(el => el.msg)));
       }
 
-      const { name, email, password } = req.body;
+      const { name, password, email, role, department } = req.body;
 
       const re = new RegExp(
         /^([\w\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/
@@ -106,29 +106,35 @@ router.post(
           "There is no user registered with this email address",
           400
         );
+      
+      userLogin(email, password, (nouser, nopassword, success) => {
+        if (nouser) {
+          res.status(400).send({
+            errors: "There is no user registered with this email address"
+          })
+        }
 
-      const userFound = users.find(el => el.email === email);
-      if (!userFound)
-        throw new CustomError(
-          "There is no user registered with this email address",
-          400
-        );
-      const name = userFound.name;
+        if (nopassword) {
+          res.status(400).send({
+            errors: "Password does not match"
+          })
+        }
 
-      const isMatch = await bcrypt.compare(password, userFound.password);
-      if (!isMatch) {
-        throw new CustomError("Invalid login request", 400);
-      }
-
-      const payload = { user: { name, email } };
-      const token = jwt.sign(payload, config.get("jwtSecret"), {
-        expiresIn: 36000
-      });
-
-      if (!token)
-        throw new CustomError("Could not create token, please try again later");
-
-      res.status(200).json({ user: { name, email }, token });
+        if (success) {
+          const name = success.name;
+          const email = success.email;
+          
+          const payload = { user: { name, email } };
+          const token = jwt.sign(payload, config.get("jwtSecret"), {
+            expiresIn: 36000
+          });
+    
+          if (!token)
+            res.status(400).send({ errors: "Could not create token, please try again later"});
+          
+          res.status(200).json({ user: { name, email }, token });
+        }
+      })
     } catch (err) {
       next(err);
     }
