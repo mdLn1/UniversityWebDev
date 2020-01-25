@@ -107,33 +107,18 @@ router.post(
           400
         );
 
-      userLogin(email, password, (nouser, nopassword, success) => {
-        if (nouser) {
-          throw new CustomError(
-            "There is no user registered with this email address",
-            400
-          );
-        }
-
-        if (nopassword) {
-          throw new CustomError("Password does not match", 400);
-        }
-
-        if (!success) throw new Error("Something went wrong with your request");
-
-        const name = success.name;
-        const email = success.email;
-
-        const payload = { user: { name, email } };
-        const token = jwt.sign(payload, config.get("jwtSecret"), {
-          expiresIn: 36000
-        });
-
-        if (!token)
-          throw new CustomError("Could not create token, please try again later", 400);
-
-        res.status(200).json({ user: { name, email }, token });
+      const user = await userLogin(email, password);
+      
+      const name = user.name;
+      const payload = { user: { name, email } };
+      const token = jwt.sign(payload, config.get("jwtSecret"), {
+        expiresIn: 36000
       });
+
+      if (!token)
+        throw new CustomError("Could not create token, please try again later", 400);
+
+      res.status(200).json({ user: { name, email }, token });
     } catch (err) {
       next(err);
     }

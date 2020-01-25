@@ -1,4 +1,5 @@
 const pool = require('../dbconn');
+const CustomError = require('../../utils/CustomError');
 
 // Use this function to add a user to the system, it requires the role and the department string (do not use the ID)
 // e.g. -> if you want to add a user to the department 'Human Resources', pass 'Human Resources' to the function, not its ID
@@ -14,40 +15,42 @@ function registerUser(name, password, email, role, department) {
 }
 
 // Use this funcrion to add a user to the system if you have the role_id and department_id (do not use the string value)
-function registerUserByID(name, password, email, role_id, department_id) {
-    pool.query({
-        sql: 'insert into Users (name, password, email, role_id, department_id) values (?, ?, ?, ?, ?)',
-        timeout: 40000, // 40s
-        values: [name, password, email, role_id, department_id]
-    }, function(error, results, fields) {
-        if (error) throw error;
-    });
+async function registerUserByID(name, password, email, role_id, department_id) {
+    return await new Promise((resolve, reject) =>
+        pool.query(
+            {
+                sql: 'insert into Users (name, password, email, role_id, department_id) values (?, ?, ?, ?, ?)',
+                timeout: 40000, // 40s
+                values: [name, password, email, role_id, department_id]
+            }, 
+            (error, result) => {
+                if (error) return reject(error);
+                return resolve(result[0]);
+            }
+        )
+    )
 }
 
-// Use this function to verify the user login, this is async therefore you must use callback 
-// userLogin('test@gmail.com', 'Test123!', (failed, success) => {
-//     console.log(failed, success);
-// });
+// Use this function to verify the user login
 // email field is unique - so the results array will only contain max 1 result
-function userLogin(email, password, callback) {
-    pool.query({
-        sql: 'select * from Users where email = ?',
-        timeout: 40000, // 40s
-        values: [email]
-    }, function(error, results, fields) {
-        if (error) throw error;
-        if (results.length === 0){
-            callback(true, undefined, undefined);
-        } else {
-            if (password === results[0].password){
-                delete results[0].password;
-                callback(undefined, undefined, results[0]);
-            } else {
-                callback(undefined, true, undefined);
-            }
+async function userLogin(email, password) {
+    return await new Promise((resolve, reject) =>
+      pool.query(
+        {
+          sql: "select * from Users where email = ?",
+          timeout: 40000, // 40s
+          values: [email]
+        },
+        (error, result) => {
+            if (error) return reject(error);
+            if (result.length === 0) return reject(new CustomError("No results found", 400));
+            if (password !== result[0].password) return reject(new CustomError("Invalid password", 400))
+            delete result[0].password;
+            return resolve(result[0]);
         }
-    })
-}
+      )
+    );
+  }
 
 module.exports = {
     registerUser,
