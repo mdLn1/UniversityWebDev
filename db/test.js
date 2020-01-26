@@ -1,8 +1,9 @@
 const { getAllRoles } = require('./queries/roles');
+const { isEmailRegisteredAlready } = require('./queries/users')
+const { getAllDepartments } = require('./queries/departments')
 
-async function test() {
-    //await addDepartment('Student Ambassadors', 'University Student Ambassadors')
-    console.log(await getAllRoles());
+test = async () => {
+    const dpt = await getAllDepartments();
+    console.log(dpt);
 }
-
 test()
