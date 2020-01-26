@@ -6,8 +6,7 @@ const config = require("config");
 const jwt = require("jsonwebtoken");
 const writeFeedback = require("../utils/writeFeedback");
 const CustomError = require("../utils/CustomError");
-const { userLogin } = require("../db/queries/users");
-//const users = require("../testObjects/users");
+const { userLogin, isEmailRegisteredAlready } = require("../db/queries/users");
 
 //@route POST api/register/
 //@desc Receive registration details
@@ -46,13 +45,11 @@ router.post(
           "Invalid email address or wrong email domain",
           400
         );
+      const userExists = await isEmailRegisteredAlready(email);
 
       // check user exists
-      const err = users.find(el => el.email === email)
-        ? "User already exists"
-        : "";
-      if (err)
-        return res.status(400).json(writeFeedback("User already exists"));
+      if (userExists)
+        throw new CustomError("User already exists", 400);
 
       // produce a password hash and save it to user
       const salt = await bcrypt.genSalt(10);
@@ -108,7 +105,7 @@ router.post(
         );
 
       const user = await userLogin(email, password);
-      
+
       const name = user.name;
       const payload = { user: { name, email } };
       const token = jwt.sign(payload, config.get("jwtSecret"), {
@@ -116,7 +113,10 @@ router.post(
       });
 
       if (!token)
-        throw new CustomError("Could not create token, please try again later", 400);
+        throw new CustomError(
+          "Could not create token, please try again later",
+          400
+        );
 
       res.status(200).json({ user: { name, email }, token });
     } catch (err) {
