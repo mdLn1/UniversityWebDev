@@ -1,8 +1,8 @@
 const pool = require('../dbconn');
 
 // Use this function to add a department to the portal
-async function addDepartment(department, description) {
-    return await new Promise((resolve, reject) =>
+function addDepartment(department, description) {
+    return new Promise((resolve, reject) =>
         pool.query({
             sql: 'insert into Departments (department, description) values (?, ?)',
             timeout: 40000, // 40s
@@ -17,8 +17,8 @@ async function addDepartment(department, description) {
 }
 
 // Returns all the departments of the portal
-async function getAllDepartmentsName() {
-    return await new Promise((resolve, reject) => 
+function getAllDepartmentsName() {
+    return new Promise((resolve, reject) => 
         pool.query({
             sql: 'select department from Departments',
             timeout: 40000, // 40s

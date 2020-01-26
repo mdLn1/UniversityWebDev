@@ -6,8 +6,7 @@ const config = require("config");
 const jwt = require("jsonwebtoken");
 const writeFeedback = require("../utils/writeFeedback");
 const CustomError = require("../utils/CustomError");
-const { userLogin, isAlreadyRegistered, registerUserByID, registerUser } = require("../db/queries/users");
-//const users = require("../testObjects/users");
+const { userLogin, isEmailRegisteredAlready, registerUser } = require("../db/queries/users");
 
 //@route POST api/register/
 //@desc Receive registration details
@@ -48,10 +47,12 @@ router.post(
           "Invalid email address or wrong email domain",
           400
         );
+      const userExists = await isEmailRegisteredAlready(email);
 
       // check user exists
-      await isAlreadyRegistered(email);
-      
+      if (userExists)
+        throw new CustomError("User already exists", 400);
+
       // produce a password hash and save it to user
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
@@ -105,8 +106,6 @@ router.post(
           "There is no user registered with this email address",
           400
         );
-      
-      // query to the DB - async and it returns a promise
       const user = await userLogin(email, password);
 
       const name = user.name;
@@ -116,7 +115,10 @@ router.post(
       });
 
       if (!token)
-        throw new CustomError("Could not create token, please try again later", 400);
+        throw new CustomError(
+          "Could not create token, please try again later",
+          400
+        );
 
       res.status(200).json({ user: { name, email }, token });
     } catch (err) {

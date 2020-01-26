@@ -1,8 +1,8 @@
 const pool = require('../dbconn');
 
 // Use this function to add a role to the portal
-async function addRole(role, description) {
-    return await new Promise((resolve, reject) => (
+function addRole(role, description) {
+    return new Promise((resolve, reject) => (
         pool.query({
             sql: 'insert into Roles (role, description) values (?, ?)',
             timeout: 40000, // 40s
@@ -22,8 +22,8 @@ async function addRole(role, description) {
 // getAllRoles((roles) => {
 //     console.log(departments);
 // })
-async function getAllRoles() {
-    return await new Promise((resolve, reject) => (
+function getAllRoles() {
+    return new Promise((resolve, reject) => (
         pool.query({
             sql: 'select role from Roles',
             timeout: 40000, // 40s
