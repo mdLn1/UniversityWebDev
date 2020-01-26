@@ -6,7 +6,7 @@ const config = require("config");
 const jwt = require("jsonwebtoken");
 const writeFeedback = require("../utils/writeFeedback");
 const CustomError = require("../utils/CustomError");
-const { userLogin } = require("../db/queries/users");
+const { userLogin, isAlreadyRegistered, registerUserByID, registerUser } = require("../db/queries/users");
 //const users = require("../testObjects/users");
 
 //@route POST api/register/
@@ -23,7 +23,9 @@ router.post(
       .isLength({ min: 6 }),
     check("password", "Password needs to be at least 6 characters long")
       .trim()
-      .isLength({ min: 6 })
+      .isLength({ min: 6 }),
+    check("role", "Role must be provided").exists(),
+    check("department", "Department must be provided").exists()
   ],
   async (req, res, next) => {
     try {
@@ -48,17 +50,14 @@ router.post(
         );
 
       // check user exists
-      const err = users.find(el => el.email === email)
-        ? "User already exists"
-        : "";
-      if (err)
-        return res.status(400).json(writeFeedback("User already exists"));
-
+      await isAlreadyRegistered(email);
+      
       // produce a password hash and save it to user
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
-      const newUser = { name, email, password: hashedPassword };
+      // perform user registration
+      await registerUser(name, hashedPassword, email, role, department);
 
       const payload = { user: { name, email } };
       const token = jwt.sign(payload, config.get("jwtSecret"), {
@@ -106,9 +105,10 @@ router.post(
           "There is no user registered with this email address",
           400
         );
-
-      const user = await userLogin(email, password);
       
+      // query to the DB - async and it returns a promise
+      const user = await userLogin(email, password);
+
       const name = user.name;
       const payload = { user: { name, email } };
       const token = jwt.sign(payload, config.get("jwtSecret"), {

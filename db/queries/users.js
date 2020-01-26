@@ -4,17 +4,23 @@ const CustomError = require('../../utils/CustomError');
 // Use this function to add a user to the system, it requires the role and the department string (do not use the ID)
 // e.g. -> if you want to add a user to the department 'Human Resources', pass 'Human Resources' to the function, not its ID
 // make sure the password is hashed before passing it to the function
-function registerUser(name, password, email, role, department) {
-    pool.query({
-        sql: 'insert into Users (name, password, email, role_id, department_id) values (?, ?, ?, (select id from Roles where role=?), (select id from Departments where department=?))',
-        timeout: 40000, // 40s
-        values: [name, password, email, role, department]
-    }, function(error, results, fields) {
-        if (error) throw error;
-    });
+async function registerUser(name, password, email, role_id, department_id) {
+    return await new Promise((resolve, reject) =>
+        pool.query(
+            {
+                sql: 'insert into Users (name, password, email, role_id, department_id) values (?, ?, ?, (select id from Roles where role=?), (select id from Departments where department=?))',
+                timeout: 40000, // 40s
+                values: [name, password, email, role_id, department_id]
+            }, 
+            (error, result) => {
+                if (error) return reject(error);
+                return resolve(result[0]);
+            }
+        )
+    )
 }
 
-// Use this funcrion to add a user to the system if you have the role_id and department_id (do not use the string value)
+// Use this function to add a user to the system if you have the role_id and department_id (do not use the string value)
 async function registerUserByID(name, password, email, role_id, department_id) {
     return await new Promise((resolve, reject) =>
         pool.query(
@@ -29,6 +35,21 @@ async function registerUserByID(name, password, email, role_id, department_id) {
             }
         )
     )
+}
+
+// Check if user exists
+async function isAlreadyRegistered(email) {
+    return await new Promise((resolve, reject) => 
+        pool.query({
+            sql: 'select email from Users where email =?',
+            timeout: 40000,
+            values: [email]
+        },
+        (error, result) => {
+            if (error) return reject(error);
+            if (result.length !== 0) return reject(new CustomError("User already registered", 400));
+            return resolve();
+        }))
 }
 
 // Use this function to verify the user login
@@ -55,5 +76,6 @@ async function userLogin(email, password) {
 module.exports = {
     registerUser,
     registerUserByID,
-    userLogin
+    userLogin,
+    isAlreadyRegistered
 }

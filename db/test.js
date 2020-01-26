@@ -1,7 +1,8 @@
-const { registerUserByID } = require('./queries/users');
+const { getAllRoles } = require('./queries/roles');
 
-userLogin('test@gmail.com', 'Test1d23!', (nouser, nopassword, success) => {
-    console.log(nouser);
-    console.log(nopassword);
-    console.log(success);
-})
+async function test() {
+    //await addDepartment('Student Ambassadors', 'University Student Ambassadors')
+    console.log(await getAllRoles());
+}
+
+test()

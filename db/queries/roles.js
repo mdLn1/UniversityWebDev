@@ -1,16 +1,20 @@
 const pool = require('../dbconn');
 
 // Use this function to add a role to the portal
-function addRole(role, description) {
-    pool.query({
-        sql: 'insert into Roles (role, description) values (?, ?)',
-        timeout: 40000, // 40s
-        values: [role, description]
-      },
-      function (error, results, fields) {
-            if (error) throw error;
-      }
-      );
+async function addRole(role, description) {
+    return await new Promise((resolve, reject) => (
+        pool.query({
+            sql: 'insert into Roles (role, description) values (?, ?)',
+            timeout: 40000, // 40s
+            values: [role, description]
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            return resolve();
+          }
+        )
+    )
+)
 }
 
 // this is an async function (the connection pool users async/await thanks to the promisify util)
@@ -18,18 +22,23 @@ function addRole(role, description) {
 // getAllRoles((roles) => {
 //     console.log(departments);
 // })
-function getAllRoles(callback) {
-    pool.query({
-        sql: 'select department from Departments',
-        timeout: 40000, // 40s
-    }, function (error, results, fields) {
-        roles = [];
-        if (error) throw error;
-        results.map((role) => {
-            roles.push(department.department);
-        });
-        return callback(roles);
-    })
+async function getAllRoles() {
+    return await new Promise((resolve, reject) => (
+        pool.query({
+            sql: 'select role from Roles',
+            timeout: 40000, // 40s
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            roles =[];
+            result.map((role) => {
+                roles.push(role.role);
+            })
+            return resolve(roles);
+          }
+        )
+    )
+)
 }
 
 module.exports = {
