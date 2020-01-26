@@ -6,7 +6,11 @@ const config = require("config");
 const jwt = require("jsonwebtoken");
 const writeFeedback = require("../utils/writeFeedback");
 const CustomError = require("../utils/CustomError");
-const { userLogin, isEmailRegisteredAlready, registerUser } = require("../db/queries/users");
+const {
+  userLogin,
+  isEmailRegisteredAlready,
+  registerUser
+} = require("../db/queries/users");
 
 //@route POST api/register/
 //@desc Receive registration details
@@ -23,8 +27,8 @@ router.post(
     check("password", "Password needs to be at least 6 characters long")
       .trim()
       .isLength({ min: 6 }),
-    check("role", "Role must be provided").exists(),
-    check("department", "Department must be provided").exists()
+    check("role", "Role must be provided").trim().not().isEmpty(),
+    check("department", "Department must be provided").trim().not().isEmpty()
   ],
   async (req, res, next) => {
     try {
@@ -50,8 +54,7 @@ router.post(
       const userExists = await isEmailRegisteredAlready(email);
 
       // check user exists
-      if (userExists)
-        throw new CustomError("User already exists", 400);
+      if (userExists) throw new CustomError("User already exists", 400);
 
       // produce a password hash and save it to user
       const salt = await bcrypt.genSalt(10);
@@ -66,7 +69,7 @@ router.post(
       });
 
       if (!token)
-        throw new CustomError("Could not create token, please try again later");
+        throw new Error("Could not create token, please try again later");
 
       res.status(200).json({ user: { name, email }, token });
     } catch (err) {
@@ -115,10 +118,7 @@ router.post(
       });
 
       if (!token)
-        throw new CustomError(
-          "Could not create token, please try again later",
-          400
-        );
+        throw new Error("Could not create token, please try again later");
 
       res.status(200).json({ user: { name, email }, token });
     } catch (err) {
