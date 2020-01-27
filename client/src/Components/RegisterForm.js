@@ -14,18 +14,19 @@ export class RegisterForm extends React.Component{
       }
   }
 
-  onClick(e){
-    async () => {
+  onClick = async (e) => {
       try {
         let obj = {name: 'mdln', password: 'password'};
-        let result = await axios.post("http://localhost:5000/api/auth/register/", obj);
+        let config = {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+        let result = await axios.post("http://localhost:5000/api/auth/register/", obj, config);
         console.log(result);
       } catch (error) {
         console.log(error);
       }
-      
-
-    }
   }
   
   onChangeEmail(e){
@@ -85,3 +86,6 @@ export class RegisterForm extends React.Component{
 
   }
 }
+
+export default RegisterForm;
+
