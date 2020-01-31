@@ -42,8 +42,8 @@ describe("POST /api/auth/register/", () => {
     request(app)
       .post("/api/auth/register/")
       .send({
-        name: "nameone",
-        password: "useronepassword",
+        name: "nameonetwo",
+        password: "useronetwopassword",
         email: "hello@gre.ac.uk"
       })
       .expect(200)
