@@ -1,6 +1,7 @@
+module.exports = function(error) {
+  if (!Array.isArray(error)) {
+    error = [error];
+  }
 
-module.exports = function(text, label = '') {
-	if (!label) return { msg: text, type: 'danger' } ;
-
-	return { msg: text, type: label } ;
+  return { errors: error };
 };

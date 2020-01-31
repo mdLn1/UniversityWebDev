@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const user = require('../testObjects/user');
 const auth = require('../middleware/auth');
+const {getAllUsers} = require('../db/queries/users')
 // express-validator; data validation
 const {
     check,
@@ -63,6 +64,21 @@ router.get('/', async (req, res, next) => {
         });
     } catch (err) {
         next(err);
+    }
+})
+
+// @desc Returns all users for the QA manager 
+// @route GET /api/user/all - Route could be modified to suit REST principles
+// @access Private
+router.get('/all', async (req, res, next) => {
+    try {
+        const users = await getAllUsers()
+        res.status(200).json(users)
+        return next()
+    } catch (err) {
+        // :todo Replace error being logged to console with global error handler
+        res.status(500).json( { error : err} )
+        return next()
     }
 })
 
