@@ -3,7 +3,7 @@ import styles from './LoginForm.module.css';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 export class LoginForm extends React.Component{
 
@@ -11,7 +11,8 @@ export class LoginForm extends React.Component{
       super(props);
       this.state = {
         username: "",
-        password: ""
+        password: "", 
+        loggedIn: false
       }
       this.changeForm = this.props.changeForm;
       this.onClick = this.onClick.bind(this);
@@ -33,17 +34,26 @@ export class LoginForm extends React.Component{
   }
 
   handleSubmit = async (e) => { 
-     const config = {
+    try {
+      const config = {
         headers: {
             "Content-Type": "application/json"
         }
       }
-      const obj = {name: this.state.username, password: this.state.password};
+      const obj = {email: this.state.username, password: this.state.password};
       const res = await Axios.post("/api/auth/login/", obj, config);
-      console.log(res.data);
+      localStorage.setItem("token", res.token);
+      this.setState({loggedIn: true});
+      return <Redirect to='/' />
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   render(){
+    const loggedIn = this.state.loggedIn;
+    if( loggedIn) return (<Redirect to='/' /> )
+    else 
       return(
         <div className = {styles.page}>
             <div className = {styles.divcontainer}>
@@ -78,6 +88,7 @@ export class LoginForm extends React.Component{
                 </Button>
             </div>
         </div>
+      
       );
 
   }
