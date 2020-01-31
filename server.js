@@ -7,12 +7,13 @@ const writeFeedback = require("./utils/writeFeedback");
 // Initialise middleware
 app.use(express.json({ extended: false }));
 
-app.get('/hello', (req,res) => res.status(200).json({msg: "Hello World"}));
+app.get('/hello', (req,res) => res.status(200).json({msg: "Hello World"})); // NEEDS TO BE REMOVED, ALONG WITH ITS TEST.
 
 // WARNING! Errors may show if the routes files don't have module.exports = router;
 app.use('/api/user', require('./routes/user.js'));
 app.use('/api/auth', require('./routes/auth.js'));
-app.use('/api/roles', require('./routes/roles'))
+app.use('/api/roles', require('./routes/roles'));
+app.use('/api/ideas', require('./routes/ideas'));
 
 // Handling pages not found
 app.use((req, res, next) => {
