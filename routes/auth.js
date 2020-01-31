@@ -111,8 +111,8 @@ router.post(
         );
       const user = await userLogin(email, password);
 
-      const name = user.name;
-      const payload = { user: { name, email } };
+      const {name, role_id, department_id } = user;
+      const payload = { user: { name, email, role_id, department_id } };
       const token = jwt.sign(payload, config.get("jwtSecret"), {
         expiresIn: 36000
       });

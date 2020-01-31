@@ -101,7 +101,7 @@ describe("POST /api/auth/login/", () => {
       .send({ email: "mpc23@gre.ac.uk", password: "unsafepassword123" })
       .expect(400)
       .expect(res => {
-        expect(res.body.errors[0]).toEqual("There is no user registered with this email address");
+        expect(res.body.errors[0]).toEqual("User not found, please register");
       })
       .end(done);
   });
