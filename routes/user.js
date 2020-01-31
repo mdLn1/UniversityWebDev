@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const user = require('../testObjects/user');
+const auth = require('../middleware/auth');
+const {getAllUsers} = require('../db/queries/users')
 // express-validator; data validation
 const {
     check,
@@ -13,6 +15,7 @@ const writeFeedback = require("../utils/writeFeedback");
 //@desc Receive user details
 //@access Private
 router.post('/', [
+    auth,
     check("firstName", "firstName must have a value").not().isEmpty().trim().escape(),
     check("lastName", "lastName must have a value").not().isEmpty().trim().escape(),
     check("age", "age must have a value").not().isEmpty()
@@ -61,6 +64,21 @@ router.get('/', async (req, res, next) => {
         });
     } catch (err) {
         next(err);
+    }
+})
+
+// @desc Returns all users for the QA manager 
+// @route GET /api/user/all - Route could be modified to suit REST principles
+// @access Private
+router.get('/all', async (req, res, next) => {
+    try {
+        const users = await getAllUsers()
+        res.status(200).json(users)
+        return next()
+    } catch (err) {
+        // :todo Replace error being logged to console with global error handler
+        res.status(500).json( { error : err} )
+        return next()
     }
 })
 
