@@ -25,7 +25,7 @@ html{
 .registerDivContainer{
   border-radius: 7%;
   width: 400px;
-  height: 600px;
+  height: 670px;
   margin: auto;
   margin-top: 50px;
   background-color: whitesmoke;
@@ -41,4 +41,10 @@ label{
 
 a{
   color: darkblue;
+}
+
+.termslabel {
+  font-size: 10px;
+  margin: inherit;
+
 }

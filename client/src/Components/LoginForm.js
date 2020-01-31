@@ -3,9 +3,6 @@ import styles from './LoginForm.module.css';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Axios from 'axios';
-import { BrowserRouter as Router, Route} from "react-router-dom";
-import RegisterForm from "./RegisterForm";
-
 
 export class LoginForm extends React.Component{
 
@@ -42,13 +39,11 @@ export class LoginForm extends React.Component{
       const obj = {name: this.state.username, password: this.state.password};
       const res = await Axios.post("/api/auth/login/", obj, config);
       console.log(res.data);
-
   }
 
   render(){
       return(
         <div className = {styles.page}>
-          <Router exact path = "/LoginForm">
             <div className = {styles.divcontainer}>
                 <img src = "https://domw.gov.in/assets/frontend/img/team/user-login.png" alt={"Person and Locker"}/>
                 <h1>Login Details</h1>
@@ -70,16 +65,13 @@ export class LoginForm extends React.Component{
                 />  
                 <br/>
                 <br/>
-                <label className = {styles.label}>New to us ?<a href="/RegisterForm"> Join now</a> </label>
+                <label className = {styles.label}>New to us ?</label> <a href="#">Join now</a>
                 <br></br>
                 <br></br>
                 <Button variant="outlined" size="large" color='primary' className={styles.button} onClick={this.handleSubmit}>
                     Login
                 </Button>
-                <Route path="/RegisterForm" component={RegisterForm}/>
-                
             </div>
-          </Router>
         </div>
       );
 

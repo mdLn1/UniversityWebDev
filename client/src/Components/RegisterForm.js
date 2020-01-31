@@ -9,8 +9,9 @@ export class RegisterForm extends React.Component{
   constructor(props) {
       super(props);
       this.state = {
+        username:"",
         email: "",
-        text: 'Login'
+        password:""
       }
   }
 
@@ -76,7 +77,11 @@ export class RegisterForm extends React.Component{
                 
               />  
               <br/>
-              <br/>
+              <label className = {styles.termslabel}>By signing up, you confirm that you've </label>
+              <br></br>
+              <label className = {styles.termslabel}> read and accepted our <a>Terms and Conditions</a>.</label>
+              <br></br>
+              <br></br>
               <Button variant="outlined" size="large" color='primary' className={styles.button} onClick={this.onClick}>
                   Register
               </Button>
