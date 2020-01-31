@@ -80,9 +80,31 @@ function isEmailRegisteredAlready(email) {
   );
 }
 
+// Returns all users - Will be used by QA Manager.
+function getAllUsers() {
+  return new Promise( (resolve, reject) => {
+    pool.query(
+      {
+        sql: "select * from Users",
+        timeout: 40000, // 40s
+      }, (err, result) => {
+        if (err) { return reject(err) }
+
+        users = []
+        result.forEach(user => {
+          users.push(user)
+        });
+
+        return resolve(users)
+      }
+    )
+  })
+}
+
 module.exports = {
   registerUser,
   registerUserByID,
   userLogin,
-  isEmailRegisteredAlready
+  isEmailRegisteredAlready,
+  getAllUsers
 };
