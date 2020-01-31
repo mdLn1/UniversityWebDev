@@ -3,6 +3,7 @@ import styles from './LoginForm.module.css';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Axios from 'axios';
+import { Link } from 'react-router-dom';
 
 export class LoginForm extends React.Component{
 
@@ -12,6 +13,7 @@ export class LoginForm extends React.Component{
         username: "",
         password: ""
       }
+      this.changeForm = this.props.changeForm;
       this.onClick = this.onClick.bind(this);
       this.handleUserNameChange = this.handleUserNameChange.bind(this);
       this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -65,7 +67,10 @@ export class LoginForm extends React.Component{
                 />  
                 <br/>
                 <br/>
-                <label className = {styles.label}>New to us ?</label> <a href="#">Join now</a>
+                <label className = {styles.label}>New to us ?</label> 
+                <button onClick = {() =>this.changeForm(false)}>
+                  Join now
+                </button>
                 <br></br>
                 <br></br>
                 <Button variant="outlined" size="large" color='primary' className={styles.button} onClick={this.handleSubmit}>

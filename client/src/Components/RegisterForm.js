@@ -4,6 +4,8 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 
+import { NavLink } from 'react-router-dom';
+
 export class RegisterForm extends React.Component{
 
   constructor(props) {
@@ -13,6 +15,7 @@ export class RegisterForm extends React.Component{
         email: "",
         password:""
       }
+      this.changeForm = this.props.changeForm;
   }
 
   onClick = async (e) => {
@@ -85,6 +88,9 @@ export class RegisterForm extends React.Component{
               <Button variant="outlined" size="large" color='primary' className={styles.button} onClick={this.onClick}>
                   Register
               </Button>
+              <a onClick = { (e) => {e.preventDefault(); this.changeForm(true)}}>
+                  Login now
+              </a>
           </div>
         </div>
       );
