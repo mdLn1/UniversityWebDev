@@ -58,8 +58,7 @@ function userLogin(email, password) {
           );
         const matches = bcrypt.compare(password, result[0].password);
 
-        if (!matches)
-          return reject(new CustomError("Invalid password", 400));
+        if (!matches) return reject(new CustomError("Invalid password", 400));
         delete result[0].password;
         return resolve(result[0]);
       }
@@ -134,8 +133,9 @@ function updateUserDetails(name, newEmail, role, department, oldEmail) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: "update Users set name = ?, email = ?, role_id = ?, department_id = ? where email = ?",
-        timeout: 40000 ,
+        sql:
+          "update Users set name = ?, email = ?, role_id = ?, department_id = ? where email = ?",
+        timeout: 40000,
         values: [name, newEmail, role, department, oldEmail]
       },
       (err, result) => {

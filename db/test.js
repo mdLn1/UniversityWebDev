@@ -1,9 +1,8 @@
-const { getAllRoles } = require('./queries/roles');
-const { isEmailRegisteredAlready } = require('./queries/users')
-const { getAllDepartments } = require('./queries/departments')
+const { addFile } = require("./queries/uploads");
 
 test = async () => {
-    const dpt = await getAllDepartments();
-    console.log(dpt);
-}
-test()
+  //await addIdea("Make uni better", false, 1, 2);
+  await addFile("test", "test", "test", "test", 1);
+  //await addCategory("library", "library", true);
+};
+test();
