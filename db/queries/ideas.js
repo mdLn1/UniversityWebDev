@@ -38,7 +38,26 @@ function increaseIdeaViewCounter(idea_id) {
   });
 }
 
+// This is just a temporary solution, as it will be a chained removal, where if
+// an idea is delete, all comments+uploads+ratings are also deleted
+function deleteIdea(idea_id) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "delete from Ideas where ID = ?",
+        timeout: 40000, // 40s
+        values: [idea_id]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    );
+  });
+}
+
 module.exports = {
   addIdea,
-  increaseIdeaViewCounter
+  increaseIdeaViewCounter,
+  deleteIdea
 };
