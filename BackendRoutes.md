@@ -30,8 +30,3 @@ Roles = "/api/roles" (request type = POST )
 
     => On success returns { Success: "New role added", data: [role, description] } Status 201
     => On failure { error: err } Status 500
-
-Ideas = "/api/ideas" (request type = GET )
-
-    => On success returns { result: Ideas[] } Status 200
-    => On failure { error: err } Status 500

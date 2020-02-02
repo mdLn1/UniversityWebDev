@@ -1,5 +1,6 @@
 const pool = require("../dbconn");
 const CustomError = require("../../utils/CustomError");
+const bcrypt = require("bcryptjs");
 
 // Use this function to add a user to the system, it requires the role and the department string (do not use the ID)
 // e.g. -> if you want to add a user to the department 'Human Resources', pass 'Human Resources' to the function, not its ID
@@ -55,7 +56,9 @@ function userLogin(email, password) {
           return reject(
             new CustomError("User not found, please register", 400)
           );
-        if (password !== result[0].password)
+        const matches = bcrypt.compare(password, result[0].password);
+
+        if (!matches)
           return reject(new CustomError("Invalid password", 400));
         delete result[0].password;
         return resolve(result[0]);
