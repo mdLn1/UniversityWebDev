@@ -20,3 +20,13 @@ Login = "/api/auth/login/" (request type = POST )
     => On success { user = Object, token = String } Status 200
     
     => On failure { errors = Array } Status 500, 400
+
+Users = "/api/user/all" (request type = GET )
+    
+    => On success returns { ID, name, password, email, role_id, department_id } Status 200
+    =>  On failure { error: Error } Status 500
+
+Roles = "/api/roles" (request type = POST )
+
+    => On success returns { Success: "New role added", data: [role, description] } Status 201
+    => On failure { error: err } Status 500

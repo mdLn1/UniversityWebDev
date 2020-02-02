@@ -44,26 +44,11 @@ describe("POST /api/auth/register/", () => {
       .send({
         name: "nameone",
         password: "useronepassword",
-        email: "hello@gre.ac.uk"
+        email: "hello@gmail.com"
       })
       .expect(200)
       .expect(res => {
         expect(res.headers["x-auth-token"]).not.toBeNull();
-      })
-      .end(done);
-  });
-
-  it("should not create a new user", done => {
-    request(app)
-      .post("/api/auth/register/")
-      .send({
-        name: "nameone",
-        password: "useronepassword",
-        email: "hello@gmail.com"
-      })
-      .expect(400)
-      .expect(res => {
-        expect(res.headers["x-auth-token"]).toBeUndefined();
       })
       .end(done);
   });
@@ -74,23 +59,23 @@ describe("POST /api/auth/login/", () => {
   it("Returns whether or not the user password is at least 6 characters long", done => {
     request(app)
       .post("/api/auth/login")
-      .send({ email: "hamza"})
+      .send({ name: "hamza", password: "unsaf" })
       .expect(400)
       .expect(res => {
-        expect(res.body.errors[0]).toEqual(
-          "Password is required for login"
+        expect(res.body.feedback[0].msg).toEqual(
+          "Password needs to be at least 6 characters long"
         );
       })
       .end(done);
   });
 
-  it("Invalid email", done => {
+  it("Returns parsing error based on whether or not the name key is empty", done => {
     request(app)
       .post("/api/auth/login")
-      .send({ email: "mcp@gmail.com", password: "Jimenez" })
+      .send({ name: "", password: "Jimenez" })
       .expect(400)
       .expect(res => {
-        expect(res.body.errors[0]).toEqual("There is no user registered with this email address");
+        expect(res.body.feedback[0].msg).toEqual("Name missing");
       })
       .end(done);
   });
@@ -98,10 +83,10 @@ describe("POST /api/auth/login/", () => {
   it("Returns user not found error if name/password does not match dummy data", done => {
     request(app)
       .post("/api/auth/login/")
-      .send({ email: "mpc23@gre.ac.uk", password: "unsafepassword123" })
-      .expect(400)
+      .send({ name: "hamza", password: "unsafepassword123" })
+      .expect(500)
       .expect(res => {
-        expect(res.body.errors[0]).toEqual("User not found, please register");
+        expect(res.body.feedback.msg).toEqual("User not found");
       })
       .end(done);
   });

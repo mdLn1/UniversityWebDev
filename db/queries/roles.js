@@ -36,7 +36,26 @@ function getAllRoles() {
 )
 }
 
+// @desc If authorized the user(QA Manger) can create a new role
+// @param role - Role of the user
+// @param description - Description of said role
+function createNewRole(role, description, is_selectable=1) {
+  return new Promise( (resolve, reject) => {
+    pool.query({
+      sql: "INSERT into Roles (role, description, isSelectable) values (?, ?, ?)", 
+      timeout: 40000,
+      values: [role, description, is_selectable]
+    }, (err, result) => {
+      if (err) { return reject(err) }
+
+      return (resolve(result))
+    }
+    )
+  })
+}
+
 module.exports = {
     addRole,
-    getAllRoles
+    getAllRoles,
+    createNewRole
 }
