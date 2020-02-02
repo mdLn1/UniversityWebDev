@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { LoginForm } from "../Components/LoginForm";
 import { RegisterForm } from "../Components/RegisterForm";
-import { NavLink } from "react-router-dom";
 
 export class Authentication extends Component {
   constructor(props) {
