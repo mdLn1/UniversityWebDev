@@ -1,7 +1,7 @@
 const pool = require("../dbconn");
 
 // Use this function to add a category to the portal
-function addIdea(description, isAnonymous, category_id, user_id) {
+function createIdea(description, isAnonymous, category_id, user_id) {
   const date = new Date()
     .toISOString()
     .slice(0, 19)
@@ -57,7 +57,7 @@ function deleteIdea(idea_id) {
 }
 
 module.exports = {
-  addIdea,
+  createIdea,
   increaseIdeaViewCounter,
   deleteIdea
 };
