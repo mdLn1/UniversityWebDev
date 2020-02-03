@@ -1,40 +1,63 @@
-const pool = require('../dbconn');
+const pool = require("../dbconn");
 
-// @desc Returns all ideas
-function getIdeas(){
-    return new Promise( (resolve, reject) => {
-        pool.query({
-            sql: "SELECT * FROM Ideas",
-            timeout: 40000
-        }, (err, result) => {
-            if (err) return reject(err)
-            ideas = []
-            result.forEach(element => {
-                ideas.push(element)
-            })
-            return resolve(ideas)
-        }
-        )
-    } )
+// Use this function to add a category to the portal
+function addIdea(description, isAnonymous, category_id, user_id) {
+  const date = new Date()
+    .toISOString()
+    .slice(0, 19)
+    .replace("T", " ");
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql:
+          "insert into Ideas (description, isAnonymous, views, category_id, user_id, posted_time) values (?, ?, 0, ?, ?, ?)",
+        timeout: 40000, // 40s
+        values: [description, isAnonymous, category_id, user_id, date]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    )
+  );
 }
 
-// @desc Return idea based on specific ID
-function getIdea(id) {
-    return new Promise( (resolve, reject) => {
-        pool.query({
-            sql: "SELECT * FROM Ideas WHERE ID = ?",
-            timeout: 40000,
-            values: [id]
-        }, (err, result) => {
-            if (err) { return reject(err) }
+function increaseIdeaViewCounter(idea_id) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "update Ideas set views = views + 1 where ID = ?",
+        timeout: 40000, // 40s
+        values: [idea_id]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    );
+  });
+}
 
-            return resolve(result)
-        }
-        )
-    })
+// This is just a temporary solution, as it will be a chained removal, where if
+// an idea is delete, all comments+uploads+ratings are also deleted
+function deleteIdea(idea_id) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "delete from Ideas where ID = ?",
+        timeout: 40000, // 40s
+        values: [idea_id]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    );
+  });
 }
 
 module.exports = {
-    getIdeas,
-    getIdea
-}
+  addIdea,
+  increaseIdeaViewCounter,
+  deleteIdea
+};
