@@ -27,6 +27,7 @@ app.use('/api/user', require('./routes/user.js'));
 app.use('/api/auth', require('./routes/authRoute.js'));
 app.use('/api/roles', require('./routes/roles'));
 app.use('/api/ideas', require('./routes/ideas'));
+app.use('/api/departments', require('./routes/departments'))
 
 // Handling pages not found
 app.use((req, res, next) => {

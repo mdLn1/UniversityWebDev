@@ -23,15 +23,16 @@ function getAllDepartments() {
   return new Promise((resolve, reject) =>
     pool.query(
       {
-        sql: "select department, isSelectable from Departments",
+        sql: "select department, isSelectable, description from Departments",
         timeout: 40000 // 40s
       },
       function(error, results) {
         if (error) return reject(error);
         return resolve(
-          results.map(({ department, isSelectable }) => ({
+          results.map(({ department, isSelectable, description }) => ({
             department,
-            isSelectable
+            isSelectable,
+            description
           }))
         );
       }

@@ -18,18 +18,19 @@ function addRole(role, description, selectable) {
   );
 }
 
+// desc Returns all roles
 function getAllRoles() {
   return new Promise((resolve, reject) =>
     pool.query(
       {
-        sql: "select role, isSelectable from Roles",
+        sql: "select role, isSelectable, description from Roles",
         timeout: 40000 // 40s
       },
       (error, result) => {
         if (error) return reject(error);
 
         return resolve(
-          result.map(({ role, isSelectable }) => ({ role, isSelectable }))
+          result.map(({ role, isSelectable, description }) => ({ role, isSelectable, description }))
         );
       }
     )
