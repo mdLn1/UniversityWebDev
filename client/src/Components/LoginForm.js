@@ -15,7 +15,7 @@ export class LoginForm extends React.Component {
     };
     this.changeForm = this.props.changeForm;
     this.onClick = this.onClick.bind(this);
-    this.handleUserNameChange = this.handleUserNameChange.bind(this);
+    //this.handleUserNameChange = this.handleUserNameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
   }
 
@@ -25,6 +25,17 @@ export class LoginForm extends React.Component {
   }
 
   handleUserNameChange = event => {
+
+    if(!this.state.username){
+      console.log("empty username")
+    }
+
+    if(typeof this.state.username !== "undefined"){
+      if(!this.state.username.match(/^[a-zA-Z]+$/)){
+        console.log("you put numbers")
+      }
+    }
+
     this.setState({ username: event.target.value });
   };
 
@@ -66,7 +77,8 @@ export class LoginForm extends React.Component {
               id="username"
               label="Username"
               variant="filled"
-              onChange={this.handleUserNameChange}
+              onChange={this.handleUserNameChange.bind(this, "name")}
+              value = { this.state.username}
             />
             <br />
             <br />
@@ -81,7 +93,15 @@ export class LoginForm extends React.Component {
             <br />
             <br />
             <label className={styles.label}>New to us ?</label>
-            <button onClick={() => this.changeForm(false)}>Join now</button>
+            <a
+              onClick={e => {
+                e.preventDefault();
+                this.changeForm(false);
+              }}
+              className = {styles.join_link}
+            >
+            Join now
+            </a>
             <br></br>
             <br></br>
             <Button
@@ -93,6 +113,7 @@ export class LoginForm extends React.Component {
             >
               Login
             </Button>
+            
           </div>
         </div>
       );
