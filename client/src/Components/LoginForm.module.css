@@ -24,10 +24,11 @@ html{
 }
 .registerDivContainer{
   border-radius: 7%;
-  width: 400px;
-  height: 670px;
+  width: 50%;
+  height: 80%;
   margin: auto;
-  margin-top: 50px;
+  margin-top: 1%;
+  margin-bottom: 1%;
   background-color: whitesmoke;
 }
 
@@ -46,5 +47,11 @@ a{
 .termslabel {
   font-size: 10px;
   margin: inherit;
+
+}
+
+.join_link{
+  text-decoration-line: underline;
+  cursor: pointer;
 
 }

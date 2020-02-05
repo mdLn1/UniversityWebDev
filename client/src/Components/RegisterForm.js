@@ -3,10 +3,14 @@ import styles from "./LoginForm.module.css";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
+// import option from "@material-ui/core/option";
+
 
 import { NavLink } from "react-router-dom";
 
+
 export class RegisterForm extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -24,6 +28,7 @@ export class RegisterForm extends React.Component {
     this.roleChangeHandler = this.roleChangeHandler.bind(this);
     this.departmentChangeHandler = this.departmentChangeHandler.bind(this);
   }
+
 
   nameChangeHandler = e => {
     this.setState({ name: e.target.value });
@@ -80,6 +85,22 @@ export class RegisterForm extends React.Component {
   };
 
   render() {
+
+  const roles = [
+      {
+        value: ' Department1 ',
+        label: ' Department1 ',
+      },
+      {
+        value: ' Department2 ',
+        label: ' Department2 ',
+      },
+      {
+        value: ' Department3 ',
+        label: ' Department3 ',
+      }
+    ];
+
     let {
       name: name,
       email,
@@ -104,8 +125,7 @@ export class RegisterForm extends React.Component {
             value={name}
             onChange={this.nameChangeHandler}
           />
-          <br />
-          <br />
+          <span>  </span>
           <TextField
             id="email-input"
             label="Email"
@@ -114,8 +134,8 @@ export class RegisterForm extends React.Component {
             onChange={this.emailChangeHandler}
             variant="filled"
           />
-          <br />
-          <br />
+          <br/>
+          <br/>
           <TextField
             id="password-input"
             label="Password"
@@ -125,8 +145,7 @@ export class RegisterForm extends React.Component {
             onChange={this.passwordChangeHandler}
             variant="filled"
           />
-          <br />
-          <br />
+          <span>  </span>
           <TextField
             id="repeat-password-input"
             label="Re-type your password"
@@ -146,8 +165,7 @@ export class RegisterForm extends React.Component {
             onChange={this.roleChangeHandler}
             variant="filled"
           />
-          <br />
-          <br />
+          <span>  </span>
           <TextField
             id="department-input"
             label="Department"
@@ -156,6 +174,24 @@ export class RegisterForm extends React.Component {
             onChange={this.departmentChangeHandler}
             variant="filled"
           />
+          <TextField
+            id = "department"
+            select
+            label = "Department"
+            value = {department}
+            helperText = "Please select a department"
+            variant = "filled"
+            onChange = {this.departmentChangeHandler}
+            SelectProps={{
+              native:true,
+            }}
+          >
+            {roles.map(option =>(
+              <option key = {option.value} value = {option.value}>
+                {option.label}
+              </option>
+            ))};
+          </TextField>
           <br />
           <br />
           <label className={styles.termslabel}>
@@ -169,6 +205,24 @@ export class RegisterForm extends React.Component {
           <br></br>
           <br></br>
           <Button
+          variant="outlined"
+          size="large"
+          color="primary"
+          className={styles.button}
+          >
+            <a
+              onClick={e => {
+                e.preventDefault();
+                this.changeForm(true);
+              }}
+            >
+              Login
+            </a>
+
+          </Button>
+          <span>  </span>
+          <span>  </span>
+          <Button
             variant="outlined"
             size="large"
             color="primary"
@@ -177,14 +231,8 @@ export class RegisterForm extends React.Component {
           >
             Register
           </Button>
-          <a
-            onClick={e => {
-              e.preventDefault();
-              this.changeForm(true);
-            }}
-          >
-            Login now
-          </a>
+          <br/>
+          <br/>
         </div>
       </div>
     );
