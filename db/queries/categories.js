@@ -1,7 +1,7 @@
 const pool = require("../dbconn");
 
 // Use this function to add a category to the portal
-function addCategory(tag, description, selectable) {
+function createCategoryQuery(tag, description, selectable = true) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
@@ -18,25 +18,8 @@ function addCategory(tag, description, selectable) {
   );
 }
 
-// Use this function to delete a category using its name
-function deleteCategoryByName(tag) {
-  return new Promise((resolve, reject) =>
-    pool.query(
-      {
-        sql: "delete from Categories where (tag = ?)",
-        timeout: 40000, // 40s
-        values: [tag]
-      },
-      (error, result) => {
-        if (error) return reject(error);
-        return resolve();
-      }
-    )
-  );
-}
-
 // Use this function to delete a category using its ID
-function deleteCategoryByID(id) {
+function deleteCategoryByIdQuery(id) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
@@ -52,80 +35,70 @@ function deleteCategoryByID(id) {
   );
 }
 
-// Use this function to toogle the selectable value of a categorie by TAG name
-function toggleCategoryByTag(tag, isSelectable) {
-  return new Promise((resolve, reject) =>
-    pool.query(
-      {
-        sql: "update Categories set isSelectable = ? where (tag = ?)",
-        timeout: 40000, // 40s
-        values: [!isSelectable, tag]
-      },
-      (error, result) => {
-        if (error) return reject(error);
-        return resolve();
-      }
-    )
-  );
-}
-
-// Use this function to toogle the selectable value of a category by ID
-function toggleCategoryByID(id, isSelectable) {
-  return new Promise((resolve, reject) =>
-    pool.query(
-      {
-        sql: "update Categories set isSelectable = ? where (id = ?)",
-        timeout: 40000, // 40s
-        values: [!isSelectable, id]
-      },
-      (error, result) => {
-        if (error) return reject(error);
-        return resolve();
-      }
-    )
-  );
-}
-
-// Use this function change the category by passing the tag
-function updateCategoryByTag(tag, newTag, newDescription) {
-  return new Promise((resolve, reject) =>
-    pool.query(
-      {
-        sql: "update Categories set tag = ?, description = ? where (tag = ?)",
-        timeout: 40000, // 40s
-        values: [newTag, newDescription, tag]
-      },
-      (error, result) => {
-        if (error) return reject(error);
-        return resolve();
-      }
-    )
-  );
-}
-
 // Use this function change the category by passing the id
-function updateCategoryByID(id, newTag, newDescription) {
+// Order of params : newTag, newDescription, isSelectable, id
+function updateCategoryByIdQuery(...params) {
+  const [newTag, newDescription, isSelectable, id] = params;
+  const parArray = [];
+  if (params.length < 2) {
+    throw new Error("Parameters missing");
+  }
+  let sql = "update Categories set ";
+  if (newTag) {
+    sql += "tag = ?";
+    parArray.push(newTag);
+  }
+  if (newTag && newDescription) {
+    sql += ",";
+  }
+  if (newDescription) {
+    sql += "description = ?";
+    parArray.push(newDescription);
+  }
+  if ((newDescription && isSelectable) || (newTag && isSelectable)) {
+    sql += ",";
+  }
+  if (isSelectable) {
+    sql += "isSelectable = ?";
+    parArray.push(isSelectable);
+  }
+  sql += " where (id = ?)";
+  parArray.push(id);
+
   return new Promise((resolve, reject) =>
     pool.query(
       {
-        sql: "update Categories set tag = ?, description = ? where (tag = ?)",
+        sql: sql,
         timeout: 40000, // 40s
-        values: [newTag, newDescription, id]
+        values: [...parArray]
       },
       (error, result) => {
         if (error) return reject(error);
         return resolve();
+      }
+    )
+  );
+}
+
+function getAllCategoriesQuery() {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: "select * from Categories",
+        timeout: 40000, // 40s
+        values: []
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result);
       }
     )
   );
 }
 
 module.exports = {
-  addCategory,
-  deleteCategoryByName,
-  deleteCategoryByID,
-  toggleCategoryByTag,
-  toggleCategoryByID,
-  updateCategoryByTag,
-  updateCategoryByID
+  updateCategoryByIdQuery,
+  createCategoryQuery,
+  deleteCategoryByIdQuery,
+  getAllCategoriesQuery
 };
