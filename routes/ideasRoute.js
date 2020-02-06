@@ -1,7 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const exceptionHandler = require("../utils/exceptionHandler");
-const { getAllIdeasReq, getIdeaByIdReq } = require("../controllers/ideasController");
+const {
+  getAllIdeasReq,
+  createIdeaReq,
+  deleteIdeaReq,
+  increaseIdeaViewsReq,
+  updateIdeaReq,
+  getIdeaByIdReq
+} = require("../controllers/ideasController");
 
 // @desc Returns all ideas
 // @route GET /api/ideas
@@ -12,5 +19,10 @@ router.get("/", exceptionHandler(getAllIdeasReq));
 // @route GET /api/ideas/:id
 // @access Private
 router.get("/:id", exceptionHandler(getIdeaByIdReq));
+
+router.post("/", exceptionHandler(createIdeaReq));
+router.get("/:id", exceptionHandler(increaseIdeaViewsReq));
+router.delete("/:id", exceptionHandler(deleteIdeaReq));
+router.post("/:id", exceptionHandler(updateIdeaReq));
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const pool = require("../dbconn");
 
-// Use this function to add a category to the portal
-function createIdea(description, isAnonymous, category_id, user_id) {
+// add new Idea
+function createIdeaQuery(description, isAnonymous, category_id, user_id) {
   const date = new Date()
     .toISOString()
     .slice(0, 19)
@@ -22,7 +22,26 @@ function createIdea(description, isAnonymous, category_id, user_id) {
   );
 }
 
-function increaseIdeaViewCounter(idea_id) {
+// to be completed
+function getAllIdeasQuery() {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        // add full query for retrieving ideas
+        sql: "select * from ideas",
+        timeout: 40000, // 40s
+        values: [idea_id]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    );
+  });
+}
+
+// increase the number of views
+function increaseIdeaViewsQuery(idea_id) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
@@ -38,9 +57,26 @@ function increaseIdeaViewCounter(idea_id) {
   });
 }
 
+// update just description for now
+function updateIdeaQuery(description, id) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "update Ideas set description = ? where ID = ?",
+        timeout: 40000, // 40s
+        values: [description, id]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    );
+  });
+}
+
 // This is just a temporary solution, as it will be a chained removal, where if
 // an idea is delete, all comments+uploads+ratings are also deleted
-function deleteIdea(idea_id) {
+function deleteIdeaQuery(idea_id) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
@@ -56,8 +92,28 @@ function deleteIdea(idea_id) {
   });
 }
 
+// needs to be completed
+function getIdeaByIdQuery(idea_id) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "select * from Ideas where ID = ?",
+        timeout: 40000, // 40s
+        values: [idea_id]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    );
+  });
+}
+
 module.exports = {
-  createIdea,
-  increaseIdeaViewCounter,
-  deleteIdea
+  createIdeaQuery,
+  updateIdeaQuery,
+  deleteIdeaQuery,
+  increaseIdeaViewsQuery,
+  getAllIdeasQuery,
+  getIdeaByIdQuery
 };
