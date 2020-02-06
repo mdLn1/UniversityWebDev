@@ -3,7 +3,7 @@ const { check, validationResult } = require("express-validator");
 const router = express.Router();
 const writeFeedback = require("../utils/writeFeedback");
 const CustomError = require("../utils/CustomError");
-const IsInRole = require("../middleware/authorize");
+const IsInRole = require("../middleware/authorizeMiddleware");
 const {
     getUserDetails,
     updateUserDetails

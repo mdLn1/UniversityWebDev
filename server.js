@@ -23,15 +23,15 @@ const writeFeedback = require("./utils/writeFeedback");
 app.use(express.json({ extended: false }));
 
 // WARNING! Errors may show if the routes files don't have module.exports = router;
-app.use('/api/user', require('./routes/user.js'));
-app.use('/api/auth', require('./routes/authRoute.js'));
-app.use('/api/roles', require('./routes/roles'));
-app.use('/api/ideas', require('./routes/ideas'));
-app.use('/api/departments', require('./routes/departments'))
+app.use('/api/user', require('./routes/userRoute'));
+app.use('/api/auth', require('./routes/authRoute'));
+app.use('/api/roles', require('./routes/rolesRoute'));
+app.use('/api/ideas', require('./routes/ideasRoute'));
+app.use('/api/departments', require('./routes/departmentsRoute'))
 
 // Handling pages not found
 app.use((req, res, next) => {
-	res.status(404).send({ feedback: writeFeedback('Resource not found') });
+	res.status(404).json(writeFeedback('Resource not found'));
 });
 
 // Global error handling through middleware
