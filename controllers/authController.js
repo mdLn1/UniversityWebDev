@@ -11,7 +11,7 @@ const {
 // authentication specific requests below
 
 const registerUserReq = async (req, res) => {
-  const { name, password, email, role, department } = req.body;
+  const { name, password, email, roleId, departmentId } = req.body;
 
   const re = new RegExp(
     /^([\w\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/
@@ -30,7 +30,7 @@ const registerUserReq = async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   // perform user registration
-  await createUserQuery(name, hashedPassword, email, role, department);
+  await createUserQuery(name, hashedPassword, email, roleId, departmentId);
 
   const payload = { user: { name, email } };
   const token = jwt.sign(payload, config.get("jwtSecret"), {

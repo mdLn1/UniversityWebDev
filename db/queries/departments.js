@@ -1,7 +1,7 @@
 const pool = require("../dbconn");
 
 // Use this function to add a department to the portal
-function addDepartment(department, description, selectable) {
+function createDepartmentQuery(department, description, selectable) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
@@ -18,8 +18,44 @@ function addDepartment(department, description, selectable) {
   );
 }
 
+// Use this function to update a department to the portal
+function updateDepartmentQuery(newDepartment, newDescription, selectable, id) {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql:
+          "update Departments department = ?, description = ?, isSelectable = ? where (ID = ?)",
+        timeout: 40000, // 40s
+        values: [newDepartment, newDescription, selectable, id]
+      },
+      error => {
+        if (error) return reject(error);
+        resolve();
+      }
+    )
+  );
+}
+
+// Use this function to update a department to the portal
+function deleteDepartmentQuery(id) {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql:
+          "insert into Departments (department, description, isSelectable) values (?, ?, ?)",
+        timeout: 40000, // 40s
+        values: [newDepartment, newDescription, selectable]
+      },
+      error => {
+        if (error) return reject(error);
+        resolve();
+      }
+    )
+  );
+}
+
 // Returns all the departments of the portal
-function getAllDepartments() {
+function getAllDepartmentsQuery() {
   return new Promise((resolve, reject) =>
     pool.query(
       {
@@ -41,6 +77,8 @@ function getAllDepartments() {
 }
 
 module.exports = {
-  addDepartment,
-  getAllDepartments
+  createDepartmentQuery,
+  getAllDepartmentsQuery,
+  updateDepartmentQuery,
+  deleteDepartmentQuery
 };
