@@ -10,12 +10,12 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/">
-            <Dashboard/>
+            <Authentication/>
           </Route>
-          <Route to="/login"> 
-              <Authentication/>
+          <Route path = "/login"> 
+            <Authentication/>
           </Route>
-          <Route to = "/Dashboard">
+          <Route path = "/dashboard">
             <Dashboard/>
           </Route>
         </Switch>

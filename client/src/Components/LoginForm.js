@@ -34,7 +34,7 @@ export class LoginForm extends React.Component {
   };
 
   handleSubmit = async e => {
-    console.log(this.username);
+    console.log(this.state.username);
     try {
       const config = {
         headers: {
@@ -45,7 +45,6 @@ export class LoginForm extends React.Component {
       const res = await Axios.post("/api/auth/login/", obj, config);
       localStorage.setItem("token", res.token);
       this.setState({ loggedIn: true });
-      return <Redirect to="/" />;
     } catch (err) {
       console.log(err);
     }
@@ -53,7 +52,7 @@ export class LoginForm extends React.Component {
 
   render() {
     const loggedIn = this.state.loggedIn;
-    if (loggedIn) return <Redirect to="/" />;
+    if (loggedIn) return <Redirect to="/dashboard" />;
     else
       return (
         <div className={styles.page}>

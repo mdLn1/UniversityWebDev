@@ -25,6 +25,7 @@ export class Dashboard extends React.Component {
 
       return (
         <div >
+          <h1>Something</h1>
             <Paper>
                 <Tabs
                     //value={}

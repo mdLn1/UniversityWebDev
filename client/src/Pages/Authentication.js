@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { LoginForm } from "../Components/LoginForm";
 import { RegisterForm } from "../Components/RegisterForm";
-
+import {Dashboard} from "../Components/Dashboard"
 export class Authentication extends Component {
   constructor(props) {
     super(props);
