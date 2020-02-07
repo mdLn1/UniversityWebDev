@@ -96,6 +96,10 @@ export class RegisterForm extends React.Component {
 
   const departments = [
       {
+        value: '',
+        label: ''
+      },
+      {
         value: 'Human Resources',
         label: 'Human Resources',
       },
@@ -119,6 +123,10 @@ export class RegisterForm extends React.Component {
     ];
 
   const roles = [
+    {
+      value: '',
+      label: ''
+    },
     {
       value: 'QA Manager ',
       label: ' QA Manager ',
@@ -157,6 +165,7 @@ export class RegisterForm extends React.Component {
       <div className={styles.page}>
         <div className={styles.registerDivContainer}>
           <img
+          className = {styles.loginImage}
             src="https://www.nicepng.com/png/full/335-3355144_seller-registration-icon-class-register-icon-png.png"
             alt={"Person and Locker"}
           />
@@ -222,7 +231,7 @@ export class RegisterForm extends React.Component {
           <TextField
             id = "department"
             select
-            label = "department"
+            label = "Department"
             value = {department}
             helperText = "Please select a department"
             variant = "filled"

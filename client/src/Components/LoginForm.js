@@ -26,16 +26,6 @@ export class LoginForm extends React.Component {
 
   handleUserNameChange = event => {
 
-    if(!this.state.username){
-      console.log("empty username")
-    }
-
-    if(typeof this.state.username !== "undefined"){
-      if(!this.state.username.match(/^[a-zA-Z]+$/)){
-        console.log("you put numbers")
-      }
-    }
-
     this.setState({ username: event.target.value });
   };
 
@@ -69,6 +59,7 @@ export class LoginForm extends React.Component {
         <div className={styles.page}>
           <div className={styles.divcontainer}>
             <img
+              className = {styles.loginImage}
               src="https://domw.gov.in/assets/frontend/img/team/user-login.png"
               alt={"Person and Locker"}
             />
