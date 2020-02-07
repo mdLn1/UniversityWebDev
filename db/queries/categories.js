@@ -37,40 +37,14 @@ function deleteCategoryByIdQuery(id) {
 
 // Use this function change the category by passing the id
 // Order of params : newTag, newDescription, isSelectable, id
-function updateCategoryByIdQuery(...params) {
-  const [newTag, newDescription, isSelectable, id] = params;
-  const parArray = [];
-  if (params.length < 2) {
-    throw new Error("Parameters missing");
-  }
-  let sql = "update Categories set ";
-  if (newTag) {
-    sql += "tag = ?";
-    parArray.push(newTag);
-  }
-  if (newTag && newDescription) {
-    sql += ",";
-  }
-  if (newDescription) {
-    sql += "description = ?";
-    parArray.push(newDescription);
-  }
-  if ((newDescription && isSelectable) || (newTag && isSelectable)) {
-    sql += ",";
-  }
-  if (isSelectable) {
-    sql += "isSelectable = ?";
-    parArray.push(isSelectable);
-  }
-  sql += " where (id = ?)";
-  parArray.push(id);
-
+function updateCategoryByIdQuery(newTag, newDescription, isSelectable, id) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
-        sql: sql,
+        sql:
+          "update Categories set tag = ?, description = ?, isSelectable = ? where (id = ?)",
         timeout: 40000, // 40s
-        values: [...parArray]
+        values: [newTag, newDescription, isSelectable, id]
       },
       (error, result) => {
         if (error) return reject(error);

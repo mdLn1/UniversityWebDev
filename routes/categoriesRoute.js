@@ -21,11 +21,41 @@ router.post(
     check("description")
       .trim()
       .isLength({ min: 10 }),
+    check("isSelectable")
+      .trim()
+      .isBoolean(),
     errorChecker
   ],
   exceptionHandler(createCategoryReq)
 );
-router.delete("/:id", exceptionHandler(deleteCategoryByIdReq));
-router.post("/:id", exceptionHandler(updateCategoryByIdReq));
+router.delete(
+  "/:id",
+  [
+    check("id")
+      .isInt()
+      .withMessage("Id param must be an integer value"),
+    errorChecker
+  ],
+  exceptionHandler(deleteCategoryByIdReq)
+);
+router.post(
+  "/:id",
+  [
+    check("newTag")
+      .trim()
+      .not()
+      .isEmpty(),
+    check("newDescription")
+      .trim()
+      .not()
+      .isEmpty(),
+    check("isSelectable").exists(),
+    check("id")
+      .isInt()
+      .withMessage("Id param must be an integer value"),
+    errorChecker
+  ],
+  exceptionHandler(updateCategoryByIdReq)
+);
 
 module.exports = router;

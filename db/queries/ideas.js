@@ -1,7 +1,7 @@
 const pool = require("../dbconn");
 
 // add new Idea
-function createIdeaQuery(description, isAnonymous, category_id, user_id) {
+function createIdeaQuery(title, description, isAnonymous, categoryId, userId) {
   const date = new Date()
     .toISOString()
     .slice(0, 19)
@@ -10,9 +10,9 @@ function createIdeaQuery(description, isAnonymous, category_id, user_id) {
     pool.query(
       {
         sql:
-          "insert into Ideas (description, isAnonymous, views, category_id, user_id, posted_time) values (?, ?, 0, ?, ?, ?)",
+          "insert into Ideas (title, description, isAnonymous, views, category_id, user_id, posted_time) values (?, ?, ?, ?, ?, ?)",
         timeout: 40000, // 40s
-        values: [description, isAnonymous, category_id, user_id, date]
+        values: [title, description, isAnonymous, categoryId, userId, date]
       },
       (error, result) => {
         if (error) return reject(error);
@@ -30,7 +30,7 @@ function getAllIdeasQuery() {
         // add full query for retrieving ideas
         sql: "select * from ideas",
         timeout: 40000, // 40s
-        values: [idea_id]
+        values: []
       },
       (error, result) => {
         if (error) return reject(error);
@@ -41,13 +41,13 @@ function getAllIdeasQuery() {
 }
 
 // increase the number of views
-function increaseIdeaViewsQuery(idea_id) {
+function increaseIdeaViewsQuery(ideaId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
         sql: "update Ideas set views = views + 1 where ID = ?",
         timeout: 40000, // 40s
-        values: [idea_id]
+        values: [ideaId]
       },
       (error, result) => {
         if (error) return reject(error);
@@ -76,13 +76,13 @@ function updateIdeaQuery(description, id) {
 
 // This is just a temporary solution, as it will be a chained removal, where if
 // an idea is delete, all comments+uploads+ratings are also deleted
-function deleteIdeaQuery(idea_id) {
+function deleteIdeaQuery(ideaId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
         sql: "delete from Ideas where ID = ?",
         timeout: 40000, // 40s
-        values: [idea_id]
+        values: [ideaId]
       },
       (error, result) => {
         if (error) return reject(error);
@@ -93,13 +93,13 @@ function deleteIdeaQuery(idea_id) {
 }
 
 // needs to be completed
-function getIdeaByIdQuery(idea_id) {
+function getIdeaByIdQuery(ideaId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
         sql: "select * from Ideas where ID = ?",
         timeout: 40000, // 40s
-        values: [idea_id]
+        values: [ideaId]
       },
       (error, result) => {
         if (error) return reject(error);

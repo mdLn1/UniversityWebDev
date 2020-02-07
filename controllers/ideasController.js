@@ -19,8 +19,8 @@ const deleteIdeaReq = async (req, res) => {
 };
 
 const createIdeaReq = async (req, res) => {
-  const { description, isAnonymous, category_id, user_id } = req.body;
-  await createIdeaQuery(description, isAnonymous, category_id, user_id);
+  const { description, isAnonymous, title, categoryId, userId } = req.body;
+  await createIdeaQuery(title, description, isAnonymous, categoryId, userId);
   res.status(201).json({ success: "Successfully created" });
 };
 
@@ -32,9 +32,9 @@ const increaseIdeaViewsReq = async (req, res) => {
 
 const updateIdeaReq = async (req, res) => {
   const { id } = req.params;
-  const { description } = req.body;
-  await updateIdeaQuery(description, id);
-  res.status(200).json({ description });
+  const { description, title } = req.body;
+  await updateIdeaQuery(title, description, id);
+  res.status(200).json({ title, description });
 };
 
 const getIdeaByIdReq = async (req, res) => {
