@@ -84,23 +84,66 @@ export class RegisterForm extends React.Component {
     }
   };
 
+  loginOnClick = async e => {
+    try {
+
+    } catch (err){ 
+      console.log(err);
+    }
+  }
+
   render() {
 
-  const roles = [
+  const departments = [
       {
-        value: ' Department1 ',
-        label: ' Department1 ',
+        value: 'Human Resources',
+        label: 'Human Resources',
       },
       {
-        value: ' Department2 ',
-        label: ' Department2 ',
+        value: 'Finance',
+        label: 'Finance',
       },
       {
-        value: ' Department3 ',
-        label: ' Department3 ',
+        value: 'SMT',
+        label: 'CIS',
+      },
+      {
+        value: 'Student Ambassadors',
+        label: 'Student Ambassadors',
+      },
+      {
+        value : 'Library',
+        label : 'Library'
       }
+
     ];
 
+  const roles = [
+    {
+      value: 'QA Manager ',
+      label: ' QA Manager ',
+    },
+    {
+      value: 'QA Coordinator',
+      label: 'QA Coordinator',
+    },
+    {
+      value: 'General Staff',
+      label: 'General Staff',
+    },
+    {
+      value: 'Lecturer',
+      label: 'Lecturer',
+    },
+    {
+      value:'Lab Assistant',
+      label : 'Lab Assistant',
+    },
+    {
+      value: 'Librarian',
+      label: 'Librarian',
+    }
+  ];
     let {
       name: name,
       email,
@@ -157,27 +200,29 @@ export class RegisterForm extends React.Component {
           />
           <br />
           <br />
-          <TextField
-            id="role-input"
-            label="Role"
-            type="text"
-            value={role}
-            onChange={this.roleChangeHandler}
-            variant="filled"
-          />
+           <TextField
+            id = "role-input"
+            select
+            label = "Role"
+            value = {role}
+            helperText = "Please select a role"
+            variant = "filled"
+            onChange = {this.roleChangeHandler}
+            SelectProps={{
+              native:true,
+            }}
+          >
+            {roles.map(option =>(
+              <option key = {option.value} value = {option.value}>
+                {option.label}
+              </option>
+            ))};
+          </TextField>
           <span>  </span>
-          <TextField
-            id="department-input"
-            label="Department"
-            type="text"
-            value={department}
-            onChange={this.departmentChangeHandler}
-            variant="filled"
-          />
           <TextField
             id = "department"
             select
-            label = "Department"
+            label = "department"
             value = {department}
             helperText = "Please select a department"
             variant = "filled"
@@ -186,7 +231,7 @@ export class RegisterForm extends React.Component {
               native:true,
             }}
           >
-            {roles.map(option =>(
+            {departments.map(option =>(
               <option key = {option.value} value = {option.value}>
                 {option.label}
               </option>

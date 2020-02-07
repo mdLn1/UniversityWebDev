@@ -55,3 +55,12 @@ a{
   cursor: pointer;
 
 }
+
+.dashboardContainer {
+  margin: auto;
+  margin-top: 5%; 
+  align-content: center;
+  width: 50%;
+  height: 70%;
+  background-color: whitesmoke;
+}

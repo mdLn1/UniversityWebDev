@@ -77,7 +77,7 @@ export class LoginForm extends React.Component {
               id="username"
               label="Username"
               variant="filled"
-              onChange={this.handleUserNameChange.bind(this, "name")}
+              onChange={this.handleUserNameChange}
               value = { this.state.username}
             />
             <br />
