@@ -1,61 +1,92 @@
-const pool = require('../dbconn');
+const pool = require("../dbconn");
 
-// Use this function to add a role to the portal
-function addRole(role, description, selectable) {
-    return new Promise((resolve, reject) => (
-        pool.query({
-            sql: 'insert into Roles (role, description, isSelectable) values (?, ?, ?)',
-            timeout: 40000, // 40s
-            values: [role, description, selectable]
-          },
-          (error, result) => {
-            if (error) return reject(error);
-            return resolve();
-          }
-        )
-    )
-)
-}
+// desc Returns all roles
+function getAllRolesQuery() {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: "select role, isSelectable, description from Roles",
+        timeout: 40000 // 40s
+      },
+      (error, result) => {
+        if (error) return reject(error);
 
-function getAllRoles() {
-    return new Promise((resolve, reject) => (
-        pool.query({
-            sql: 'select role, isSelectable from Roles',
-            timeout: 40000, // 40s
-          },
-          (error, result) => {
-            if (error) return reject(error);
-            roles =[];
-            result.map((role) => {
-                roles.push([role.role, role.isSelectable]);
-            })
-            return resolve(roles);
-          }
-        )
+        return resolve(
+          result.map(({ role, isSelectable, description }) => ({
+            role,
+            isSelectable,
+            description
+          }))
+        );
+      }
     )
-)
+  );
 }
 
 // @desc If authorized the user(QA Manger) can create a new role
 // @param role - Role of the user
 // @param description - Description of said role
-function createNewRole(role, description, is_selectable=1) {
-  return new Promise( (resolve, reject) => {
-    pool.query({
-      sql: "INSERT into Roles (role, description, isSelectable) values (?, ?, ?)", 
-      timeout: 40000,
-      values: [role, description, is_selectable]
-    }, (err, result) => {
-      if (err) { return reject(err) }
+function createRoleQuery(role, description, isSelectable = 1) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql:
+          "INSERT into Roles (role, description, isSelectable) values (?, ?, ?)",
+        timeout: 40000,
+        values: [role, description, isSelectable]
+      },
+      (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve();
+      }
+    );
+  });
+}
 
-      return (resolve(result))
-    }
-    )
-  })
+function updateRoleQuery(id, role, description, isSelectable = 1) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql:
+          "update Roles role = ?, description = ?, isSelectable = ? where (id = ?)",
+        timeout: 40000,
+        values: [role, description, isSelectable, id]
+      },
+      (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+
+        return resolve();
+      }
+    );
+  });
+}
+
+function deleteRoleQuery(id) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "delete from Categories where (id = ?)",
+        timeout: 40000,
+        values: [id]
+      },
+      (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+
+        return resolve();
+      }
+    );
+  });
 }
 
 module.exports = {
-    addRole,
-    getAllRoles,
-    createNewRole
-}
+  createRoleQuery,
+  getAllRolesQuery,
+  updateRoleQuery,
+  deleteRoleQuery
+};

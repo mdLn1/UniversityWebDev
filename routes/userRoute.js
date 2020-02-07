@@ -1,21 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const user = require('../testObjects/user');
-const auth = require('../middleware/auth');
+const authMiddleware = require('../middleware/authMiddleware');
 const {getAllUsers} = require('../db/queries/users')
 // express-validator; data validation
 const {
     check,
     validationResult
 } = require('express-validator');
-const writeFeedback = require("../utils/writeFeedback");
-
 
 //@route POST api/user/
 //@desc Receive user details
 //@access Private
 router.post('/', [
-    auth,
+    authMiddleware,
     check("firstName", "firstName must have a value").not().isEmpty().trim().escape(),
     check("lastName", "lastName must have a value").not().isEmpty().trim().escape(),
     check("age", "age must have a value").not().isEmpty()

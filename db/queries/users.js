@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 // Use this function to add a user to the system, it requires the role and the department string (do not use the ID)
 // e.g. -> if you want to add a user to the department 'Human Resources', pass 'Human Resources' to the function, not its ID
 // make sure the password is hashed before passing it to the function
-function registerUser(name, password, email, role, department) {
+function createUserQuery(name, password, email, role, department) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
@@ -23,7 +23,7 @@ function registerUser(name, password, email, role, department) {
 }
 
 // Use this funcrion to add a user to the system if you have the role_id and department_id (do not use the string value)
-function registerUserByID(name, password, email, role_id, department_id) {
+function createUserWithIdParamsQuery(name, password, email, role_id, department_id) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
@@ -147,8 +147,8 @@ function updateUserDetails(name, newEmail, role, department, oldEmail) {
 }
 
 module.exports = {
-  registerUser,
-  registerUserByID,
+  createUserQuery,
+  createUserWithIdParamsQuery,
   userLogin,
   isEmailRegisteredAlready,
   getAllUsers,
