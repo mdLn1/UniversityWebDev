@@ -14,15 +14,19 @@ router.get("/", exceptionHandler(getAllCategoriesReq));
 router.post(
   "/",
   [
-    check("tag")
+    check("tag", "Tag must be provided")
+      .exists()
       .trim()
       .not()
       .isEmpty(),
-    check("description")
-      .trim()
+    check(
+      "description",
+      "Description must be provided and have at least 10 characters"
+    )
+      .exists()
       .isLength({ min: 10 }),
-    check("isSelectable")
-      .trim()
+    check("isSelectable", "IsSelectable must be provided")
+      .exists()
       .isBoolean(),
     errorChecker
   ],
@@ -31,9 +35,9 @@ router.post(
 router.delete(
   "/:id",
   [
-    check("id")
-      .isInt()
-      .withMessage("Id param must be an integer value"),
+    check("id", "Id param must be an integer value")
+      .exists()
+      .isInt(),
     errorChecker
   ],
   exceptionHandler(deleteCategoryByIdReq)
@@ -41,18 +45,22 @@ router.delete(
 router.post(
   "/:id",
   [
-    check("newTag")
+    check("newTag", "New Tag must be provided")
+      .exists()
       .trim()
       .not()
       .isEmpty(),
-    check("newDescription")
+    check("newDescription", "New Description must be provided")
+      .exists()
       .trim()
       .not()
       .isEmpty(),
-    check("isSelectable").exists(),
-    check("id")
-      .isInt()
-      .withMessage("Id param must be an integer value"),
+    check("isSelectable", "Is Selectable must be provided and be a boolean")
+      .exists()
+      .isBoolean(),
+    check("id", "Id param must be an integer value")
+      .exists()
+      .isInt(),
     errorChecker
   ],
   exceptionHandler(updateCategoryByIdReq)

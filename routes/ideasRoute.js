@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { check } = require("express-validator");
 const errorChecker = require("../middleware/errorCheckerMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
 const {
@@ -22,9 +23,9 @@ router.get("/", exceptionHandler(getAllIdeasReq));
 router.get(
   "/:id",
   [
-    check("id")
-      .isInt()
-      .withMessage("Id param must be an integer value"),
+    check("id", "Id param must be an integer value")
+      .exists()
+      .isInt(),
     errorChecker
   ],
   exceptionHandler(getIdeaByIdReq)
@@ -37,16 +38,24 @@ router.post("/", exceptionHandler(createIdeaReq));
 router.get(
   "/:id",
   [
-    check("id")
-      .isInt()
-      .withMessage("Id param must be an integer value"),
-    check("description")
+    check("id", "Id param must be an integer value")
+      .exists()
+      .isInt(),
+    check("description", "Description must contain at least 20 characters")
+      .exists()
       .trim()
       .isLength({ min: 20 }),
-    check("isAnonymous").isBoolean(),
-    check("categoryId").isInt(),
-    check("userId").isInt(),
-    check("title")
+    check("isAnonymous", "Is Anonymous does not exist")
+      .exists()
+      .isBoolean(),
+    check("categoryId", "Category Id must be an integer")
+      .exists()
+      .isInt(),
+    check("userId", "User Id must be an integer")
+      .exists()
+      .isInt(),
+    check("title", "Title must be at least 5 characters long")
+      .exists()
       .trim()
       .isLength({ min: 5 }),
     errorChecker
@@ -56,9 +65,9 @@ router.get(
 router.delete(
   "/:id",
   [
-    check("id")
-      .isInt()
-      .withMessage("Id param must be an integer value"),
+    check("id", "Id param must be an integer value")
+      .exists()
+      .isInt(),
     errorChecker
   ],
   exceptionHandler(deleteIdeaReq)
@@ -66,13 +75,15 @@ router.delete(
 router.post(
   "/:id",
   [
-    check("id")
-      .isInt()
-      .withMessage("Id param must be an integer value"),
-    check("title")
+    check("id", "Id param must be an integer value")
+      .exists()
+      .isInt(),
+    check("title", "Title must be at least 5 characters long")
+      .exists()
       .trim()
       .isLength({ min: 5 }),
-    check("description")
+    check("description", "Description must contain at least 20 characters")
+      .exists()
       .trim()
       .isLength({ min: 20 }),
     errorChecker
