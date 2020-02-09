@@ -15,7 +15,7 @@ export class LoginForm extends React.Component {
     };
     this.changeForm = this.props.changeForm;
     this.onClick = this.onClick.bind(this);
-    this.handleUserNameChange = this.handleUserNameChange.bind(this);
+    //this.handleUserNameChange = this.handleUserNameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
   }
 
@@ -25,6 +25,7 @@ export class LoginForm extends React.Component {
   }
 
   handleUserNameChange = event => {
+
     this.setState({ username: event.target.value });
   };
 
@@ -33,7 +34,7 @@ export class LoginForm extends React.Component {
   };
 
   handleSubmit = async e => {
-    console.log(this.username);
+    console.log(this.state.username);
     try {
       const config = {
         headers: {
@@ -44,7 +45,6 @@ export class LoginForm extends React.Component {
       const res = await Axios.post("/api/auth/login/", obj, config);
       localStorage.setItem("token", res.token);
       this.setState({ loggedIn: true });
-      return <Redirect to="/" />;
     } catch (err) {
       console.log(err);
     }
@@ -52,12 +52,13 @@ export class LoginForm extends React.Component {
 
   render() {
     const loggedIn = this.state.loggedIn;
-    if (loggedIn) return <Redirect to="/" />;
+    if (loggedIn) return <Redirect to="/dashboard" />;
     else
       return (
         <div className={styles.page}>
           <div className={styles.divcontainer}>
             <img
+              className = {styles.loginImage}
               src="https://domw.gov.in/assets/frontend/img/team/user-login.png"
               alt={"Person and Locker"}
             />
@@ -67,6 +68,7 @@ export class LoginForm extends React.Component {
               label="Username"
               variant="filled"
               onChange={this.handleUserNameChange}
+              value = { this.state.username}
             />
             <br />
             <br />
@@ -81,7 +83,15 @@ export class LoginForm extends React.Component {
             <br />
             <br />
             <label className={styles.label}>New to us ?</label>
-            <button onClick={() => this.changeForm(false)}>Join now</button>
+            <a
+              onClick={e => {
+                e.preventDefault();
+                this.changeForm(false);
+              }}
+              className = {styles.join_link}
+            >
+            Join now
+            </a>
             <br></br>
             <br></br>
             <Button
@@ -93,6 +103,7 @@ export class LoginForm extends React.Component {
             >
               Login
             </Button>
+            
           </div>
         </div>
       );
