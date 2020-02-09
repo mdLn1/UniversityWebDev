@@ -29,6 +29,7 @@ app.use('/api/roles', require('./routes/rolesRoute'));
 app.use('/api/ideas', require('./routes/ideasRoute'));
 app.use('/api/departments', require('./routes/departmentsRoute'))
 app.use('/api/categories', require('./routes/categoriesRoute'))
+app.use('/api/comments', require('./routes/commentsRoute'))
 
 // Handling pages not found
 app.use((req, res, next) => {
