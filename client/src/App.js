@@ -3,6 +3,7 @@ import './App.css';
 import { Switch, BrowserRouter as Router, NavLink, Route} from "react-router-dom";
 import {Authentication} from './Pages/Authentication';
 import {Dashboard} from './Components/Dashboard';
+import {IdeaDisplayer} from './Components/IdeaDisplayer';
 
 function App() {
   return (
@@ -12,7 +13,8 @@ function App() {
         </div>
         <Switch>
           <Route exact path="/">
-            <div>Home</div>
+            {/* <IdeaDisplayer/> */}
+            <Authentication/>
           </Route>
           <Route path = "/login"> 
               <Authentication/>

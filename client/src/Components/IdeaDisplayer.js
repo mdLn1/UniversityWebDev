@@ -1,4 +1,3 @@
-import Tab from '@material-ui/core/Tab';
 import React from 'react';
 import styles from "./LoginForm.module.css";
 import TextField from "@material-ui/core/TextField";
@@ -9,7 +8,7 @@ import Axios from "axios";
 import { Button } from '@material-ui/core';
 
 
-export class IdeaContainer extends React.Component {
+export class IdeaDisplayer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -39,11 +38,18 @@ export class IdeaContainer extends React.Component {
       
       onSubmit = async e => {
         try {
-            
-
-        }catch (err){
+            const config = {
+              headers: {
+                "Content-Type": "application/json"
+              }
+            };
+            const obj = { email: this.state.username, password: this.state.password };
+            const res = await Axios.post("/api/auth/login/", obj, config);
+            localStorage.setItem("token", res.token);
+            this.setState({ loggedIn: true });
+          } catch (err) {
             console.log(err);
-        }
+          }
       }
 
 
