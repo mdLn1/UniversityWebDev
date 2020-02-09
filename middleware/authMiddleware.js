@@ -8,7 +8,7 @@ module.exports = async (req, res, next) => {
     if (!token) {
       return res
         .status(400)
-        .json(writeFeedback("No token, authorization denied"));
+        .json(writeFeedback("You must be logged in to perform this action"));
     }
 
     const decoded = jwt.verify(token, config.get("jwtSecret"));

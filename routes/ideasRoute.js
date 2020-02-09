@@ -3,6 +3,10 @@ const router = express.Router();
 const { check } = require("express-validator");
 const errorChecker = require("../middleware/errorCheckerMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
+const auth = require("../middleware/authMiddleware");
+const authorize = require("../middleware/authorizeMiddleware");
+const config = require("config");
+const { admin, coordinator } = config.get("roles");
 const {
   getAllIdeasReq,
   createIdeaReq,
@@ -12,14 +16,14 @@ const {
   getIdeaByIdReq
 } = require("../controllers/ideasController");
 
-// @desc Returns all ideas
 // @route GET /api/ideas
-// @access Private
+// @desc Returns all ideas
+// @access Public
 router.get("/", exceptionHandler(getAllIdeasReq));
 
-// @desc Returns a specific idea based on passed ID
 // @route GET /api/ideas/:id
-// @access Private
+// @desc Returns a specific idea based on passed ID
+// @access Public
 router.get(
   "/:id",
   [
@@ -31,11 +35,15 @@ router.get(
   exceptionHandler(getIdeaByIdReq)
 );
 
-// @desc Creates a new idea
-// @route POST /api/ideas/:id
+// @route GET /api/ideas/:id/increase-views
+// @desc Increase views counter for idea
 // @access Public
-router.post("/", exceptionHandler(createIdeaReq));
-router.get(
+router.get("/:id/increase-views", exceptionHandler(increaseIdeaViewsReq));
+
+// @route POST /api/ideas/:id
+// @desc Creates a new idea
+// @access Private
+router.post(
   "/:id",
   [
     check("id", "Id param must be an integer value")
@@ -58,20 +66,31 @@ router.get(
       .exists()
       .trim()
       .isLength({ min: 5 }),
-    errorChecker
+    errorChecker,
+    auth
   ],
-  exceptionHandler(increaseIdeaViewsReq)
+  exceptionHandler(createIdeaReq)
 );
+
+// @route DELETE /api/ideas/:id
+// @desc Deletes an idea
+// @access Private and restricted
 router.delete(
   "/:id",
   [
     check("id", "Id param must be an integer value")
       .exists()
       .isInt(),
-    errorChecker
+    errorChecker,
+    auth,
+    authorize([admin, coordinator])
   ],
   exceptionHandler(deleteIdeaReq)
 );
+
+// @route POST /api/ideas/:id
+// @desc Updates information for an idea
+// @access Private
 router.post(
   "/:id",
   [
@@ -86,7 +105,8 @@ router.post(
       .exists()
       .trim()
       .isLength({ min: 20 }),
-    errorChecker
+    errorChecker,
+    auth
   ],
   exceptionHandler(updateIdeaReq)
 );

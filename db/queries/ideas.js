@@ -30,22 +30,22 @@ function getAllIdeasQuery() {
         // add full query for retrieving ideas
         sql: `SELECT i.ID, i.description, i.views, i.posted_time, i.Title, i.isAnonymous, 
         (SELECT name FROM Users WHERE ID=i.user_id) AS author, 
-        (SELECT COUNT(comment) FROM Comments WHERE i.ID = Comments.idea_id ) AS numb_of_comments, 
-        (SELECT COUNT(vote) FROM Ratings WHERE vote=1) AS positive_votes, 
-        (SELECT COUNT(vote) FROM Ratings WHERE vote=0) AS negative_votes, 
+        (SELECT COUNT(comment) FROM Comments WHERE i.ID = Comments.idea_id ) AS commentsNo, 
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=1) AS positiveVotes, 
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=0) AS negativeVotes, 
         (SELECT tag FROM Categories WHERE ID = i.category_id) AS category, 
-        (SELECT name FROM Uploads WHERE idea_id = i.ID) AS upload_name, 
-        (SELECT description FROM Uploads WHERE idea_id = i.ID) AS upload_desc, 
-        (SELECT url FROM Uploads WHERE idea_id = i.ID) AS upload_url, 
-        (SELECT upload_id FROM Uploads WHERE idea_id = i.ID) AS upload_ID 
+        (SELECT name FROM Uploads WHERE idea_id = i.ID) AS uploadName, 
+        (SELECT description FROM Uploads WHERE idea_id = i.ID) AS uploadDesc, 
+        (SELECT url FROM Uploads WHERE idea_id = i.ID) AS uploadUrl, 
+        (SELECT upload_id FROM Uploads WHERE idea_id = i.ID) AS uploadId
         FROM Ideas AS i 
-        ORDER BY posted_time DESC`,
+        ORDER BY postedTime DESC`,
         timeout: 40000, // 40s
         values: []
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve();
+        return resolve(result);
       }
     );
   });
@@ -110,15 +110,15 @@ function getIdeaByIdQuery(ideaId) {
     pool.query(
       {
         sql: `SELECT i.ID, i.description, i.views, i.posted_time, i.Title, i.isAnonymous, 
-        (SELECT name FROM Users WHERE ID=i.user_id) AS author,
-        (SELECT COUNT(comment) FROM Comments WHERE i.ID = Comments.idea_id ) AS numb_of_comments,
-        (SELECT COUNT(vote) FROM Ratings WHERE vote=1) AS positive_votes,
-        (SELECT COUNT(vote) FROM Ratings WHERE vote=0) AS negative_votes,
-        (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
-        (SELECT name FROM Uploads WHERE idea_id = i.ID) AS upload_name,
-        (SELECT description FROM Uploads WHERE idea_id = i.ID) AS upload_desc,
-        (SELECT url FROM Uploads WHERE idea_id = i.ID) AS upload_url,
-        (SELECT upload_id FROM Uploads WHERE idea_id = i.ID) AS upload_ID
+        (SELECT name FROM Users WHERE ID=i.user_id) AS author, 
+        (SELECT COUNT(comment) FROM Comments WHERE i.ID = Comments.idea_id ) AS commentsNo, 
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=1) AS positiveVotes, 
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=0) AS negativeVotes, 
+        (SELECT tag FROM Categories WHERE ID = i.category_id) AS category, 
+        (SELECT name FROM Uploads WHERE idea_id = i.ID) AS uploadName, 
+        (SELECT description FROM Uploads WHERE idea_id = i.ID) AS uploadDesc, 
+        (SELECT url FROM Uploads WHERE idea_id = i.ID) AS uploadUrl, 
+        (SELECT upload_id FROM Uploads WHERE idea_id = i.ID) AS uploadId
         FROM Ideas AS i
         WHERE i.ID = ?`,
         timeout: 40000, // 40s
@@ -126,7 +126,7 @@ function getIdeaByIdQuery(ideaId) {
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve();
+        return resolve(result);
       }
     );
   });

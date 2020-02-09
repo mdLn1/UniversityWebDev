@@ -12,7 +12,7 @@ const { updateUserByIdReq } = require("../controllers/managementController");
 router.post(
   "/:id/update-user",
   [auth, IsInRole(["Admin", "Manager"])],
-  exceptionHandler()
+  exceptionHandler(updateUserByIdReq)
 );
 
 module.exports = router;

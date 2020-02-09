@@ -3,6 +3,10 @@ const router = express.Router();
 const { check } = require("express-validator");
 const errorChecker = require("../utils/exceptionHandler");
 const exceptionHandler = require("../utils/exceptionHandler");
+const auth = require("../middleware/authMiddleware");
+const authorize = require("../middleware/authorizeMiddleware");
+const config = require("config");
+const { admin } = config.get("roles");
 const {
   createRoleReq,
   deleteRoleReq,
@@ -10,9 +14,14 @@ const {
   updateRoleReq
 } = require("../controllers/rolesController");
 
-// @desc Adds new role to roles table
+// @route GET /api/roles/
+// @desc Returns all roles
+// @access Public
+router.get("/", exceptionHandler(getAllRolesReq));
+
 // @route POST /api/roles
-// @access Private
+// @desc Adds new role to roles table
+// @access Private and restricted
 router.post(
   "/",
   [
@@ -27,11 +36,16 @@ router.post(
     check("isSelectable", "Is Selectable must be a boolean")
       .exists()
       .isBoolean(),
-    errorChecker
+    errorChecker,
+    auth,
+    authorize([admin])
   ],
   exceptionHandler(createRoleReq)
 );
 
+// @route POST /api/roles/:id
+// @desc Updates a role details
+// @access Private and restricted
 router.post(
   "/:id",
   [
@@ -44,33 +58,35 @@ router.post(
       .isLength({ min: 3 }),
     check(
       "newDescription",
-      "New Description must be at least 20 characters long"
+      "New Description must be at least 10 characters long"
     )
       .exists()
       .trim()
-      .isLength({ min: 20 }),
+      .isLength({ min: 10 }),
     check("isSelectable", "Is Selectable must be a boolean")
       .exists()
       .isBoolean(),
-    errorChecker
+    errorChecker,
+    auth,
+    authorize([admin])
   ],
   exceptionHandler(updateRoleReq)
 );
 
+// @route DELETE /api/roles/:id
+// @desc Deletes a role
+// @access Private and restricted
 router.delete(
   "/:id",
   [
     check("id", "Id param must be an integer value")
       .exists()
       .isInt(),
-    errorChecker
+    errorChecker,
+    auth,
+    authorize(admin)
   ],
   exceptionHandler(deleteRoleReq)
 );
-
-// @desc Returns all roles
-// @route GET /api/roles/
-// @access Public
-router.get("/", exceptionHandler(getAllRolesReq));
 
 module.exports = router;

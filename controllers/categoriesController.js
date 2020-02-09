@@ -12,15 +12,13 @@ const createCategoryReq = async (req, res) => {
 };
 
 const deleteCategoryByIdReq = async (req, res) => {
-  const { id } = req.params;
-  await deleteCategoryByIdQuery(id);
+  await deleteCategoryByIdQuery(req.params.id);
   res.status(200).json({ success: "Category deleted" });
 };
 
 const updateCategoryByIdReq = async (req, res) => {
-  const { id } = req.params;
   const { newTag, newDescription, isSelectable } = req.body;
-  await updateCategoryByIdQuery(newTag, newDescription, isSelectable, id);
+  await updateCategoryByIdQuery(newTag, newDescription, isSelectable, req.params.id);
   res.status(202).json({ success: "Successfully updated" });
 };
 

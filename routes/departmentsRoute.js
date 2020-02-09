@@ -1,8 +1,12 @@
 const express = require("express");
-const {check} = require("express-validator");
+const { check } = require("express-validator");
 const router = express.Router();
 const errorChecker = require("../middleware/errorCheckerMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
+const auth = require("../middleware/authMiddleware");
+const authorize = require("../middleware/authorizeMiddleware");
+const config = require("config");
+const { admin, coordinator } = config.get("roles");
 const {
   getAllDepartmentsReq,
   createDepartmentReq,
@@ -10,10 +14,14 @@ const {
   updateDepartmentReq
 } = require("../controllers/departmentsController");
 
-// @desc Returns all the departments
 // @route GET /api/departments
-// @access Private
+// @desc Returns all the departments
+// @access Public
 router.get("/", exceptionHandler(getAllDepartmentsReq));
+
+// @route POST /api/departments
+// @desc Creates new department
+// @access Private and restricted
 router.post(
   "/",
   [
@@ -29,10 +37,16 @@ router.post(
     check("isSelectable", "Is Selectable must be a boolean")
       .exists()
       .isBoolean(),
-    errorChecker
+    errorChecker,
+    auth,
+    authorize(admin)
   ],
   exceptionHandler(createDepartmentReq)
 );
+
+// @route POST /api/departments/:id
+// @desc Updates existing department details
+// @access Private and restricted
 router.post(
   "/:id",
   [
@@ -46,7 +60,7 @@ router.post(
       .isEmpty(),
     check(
       "newDescription",
-      " New Description must be at least 5 characters long"
+      "New Description must be at least 5 characters long"
     )
       .exists()
       .trim()
@@ -54,20 +68,25 @@ router.post(
     check("isSelectable", "Is Selectable must be a boolean")
       .exists()
       .isBoolean(),
-    errorChecker
+    errorChecker,
+    auth,
+    authorize(admin)
   ],
   exceptionHandler(updateDepartmentReq)
 );
-// @desc Delete a department
+
 // @route DELETE /api/departments/:id
-// @access Private
+// @desc Delete a department
+// @access Private and restricted
 router.delete(
   "/:id",
   [
     check("id", "Id param must be an integer value")
       .exists()
       .isInt(),
-    errorChecker
+    errorChecker,
+    auth,
+    authorize(admin)
   ],
   exceptionHandler(deleteDepartmentReq)
 );

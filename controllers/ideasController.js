@@ -13,33 +13,30 @@ const getAllIdeasReq = async (req, res) => {
 };
 
 const deleteIdeaReq = async (req, res) => {
-  const { id } = req.params;
-  await deleteIdeaQuery(id);
+  await deleteIdeaQuery(req.params.id);
   res.status(200).json({ success: "Idea deleted" });
 };
 
 const createIdeaReq = async (req, res) => {
-  const { description, isAnonymous, title, categoryId, userId } = req.body;
+  const { description, isAnonymous, title, categoryId } = req.body;
+  const userId = req.user.ID;
   await createIdeaQuery(title, description, isAnonymous, categoryId, userId);
   res.status(201).json({ success: "Successfully created" });
 };
 
 const increaseIdeaViewsReq = async (req, res) => {
-  const { id } = req.params;
-  await increaseIdeaViewsQuery(id);
+  await increaseIdeaViewsQuery(req.params.id);
   res.status(204);
 };
 
 const updateIdeaReq = async (req, res) => {
-  const { id } = req.params;
   const { description, title } = req.body;
-  await updateIdeaQuery(title, description, id);
+  await updateIdeaQuery(title, description, req.params.id);
   res.status(200).json({ title, description });
 };
 
 const getIdeaByIdReq = async (req, res) => {
-  const { id } = req.params;
-  const idea = await getIdeaByIdQuery(id);
+  const idea = await getIdeaByIdQuery(req.params.id);
   res.status(200).json(idea);
 };
 

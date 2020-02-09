@@ -1,7 +1,7 @@
 const pool = require("../dbconn");
 
 // Use this function to add a comment to and idea
-function addCommentQuery(comment, isAnonymous, user_id, idea_id) {
+function createCommentQuery(comment, isAnonymous, userId, ideaId) {
   const date = new Date()
     .toISOString()
     .slice(0, 19)
@@ -12,7 +12,7 @@ function addCommentQuery(comment, isAnonymous, user_id, idea_id) {
         sql:
           "insert into Comments (comment, isAnonymous, commentTime, user_id, idea_id) values (?, ?, ?, ?, ?)",
         timeout: 40000, // 40s
-        values: [comment, isAnonymous, date, user_id, idea_id]
+        values: [comment, isAnonymous, date, userId, ideaId]
       },
       (error, result) => {
         if (error) return reject(error);
@@ -43,6 +43,6 @@ function getCommentsByIdQuery(ideaID) {
 }
 
 module.exports = {
-  addCommentQuery,
+  createCommentQuery,
   getCommentsByIdQuery
 };
