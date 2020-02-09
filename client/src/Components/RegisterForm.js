@@ -4,9 +4,12 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
 
+
 import { NavLink } from "react-router-dom";
 
+
 export class RegisterForm extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -24,6 +27,7 @@ export class RegisterForm extends React.Component {
     this.roleChangeHandler = this.roleChangeHandler.bind(this);
     this.departmentChangeHandler = this.departmentChangeHandler.bind(this);
   }
+
 
   nameChangeHandler = e => {
     this.setState({ name: e.target.value });
@@ -79,7 +83,74 @@ export class RegisterForm extends React.Component {
     }
   };
 
+  loginOnClick = async e => {
+    try {
+
+    } catch (err){ 
+      console.log(err);
+    }
+  }
+
   render() {
+
+  const departments = [
+      {
+        value: '',
+        label: ''
+      },
+      {
+        value: 'Human Resources',
+        label: 'Human Resources',
+      },
+      {
+        value: 'Finance',
+        label: 'Finance',
+      },
+      {
+        value: 'SMT',
+        label: 'CIS',
+      },
+      {
+        value: 'Student Ambassadors',
+        label: 'Student Ambassadors',
+      },
+      {
+        value : 'Library',
+        label : 'Library'
+      }
+
+    ];
+
+  const roles = [
+    {
+      value: '',
+      label: ''
+    },
+    {
+      value: 'QA Manager ',
+      label: ' QA Manager ',
+    },
+    {
+      value: 'QA Coordinator',
+      label: 'QA Coordinator',
+    },
+    {
+      value: 'General Staff',
+      label: 'General Staff',
+    },
+    {
+      value: 'Lecturer',
+      label: 'Lecturer',
+    },
+    {
+      value:'Lab Assistant',
+      label : 'Lab Assistant',
+    },
+    {
+      value: 'Librarian',
+      label: 'Librarian',
+    }
+  ];
     let {
       name: name,
       email,
@@ -93,6 +164,7 @@ export class RegisterForm extends React.Component {
       <div className={styles.page}>
         <div className={styles.registerDivContainer}>
           <img
+          className = {styles.loginImage}
             src="https://www.nicepng.com/png/full/335-3355144_seller-registration-icon-class-register-icon-png.png"
             alt={"Person and Locker"}
           />
@@ -104,8 +176,7 @@ export class RegisterForm extends React.Component {
             value={name}
             onChange={this.nameChangeHandler}
           />
-          <br />
-          <br />
+          <span>  </span>
           <TextField
             id="email-input"
             label="Email"
@@ -114,8 +185,8 @@ export class RegisterForm extends React.Component {
             onChange={this.emailChangeHandler}
             variant="filled"
           />
-          <br />
-          <br />
+          <br/>
+          <br/>
           <TextField
             id="password-input"
             label="Password"
@@ -125,8 +196,7 @@ export class RegisterForm extends React.Component {
             onChange={this.passwordChangeHandler}
             variant="filled"
           />
-          <br />
-          <br />
+          <span>  </span>
           <TextField
             id="repeat-password-input"
             label="Re-type your password"
@@ -138,24 +208,43 @@ export class RegisterForm extends React.Component {
           />
           <br />
           <br />
+           <TextField
+            id = "role-input"
+            select
+            label = "Role"
+            value = {role}
+            helperText = "Please select a role"
+            variant = "filled"
+            onChange = {this.roleChangeHandler}
+            SelectProps={{
+              native:true,
+            }}
+          >
+            {roles.map(option =>(
+              <option key = {option.value} value = {option.value}>
+                {option.label}
+              </option>
+            ))};
+          </TextField>
+          <span>  </span>
           <TextField
-            id="role-input"
-            label="Role"
-            type="text"
-            value={role}
-            onChange={this.roleChangeHandler}
-            variant="filled"
-          />
-          <br />
-          <br />
-          <TextField
-            id="department-input"
-            label="Department"
-            type="text"
-            value={department}
-            onChange={this.departmentChangeHandler}
-            variant="filled"
-          />
+            id = "department"
+            select
+            label = "Department"
+            value = {department}
+            helperText = "Please select a department"
+            variant = "filled"
+            onChange = {this.departmentChangeHandler}
+            SelectProps={{
+              native:true,
+            }}
+          >
+            {departments.map(option =>(
+              <option key = {option.value} value = {option.value}>
+                {option.label}
+              </option>
+            ))};
+          </TextField>
           <br />
           <br />
           <label className={styles.termslabel}>
@@ -169,6 +258,24 @@ export class RegisterForm extends React.Component {
           <br></br>
           <br></br>
           <Button
+          variant="outlined"
+          size="large"
+          color="primary"
+          className={styles.button}
+          >
+            <a
+              onClick={e => {
+                e.preventDefault();
+                this.changeForm(true);
+              }}
+            >
+              Login
+            </a>
+
+          </Button>
+          <span>  </span>
+          <span>  </span>
+          <Button
             variant="outlined"
             size="large"
             color="primary"
@@ -177,14 +284,8 @@ export class RegisterForm extends React.Component {
           >
             Register
           </Button>
-          <a
-            onClick={e => {
-              e.preventDefault();
-              this.changeForm(true);
-            }}
-          >
-            Login now
-          </a>
+          <br/>
+          <br/>
         </div>
       </div>
     );

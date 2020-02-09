@@ -1,50 +1,120 @@
 h1 {
-    color: darkblue;
-}
-
-img{
-  padding-top: 40px;
-  width: 120px;
-  height: 120px;
-}
-
-html{
-  background-image: url(https://besthqwallpapers.com/Uploads/11-6-2018/55083/blue-3d-cubes-blue-sky-3d-architecture-sun-modern-facade.jpg);
-  max-width: 100%;
-  height: auto;
-}
-
-.divcontainer{
-  border-radius: 7%;
-  width: 400px;
-  height: 500px;
-  margin: auto;
-  margin-top: 100px;
-  background-color: whitesmoke;
-}
-.registerDivContainer{
-  border-radius: 7%;
-  width: 400px;
-  height: 670px;
-  margin: auto;
-  margin-top: 50px;
-  background-color: whitesmoke;
-}
-
-button{
-  background-color: pink;
-}
-
-label{
-  margin: auto;
-}
-
-a{
   color: darkblue;
 }
 
-.termslabel {
-  font-size: 10px;
-  margin: inherit;
+.loginImage{
+padding-top: 40px;
+width: 120px;
+height: 120px;
+}
 
+body{
+padding-bottom: 10%;
+padding-left: 10%;
+padding-right: 10%;
+}
+
+html{
+background-image: url(https://besthqwallpapers.com/Uploads/11-6-2018/55083/blue-3d-cubes-blue-sky-3d-architecture-sun-modern-facade.jpg);
+max-width: 100%;
+height: auto;
+}
+
+.divcontainer{
+border-radius: 7%;
+width: 400px;
+height: 500px;
+margin: auto;
+margin-top: 100px;
+background-color: whitesmoke;
+}
+.registerDivContainer{
+border-radius: 7%;
+width: 50%;
+height: 80%;
+margin: auto;
+margin-top: 1%;
+margin-bottom: 1%;
+background-color: whitesmoke;
+}
+
+button{
+background-color: pink;
+}
+
+label{
+margin: auto;
+}
+
+a{
+color: darkblue;
+}
+
+.termslabel {
+font-size: 10px;
+margin: inherit;
+
+}
+
+.join_link{
+text-decoration-line: underline;
+cursor: pointer;
+
+}
+
+.dashboardContainer {
+margin: auto;
+margin-top: 5%; 
+align-content: center;
+width: 50%;
+height: 70%;
+background-color: whitesmoke;
+}
+
+.feed{
+font: 200;
+}
+
+.likeButtonDiv{
+padding-left: 10px;
+}
+
+.ideaTitle{
+  justify-self: left;
+  padding-top: 10px;
+  width: 300px;
+  border: 3px solid #73AD21;
+  padding: 10px;
+}
+.categoryTitle{
+  justify-self: left;
+  padding-top: 10px;
+  width: 300px;
+  border: 3px solid #73AD21;
+  padding: 10px;
+}
+
+.descriptionTitle{
+  justify-self: left;
+  padding-top: 10px;
+  width: 300px;
+  border: 3px solid #73AD21;
+  padding: 10px;
+}
+
+.ideaOuterBox{
+  background-color: whitesmoke;
+  height: auto;
+  width: auto;
+}
+.anonymousCheckbox{
+  margin-left: 0;
+}
+
+.anonymousButton{
+  justify-self: left;
+  padding-right: 100px;
+}
+.titleLabel{
+  margin-top: 5%;
 }
