@@ -1,6 +1,6 @@
 {
     "jwtSecret": "uifgdahsigouhasouygfuyigasgadhgdiasuhw9u87wqtyew8q09()jnckl3127952-",
-    "authorization": {
+    "roles": {
         "admin": "QA Manager",
         "coordinator": "QA Coordinator"
     }
