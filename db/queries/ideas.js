@@ -22,13 +22,24 @@ function createIdeaQuery(title, description, isAnonymous, categoryId, userId) {
   );
 }
 
-// to be completed
+// Returns All ideas with the latest posts being returned first.
 function getAllIdeasQuery() {
   return new Promise((resolve, reject) => {
     pool.query(
       {
         // add full query for retrieving ideas
-        sql: "select * from ideas",
+        sql: `SELECT i.ID, i.description, i.views, i.posted_time, i.Title, i.isAnonymous, 
+        (SELECT name FROM Users WHERE ID=i.user_id) AS author, 
+        (SELECT COUNT(comment) FROM Comments WHERE i.ID = Comments.idea_id ) AS numb_of_comments, 
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=1) AS positive_votes, 
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=0) AS negative_votes, 
+        (SELECT tag FROM Categories WHERE ID = i.category_id) AS category, 
+        (SELECT name FROM Uploads WHERE idea_id = i.ID) AS upload_name, 
+        (SELECT description FROM Uploads WHERE idea_id = i.ID) AS upload_desc, 
+        (SELECT url FROM Uploads WHERE idea_id = i.ID) AS upload_url, 
+        (SELECT upload_id FROM Uploads WHERE idea_id = i.ID) AS upload_ID 
+        FROM Ideas AS i 
+        ORDER BY posted_time DESC`,
         timeout: 40000, // 40s
         values: []
       },
@@ -92,12 +103,24 @@ function deleteIdeaQuery(ideaId) {
   });
 }
 
-// needs to be completed
+// @desc Returns an idea based of its ID, along with its associated values for 
+//  that idea such as its upload url, name, description, numb of votes, positive and negative votes
 function getIdeaByIdQuery(ideaId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: "select * from Ideas where ID = ?",
+        sql: `SELECT i.ID, i.description, i.views, i.posted_time, i.Title, i.isAnonymous, 
+        (SELECT name FROM Users WHERE ID=i.user_id) AS author,
+        (SELECT COUNT(comment) FROM Comments WHERE i.ID = Comments.idea_id ) AS numb_of_comments,
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=1) AS positive_votes,
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=0) AS negative_votes,
+        (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
+        (SELECT name FROM Uploads WHERE idea_id = i.ID) AS upload_name,
+        (SELECT description FROM Uploads WHERE idea_id = i.ID) AS upload_desc,
+        (SELECT url FROM Uploads WHERE idea_id = i.ID) AS upload_url,
+        (SELECT upload_id FROM Uploads WHERE idea_id = i.ID) AS upload_ID
+        FROM Ideas AS i
+        WHERE i.ID = ?`,
         timeout: 40000, // 40s
         values: [ideaId]
       },

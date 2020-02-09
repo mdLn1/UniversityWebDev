@@ -1,7 +1,7 @@
 const pool = require("../dbconn");
 
 // Use this function to add a comment to and idea
-function addComment(comment, isAnonymous, user_id, idea_id) {
+function addCommentQuery(comment, isAnonymous, user_id, idea_id) {
   const date = new Date()
     .toISOString()
     .slice(0, 19)
@@ -22,6 +22,27 @@ function addComment(comment, isAnonymous, user_id, idea_id) {
   );
 }
 
+// Returns comments of a specific idea by the latest comments first.
+function getCommentsByIdQuery(ideaID) {
+  return new Promise( (resolve, reject) => {
+    pool.query(
+      {
+        sql: `SELECT comment, commentTime, isAnonymous,
+        (SELECT name FROM Users WHERE ID=user_id) AS username
+        FROM Comments WHERE idea_id = ? 
+        ORDER BY commentTime`,
+        timeout: 40000,
+        values: [ideaID]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    )
+  })
+}
+
 module.exports = {
-  addComment
+  addCommentQuery,
+  getCommentsByIdQuery
 };
