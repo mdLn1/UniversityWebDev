@@ -44,11 +44,8 @@ router.get("/:id/increase-views", exceptionHandler(increaseIdeaViewsReq));
 // @desc Creates a new idea
 // @access Private
 router.post(
-  "/:id",
+  "/",
   [
-    check("id", "Id param must be an integer value")
-      .exists()
-      .isInt(),
     check("description", "Description must contain at least 20 characters")
       .exists()
       .trim()
@@ -57,9 +54,6 @@ router.post(
       .exists()
       .isBoolean(),
     check("categoryId", "Category Id must be an integer")
-      .exists()
-      .isInt(),
-    check("userId", "User Id must be an integer")
       .exists()
       .isInt(),
     check("title", "Title must be at least 5 characters long")

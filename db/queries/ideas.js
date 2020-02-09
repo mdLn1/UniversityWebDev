@@ -10,9 +10,9 @@ function createIdeaQuery(title, description, isAnonymous, categoryId, userId) {
     pool.query(
       {
         sql:
-          "insert into Ideas (title, description, isAnonymous, views, category_id, user_id, posted_time) values (?, ?, ?, ?, ?, ?)",
+          "insert into Ideas (title, description, isAnonymous, views, category_id, user_id, posted_time) values (?, ?, ?, ?, ?, ?, ?)",
         timeout: 40000, // 40s
-        values: [title, description, isAnonymous, categoryId, userId, date]
+        values: [title, description, isAnonymous, 0, categoryId, userId, date]
       },
       (error, result) => {
         if (error) return reject(error);

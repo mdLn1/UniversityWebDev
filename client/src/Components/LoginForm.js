@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./LoginForm.module.css";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import Axios from "axios";
+import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
 
 export class LoginForm extends React.Component {
@@ -25,13 +25,32 @@ export class LoginForm extends React.Component {
   }
 
   handleUserNameChange = event => {
-
     this.setState({ username: event.target.value });
   };
 
   handlePasswordChange = event => {
     this.setState({ password: event.target.value });
   };
+
+// HOW TO CREATE NEW IDEA
+   //   const config = {
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     }
+    //   };
+    //   axios.defaults.headers.common["x-auth-token"] = localStorage.getItem("token");
+    //   const idea = {
+    //     title: "new idea",
+    //     description: "super dribble extra mega interesting stuff",
+    //     categoryId: 1,
+    //     isAnonymous: false
+    //   };
+    //   try {
+    //     const res = await axios.post("/api/ideas", idea, config);
+    //     console.log(res.body);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
 
   handleSubmit = async e => {
     console.log(this.state.username);
@@ -42,9 +61,11 @@ export class LoginForm extends React.Component {
         }
       };
       const obj = { email: this.state.username, password: this.state.password };
-      const res = await Axios.post("/api/auth/login/", obj, config);
-      localStorage.setItem("token", res.token);
-      this.setState({ loggedIn: true });
+        const res = await axios.post("/api/auth/login/", obj, config);
+        localStorage.setItem("token", res.data.token);
+        this.setState({ loggedIn: true });
+
+
     } catch (err) {
       console.log(err);
     }
@@ -58,7 +79,7 @@ export class LoginForm extends React.Component {
         <div className={styles.page}>
           <div className={styles.divcontainer}>
             <img
-              className = {styles.loginImage}
+              className={styles.loginImage}
               src="https://domw.gov.in/assets/frontend/img/team/user-login.png"
               alt={"Person and Locker"}
             />
@@ -68,7 +89,7 @@ export class LoginForm extends React.Component {
               label="Username"
               variant="filled"
               onChange={this.handleUserNameChange}
-              value = { this.state.username}
+              value={this.state.username}
             />
             <br />
             <br />
@@ -88,9 +109,9 @@ export class LoginForm extends React.Component {
                 e.preventDefault();
                 this.changeForm(false);
               }}
-              className = {styles.join_link}
+              className={styles.join_link}
             >
-            Join now
+              Join now
             </a>
             <br></br>
             <br></br>
@@ -103,7 +124,6 @@ export class LoginForm extends React.Component {
             >
               Login
             </Button>
-            
           </div>
         </div>
       );

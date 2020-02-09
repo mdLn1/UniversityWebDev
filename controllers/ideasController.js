@@ -20,7 +20,7 @@ const deleteIdeaReq = async (req, res) => {
 const createIdeaReq = async (req, res) => {
   const { description, isAnonymous, title, categoryId } = req.body;
   const userId = req.user.ID;
-  await createIdeaQuery(title, description, isAnonymous, categoryId, userId);
+  await createIdeaQuery(title, description, isAnonymous ? 1 : 0, categoryId, userId);
   res.status(201).json({ success: "Successfully created" });
 };
 
