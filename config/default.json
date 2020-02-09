@@ -1,3 +1,7 @@
 {
-    "jwtSecret": "uifgdahsigouhasouygfuyigasgadhgdiasuhw9u87wqtyew8q09()jnckl3127952-"
+    "jwtSecret": "uifgdahsigouhasouygfuyigasgadhgdiasuhw9u87wqtyew8q09()jnckl3127952-",
+    "authorization": {
+        "admin": "QA Manager",
+        "coordinator": "QA Coordinator"
+    }
 }

@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 // Use this function to add a user to the system, it requires the role and the department string (do not use the ID)
 // e.g. -> if you want to add a user to the department 'Human Resources', pass 'Human Resources' to the function, not its ID
 // make sure the password is hashed before passing it to the function
-function createUserQuery(name, password, email, role, department) {
+function createUserByEntitiesNamesQuery(name, password, email, role, department) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
@@ -22,8 +22,8 @@ function createUserQuery(name, password, email, role, department) {
   );
 }
 
-// Use this funcrion to add a user to the system if you have the role_id and department_id (do not use the string value)
-function createUserWithIdParamsQuery(name, password, email, role_id, department_id) {
+// Use this function to add a user to the system if you have the role_id and department_id (do not use the string value)
+function createUserQuery(name, password, email, role_id, department_id) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
@@ -42,11 +42,12 @@ function createUserWithIdParamsQuery(name, password, email, role_id, department_
 
 // Use this function to verify the user login
 // email field is unique - so the results array will only contain max 1 result
-function userLogin(email, password) {
+function userLoginQuery(email, password) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
-        sql: "select * from Users where email = ?",
+        sql: `select Users.ID, Users.name, Users.email, Users.password, Roles.role, Departments.department from Users left join Roles on 
+        Users.role_id=Roles.ID left join Departments on Users.department_id=Departments.ID where email = ?`,
         timeout: 40000,
         values: [email]
       },
@@ -67,7 +68,7 @@ function userLogin(email, password) {
 }
 
 // Use this function to check if user exists
-function isEmailRegisteredAlready(email) {
+function isEmailRegisteredAlreadyQuery(email) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
@@ -85,7 +86,7 @@ function isEmailRegisteredAlready(email) {
 }
 
 // Returns all users - Will be used by QA Manager.
-function getAllUsers() {
+function getAllUsersQuery() {
   return new Promise((resolve, reject) => {
     pool.query(
       {
@@ -109,7 +110,7 @@ function getAllUsers() {
 }
 
 // Returns user details
-function getUserDetails(id) {
+function getUserDetailsQuery(id) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
@@ -129,7 +130,7 @@ function getUserDetails(id) {
 }
 
 // Updates user details
-function updateUserDetails(name, newEmail, role, department, oldEmail) {
+function updateUserDetailsQuery(name, newEmail, role, department, oldEmail) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
@@ -148,10 +149,10 @@ function updateUserDetails(name, newEmail, role, department, oldEmail) {
 
 module.exports = {
   createUserQuery,
-  createUserWithIdParamsQuery,
-  userLogin,
-  isEmailRegisteredAlready,
-  getAllUsers,
-  getUserDetails,
-  updateUserDetails
+  createUserByEntitiesNamesQuery,
+  userLoginQuery,
+  isEmailRegisteredAlreadyQuery,
+  getAllUsersQuery,
+  getUserDetailsQuery,
+  updateUserDetailsQuery
 };

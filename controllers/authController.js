@@ -3,10 +3,12 @@ const config = require("config");
 const jwt = require("jsonwebtoken");
 const CustomError = require("../utils/CustomError");
 const {
-  userLogin,
-  isEmailRegisteredAlready,
+  userLoginQuery,
+  isEmailRegisteredAlreadyQuery,
   createUserQuery
 } = require("../db/queries/users");
+
+const {isRoleSelectableQuery} = require('../db/queries/roles');
 
 // authentication specific requests below
 
@@ -20,7 +22,7 @@ const registerUserReq = async (req, res) => {
     email.endsWith("@gre.ac.uk") || email.endsWith("@greenwich.ac.uk");
   if (!re.test(email) || !validDomain)
     throw new CustomError("Invalid email address or wrong email domain", 400);
-  const userExists = await isEmailRegisteredAlready(email);
+  const userExists = await isEmailRegisteredAlreadyQuery(email);
 
   // check user exists
   if (userExists) throw new CustomError("User already exists", 400);
@@ -28,7 +30,7 @@ const registerUserReq = async (req, res) => {
   // produce a password hash and save it to user
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-
+  await isRoleSelectableQuery(id);
   // perform user registration
   await createUserQuery(name, hashedPassword, email, roleId, departmentId);
 
@@ -50,17 +52,16 @@ const userLoginReq = async (req, res) => {
       "There is no user registered with this email address",
       400
     );
-  const user = await userLogin(email, password);
+  const user = await userLoginQuery(email, password);
 
-  const { name, role_id, department_id } = user;
-  const payload = { user: { name, email, role_id, department_id } };
+  const payload = { user };
   const token = jwt.sign(payload, config.get("jwtSecret"), {
     expiresIn: 36000
   });
 
   if (!token) throw new Error("Could not create token, please try again later");
 
-  res.status(200).json({ user: { name, email }, token });
+  res.status(200).json({ user: { email }, token });
 };
 
 module.exports = {

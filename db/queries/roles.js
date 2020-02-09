@@ -1,4 +1,5 @@
 const pool = require("../dbconn");
+const CustomError = require("../../utils/CustomError");
 
 // desc Returns all roles
 function getAllRolesQuery() {
@@ -84,9 +85,29 @@ function deleteRoleQuery(id) {
   });
 }
 
+function isRoleSelectableQuery(id) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "select isSelectable from Roles where (id = ?)",
+        timeout: 40000,
+        values: [role, description, isSelectable, id]
+      },
+      (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        if (result[0].isSelectable) return resolve();
+        reject(new CustomError("You cannot select this role", 400));
+      }
+    );
+  });
+}
+
 module.exports = {
   createRoleQuery,
   getAllRolesQuery,
   updateRoleQuery,
-  deleteRoleQuery
+  deleteRoleQuery,
+  isRoleSelectableQuery
 };

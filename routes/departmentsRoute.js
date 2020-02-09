@@ -1,4 +1,5 @@
 const express = require("express");
+const {check} = require("express-validator");
 const router = express.Router();
 const errorChecker = require("../middleware/errorCheckerMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
