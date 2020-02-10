@@ -13,7 +13,7 @@ export class IdeaContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            anonymousSubmission: true,
+            anonymousSubmission: false,
             ideaTitle: "",
             ideaDescription: "",
             category:""
@@ -69,6 +69,8 @@ export class IdeaContainer extends React.Component {
         <div className ={styles.ideaOuterBox}>
             <span/>
             <span/>
+            <h1> <b> INSERT IDEA  </b></h1>
+
             <div className = {styles.ideaTitle}>
                 <label className ={styles.titleLabel}>Title:</label>
                 <TextField

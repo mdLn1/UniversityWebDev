@@ -103,6 +103,7 @@ padding-left: 10px;
 }
 
 .ideaOuterBox{
+  margin-top: 2%;
   background-color: whitesmoke;
   height: auto;
   width: auto;
@@ -115,6 +116,11 @@ padding-left: 10px;
   justify-self: left;
   padding-right: 100px;
 }
+
 .titleLabel{
   margin-top: 5%;
+}
+
+.ideaDisplayerOuterBox{
+  background-color: whitesmoke;
 }

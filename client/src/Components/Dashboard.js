@@ -3,7 +3,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import React from 'react';
 import styles from "./LoginForm.module.css";
-import {IdeaContainer} from './IdeaContainer'
+import {IdeaContainer} from './IdeaContainer';
+import {IdeaDisplayer} from './IdeaDisplayer';
 
 export class Dashboard extends React.Component {
     constructor(props) {
@@ -40,6 +41,7 @@ export class Dashboard extends React.Component {
             <span></span>
             <div>
               <IdeaContainer/>
+              <IdeaDisplayer/>
             </div>
         </div>
       );
