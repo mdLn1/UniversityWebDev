@@ -10,15 +10,43 @@ export class IdeaDisplayer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          value: 11
+          description: "",
+          ideaTitle: "",
+          categoryTitle: "",
+          id: 0
         }
         
       }
+
+      
+
+      idChangeHandler = e => {
+        this.setState({ id: this.state.id });
+      };
+
+      ideaTitleChangeHandler = e => {
+        this.setState({ ideaTitle: this.state.ideaTitle });
+      };
+
+      descriptionChangeHandler = e => {
+        this.setState({ description: this.state.description });
+      };
+
+      categoryTitleChangeHandler = e => {
+        this.setState({ categoryTitle: this.state.categoryTitle });
+      };
+
+
             
       onSubmit = async e => {
         try {
-            const res = await axios.get("/api/ideas/" + this.state.value);
-            console.log(res);
+            const res = await axios.get("/api/ideas/" + this.state.id);
+            const arrayOfContents = res.data[0];
+            this.setState({description: arrayOfContents.description});
+            this.setState({ideaTitle: arrayOfContents.Title});
+            this.setState({categoryTitle: arrayOfContents.category});
+            console.log(res.data) //-> use this to know the parameters we need to populate the component 
+            console.log(this.state.id);
         }catch (err){
             console.log(err);
         }
@@ -33,12 +61,22 @@ export class IdeaDisplayer extends React.Component {
             <span/>
             <h1> <b> IDEA DISPLAYER  </b></h1>
             <div className = {styles.ideaTitle}>
+                <TextField
+                    id="idfield"
+                    label="Id field "
+                    variant="filled"
+                    onChange={this.idChangeHandler}
+                    value = {this.state.id}
+                />
+            </div>
+            <div className = {styles.ideaTitle}>
                 <label className ={styles.titleLabel}>Title:</label>
                 <TextField
                     id="idea-title"
                     label="Idea Title "
                     variant="filled"
                     onChange={this.ideaTitleChangeHandler}
+                    value = {this.state.ideaTitle}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -51,6 +89,7 @@ export class IdeaDisplayer extends React.Component {
                     label="Category Title "
                     variant="filled"
                     onChange={this.categoryTitleChangeHandler}
+                    value = {this.state.categoryTitle}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -63,7 +102,9 @@ export class IdeaDisplayer extends React.Component {
                     label="Description"
                     multiline
                     rows="4"
+                    variant = "filled"
                     onChange = {this.descriptionChangeHandler}
+                    value = {this.state.description}
                     InputProps={{
                       readOnly: true,
                     }}
