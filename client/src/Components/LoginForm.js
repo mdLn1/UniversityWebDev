@@ -32,26 +32,6 @@ export class LoginForm extends React.Component {
     this.setState({ password: event.target.value });
   };
 
-// HOW TO CREATE NEW IDEA
-   //   const config = {
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     }
-    //   };
-    //   axios.defaults.headers.common["x-auth-token"] = localStorage.getItem("token");
-    //   const idea = {
-    //     title: "new idea",
-    //     description: "super dribble extra mega interesting stuff",
-    //     categoryId: 1,
-    //     isAnonymous: false
-    //   };
-    //   try {
-    //     const res = await axios.post("/api/ideas", idea, config);
-    //     console.log(res.body);
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-
   handleSubmit = async e => {
     console.log(this.state.username);
     try {
@@ -64,8 +44,6 @@ export class LoginForm extends React.Component {
         const res = await axios.post("/api/auth/login/", obj, config);
         localStorage.setItem("token", res.data.token);
         this.setState({ loggedIn: true });
-
-
     } catch (err) {
       console.log(err);
     }

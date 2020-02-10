@@ -4,7 +4,7 @@ import styles from "./LoginForm.module.css";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Axios from "axios";
+import axios from "axios";
 
 import { Button } from '@material-ui/core';
 
@@ -13,11 +13,10 @@ export class IdeaContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            anonymousSubmission: "",
+            anonymousSubmission: true,
             ideaTitle: "",
             ideaDescription: "",
-            category:"",
-            value: 1
+            category:""
         }
         
       }
@@ -34,12 +33,29 @@ export class IdeaContainer extends React.Component {
       };
 
       anonymousCheckboxChangeHandler = e => {
-        this.setState({ anonymousSubmission: e.target.value });
+          this.setState({ anonymousSubmission: !this.state.anonymousSubmission });
       };
       
       onSubmit = async e => {
         try {
-            
+          const config = {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          };
+          axios.defaults.headers.common["x-auth-token"] = localStorage.getItem("token");
+          const idea = {
+            title: this.state.ideaTitle,
+            description: this.state.ideaDescription,
+            categoryId: 1,
+            isAnonymous: this.state.anonymousSubmission
+          };
+          try {
+            const res = await axios.post("/api/ideas", idea, config);
+            console.log(res.body);
+          } catch (error) {
+            console.log(error);
+          }
 
         }catch (err){
             console.log(err);
@@ -85,13 +101,11 @@ export class IdeaContainer extends React.Component {
                 <FormControlLabel
                     className = {styles.anonymousCheckboxChangeHandler}
                     value={'anonymous submission'}
-                    checked = {this.state.anonymousSubmission}
                     control={<Checkbox color="primary" />}
                     label="Anonymous post"
                     labelPlacement="start"
                     onChange = {this.anonymousCheckboxChangeHandler}
                 />
-
             </div>
             <div>
             <Button variant="contained" 
