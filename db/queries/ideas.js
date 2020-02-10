@@ -39,7 +39,7 @@ function getAllIdeasQuery() {
         (SELECT url FROM Uploads WHERE idea_id = i.ID) AS uploadUrl, 
         (SELECT upload_id FROM Uploads WHERE idea_id = i.ID) AS uploadId
         FROM Ideas AS i 
-        ORDER BY postedTime DESC`,
+        ORDER BY posted_time DESC`,
         timeout: 40000, // 40s
         values: []
       },

@@ -13,16 +13,16 @@ export class IdeaDisplayer extends React.Component {
           description: "",
           ideaTitle: "",
           categoryTitle: "",
-          id: 0
+          id: 11
         }
         
       }
 
       
 
-      idChangeHandler = e => {
-        this.setState({ id: this.state.id });
-      };
+      // idChangeHandler = e => {
+      //   this.setState({ id: this.state.id });
+      // };
 
       ideaTitleChangeHandler = e => {
         this.setState({ ideaTitle: this.state.ideaTitle });
@@ -60,7 +60,8 @@ export class IdeaDisplayer extends React.Component {
             <span/>
             <span/>
             <h1> <b> IDEA DISPLAYER  </b></h1>
-            <div className = {styles.ideaTitle}>
+            {/* Retrieve idea through its ID --- This might be useful to implement later on */}
+            {/* <div className = {styles.ideaTitle}>
                 <TextField
                     id="idfield"
                     label="Id field "
@@ -68,7 +69,7 @@ export class IdeaDisplayer extends React.Component {
                     onChange={this.idChangeHandler}
                     value = {this.state.id}
                 />
-            </div>
+            </div> */}
             <div className = {styles.ideaTitle}>
                 <label className ={styles.titleLabel}>Title:</label>
                 <TextField

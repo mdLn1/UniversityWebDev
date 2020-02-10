@@ -5,43 +5,55 @@ import React from 'react';
 import styles from "./LoginForm.module.css";
 import {IdeaContainer} from './IdeaContainer';
 import {IdeaDisplayer} from './IdeaDisplayer';
+import axios from "axios";
+import { Button } from '@material-ui/core';
+
 
 export class Dashboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          tab: "something",
+
         };
-        this.styles = {
-          width: '5%'
-        }
+    }
+
+    onClick = async e => {
+      try {
+          const res = await axios.get("/api/ideas");
+          console.log(res.data.length);
+      }catch (err){
+          console.log(err);
       }
+    }
+    
       
     render() {
-        const handleChange = (event, newValue) => {
-        };
-
-
       return (
         <div >
-            <Paper>
+            {/* <Paper>
                 <Tabs
                     //value={}
-                    onChange={handleChange}
+                    // onChange={handleChange}
                     indicatorColor="primary"
                     textColor="primary"
                     centered
                 >
                     <Tab label="Home" />
-                    <Tab label="Ideas" />
+                    <Tab label="Ideas" {...a11yProps(1)}  />
                     <Tab label="Personal Area" />
                 </Tabs>
-            </Paper>
+            </Paper> */}
+            <div className = {styles.dashboardNavigationBar}>
+              <Button> Home </Button>
+              <Button onClick = {this.onClick}> Ideas </Button>
+              <Button> Help </Button>
+        
+            </div>
             <span> </span>
             <span></span>
             <div>
-              <IdeaContainer/>
-              <IdeaDisplayer/>
+              {/* <IdeaContainer/>
+              <IdeaDisplayer/> */}
             </div>
         </div>
       );

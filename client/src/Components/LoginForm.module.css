@@ -117,6 +117,12 @@ padding-left: 10px;
   padding-right: 100px;
 }
 
+.dashboardNavigationBar{
+  background-color: whitesmoke;
+  border-style: solid;
+  border-width: 5px;
+}
+
 .titleLabel{
   margin-top: 5%;
 }
