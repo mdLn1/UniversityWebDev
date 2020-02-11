@@ -24,11 +24,12 @@ export class Dashboard extends React.Component {
           const ideasList = [];
 
           res.data.forEach(idea => ideasList.push(idea.Title) );
-
+          
           for (let index = 0; index < ideasList.length; index++) {
+            
             var newElement = document.createElement('div');
             newElement.id = ideasList[index];
-            newElement.className = "something";
+            newElement.className = styles.displayDiv;
             newElement.innerText= ideasList[index];
             newElement.innerHTML = ideasList[index];
             document.body.appendChild(newElement);
