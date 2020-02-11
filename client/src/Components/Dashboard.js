@@ -21,20 +21,26 @@ export class Dashboard extends React.Component {
     onClick = async e => {
       try {
           const res = await axios.get("/api/ideas");
-          const ideasList = [];
+          const ideasTitleList = [];
+          const ideasCategoryList = [];
 
-          res.data.forEach(idea => ideasList.push(idea.Title) );
-          
-          for (let index = 0; index < ideasList.length; index++) {
+          console.log(res.data);
+
+          res.data.forEach(idea => ideasTitleList.push(idea.Title) );
+          res.data.forEach(idea => ideasCategoryList.push(idea.category) );
+
+
+          for (let index = 0; index < ideasTitleList.length; index++) {
             
             var newElement = document.createElement('div');
-            newElement.id = ideasList[index];
+            newElement.id = ideasTitleList[index];
             newElement.className = styles.displayDiv;
-            newElement.innerText= ideasList[index];
-            newElement.innerHTML = ideasList[index];
+            newElement.innerText= ideasTitleList[index];
+            let component = "<div> <label>  </label </div>"
+            newElement.innerHTML = "<div> <label> Idea Title:   " +  ideasTitleList[index] + " </label><br/><br/><label>Idea Category:" +ideasCategoryList[index] + " </label> </div>";
             document.body.appendChild(newElement);
           }
-          console.log(ideasList.length)
+          console.log(ideasTitleList.length)
       }catch (err){
           console.log(err);
       }
