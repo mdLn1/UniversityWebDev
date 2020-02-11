@@ -17,10 +17,23 @@ export class Dashboard extends React.Component {
         };
     }
 
+    //Gets all ideas and displayes their title
     onClick = async e => {
       try {
           const res = await axios.get("/api/ideas");
-          console.log(res.data.length);
+          const ideasList = [];
+
+          res.data.forEach(idea => ideasList.push(idea.Title) );
+
+          for (let index = 0; index < ideasList.length; index++) {
+            var newElement = document.createElement('div');
+            newElement.id = ideasList[index];
+            newElement.className = "something";
+            newElement.innerText= ideasList[index];
+            newElement.innerHTML = ideasList[index];
+            document.body.appendChild(newElement);
+          }
+          console.log(ideasList.length)
       }catch (err){
           console.log(err);
       }
