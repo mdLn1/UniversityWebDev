@@ -1,7 +1,7 @@
 const pool = require("../dbconn");
 
 // Use this function to add a file to an idea
-function addFile(name, description, url, upload_id, idea_id) {
+function createUploadQuery(name, description, url, upload_id, idea_id) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
@@ -12,12 +12,12 @@ function addFile(name, description, url, upload_id, idea_id) {
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve();
+        return resolve(result);
       }
     )
   );
 }
 
 module.exports = {
-  addFile
+  createUploadQuery
 };

@@ -2,6 +2,8 @@ const express = require('express');
 const PORT = process.env.PORT || 5000;
 const app = express();
 const writeFeedback = require("./utils/writeFeedback");
+const compression = require('compression');
+const helmet = require('helmet');
 // const cors = require("cors");
 
 // var allowedOrigins = ['https://localhost:3000', 'https://localhost:5000', 'http://localhost:5000', 'http://localhost:3000', 'https://medev.co.uk', 'https://www.medev.co.uk'];
@@ -19,8 +21,12 @@ const writeFeedback = require("./utils/writeFeedback");
 // }
 // app.use(cors(corsOptions));
 
-// Initialise middleware
+app.use(compression());
+app.use(helmet());
+
+// Initialize middleware
 app.use(express.json({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 // WARNING! Errors may show if the routes files don't have module.exports = router;
 app.use('/api/user', require('./routes/userRoute'));

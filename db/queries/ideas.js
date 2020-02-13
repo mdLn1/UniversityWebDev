@@ -16,7 +16,7 @@ function createIdeaQuery(title, description, isAnonymous, categoryId, userId) {
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve();
+        return resolve(result);
       }
     )
   );

@@ -6,6 +6,7 @@ const {
   updateIdeaQuery,
   getIdeaByIdQuery
 } = require("../db/queries/ideas");
+const { createUploadQuery } = require("../db/queries/uploads");
 
 const getAllIdeasReq = async (req, res) => {
   const ideas = await getAllIdeasQuery();
@@ -20,8 +21,19 @@ const deleteIdeaReq = async (req, res) => {
 const createIdeaReq = async (req, res) => {
   const { description, isAnonymous, title, categoryId } = req.body;
   const userId = req.user.ID;
-  await createIdeaQuery(title, description, isAnonymous ? 1 : 0, categoryId, userId);
-  res.status(201).json({ success: "Successfully created" });
+  const { insertId } = await createIdeaQuery(
+    title,
+    description,
+    isAnonymous ? 1 : 0,
+    categoryId,
+    userId
+  );
+  await Promise.all(
+    req.uploadedFiles.forEach(async ({ name, description, upload_id, url }) => {
+      await createUploadQuery(name, description, url, upload_id, insertId);
+    })
+  );
+  res.status(201).json({ success: "Successfully created idea" });
 };
 
 const increaseIdeaViewsReq = async (req, res) => {

@@ -5,8 +5,12 @@ const errorChecker = require("../middleware/errorCheckerMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
 const auth = require("../middleware/authMiddleware");
 const authorize = require("../middleware/authorizeMiddleware");
-const config = require("config");
-const { admin, coordinator } = config.get("roles");
+const configPackage = require("config");
+const cloudinaryConfig = require("../utils/cloudinaryConfig");
+const multerUploads = require("../middleware/multerMiddleware");
+const { uploadFiles } = require("../controllers/fileUploadsController.js");
+const uploadFilesMiddleware = require("../middleware/uploadFilesMiddleware");
+const { admin, coordinator } = configPackage.get("roles");
 const {
   getAllIdeasReq,
   createIdeaReq,
@@ -46,6 +50,7 @@ router.get("/:id/increase-views", exceptionHandler(increaseIdeaViewsReq));
 router.post(
   "/",
   [
+    multerUploads.any(),
     check("description", "Description must contain at least 20 characters")
       .exists()
       .trim()
@@ -61,9 +66,28 @@ router.post(
       .trim()
       .isLength({ min: 5 }),
     errorChecker,
-    auth
+    auth,
+    cloudinaryConfig,
+    uploadFilesMiddleware
   ],
   exceptionHandler(createIdeaReq)
+);
+
+// @route POST /api/ideas/:id/uploads
+// @desc Create upload files for idea
+// @access Private
+router.post(
+  "/:id/uploads",
+  [
+    multerUploads.any(),
+    check("id", "Id param must be an integer value")
+      .exists()
+      .isInt(),
+    errorChecker,
+    auth,
+    cloudinaryConfig
+  ],
+  exceptionHandler(uploadFiles)
 );
 
 // @route DELETE /api/ideas/:id
