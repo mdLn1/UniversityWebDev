@@ -4,9 +4,11 @@ const {
   getAllIdeasQuery,
   increaseIdeaViewsQuery,
   updateIdeaQuery,
-  getIdeaByIdQuery
+  getIdeaByIdQuery,
+  getIdeaAuthorQuery
 } = require("../db/queries/ideas");
 const { createUploadQuery } = require("../db/queries/uploads");
+const CustomError = require("../utils/CustomError");
 
 const getAllIdeasReq = async (req, res) => {
   const ideas = await getAllIdeasQuery();
@@ -14,7 +16,14 @@ const getAllIdeasReq = async (req, res) => {
 };
 
 const deleteIdeaReq = async (req, res) => {
-  await deleteIdeaQuery(req.params.id);
+  const { id } = req.params.id;
+  const author = await getIdeaAuthorQuery(id);
+  if (author !== req.user.id)
+    throw new CustomError(
+      "You are not the author of this idea, you cannot make changes",
+      400
+    );
+  await deleteIdeaQuery(id);
   res.status(200).json({ success: "Idea deleted" });
 };
 
@@ -28,11 +37,16 @@ const createIdeaReq = async (req, res) => {
     categoryId,
     userId
   );
-  await Promise.all(
-    req.uploadedFiles.forEach(async ({ name, description, upload_id, url }) => {
-      await createUploadQuery(name, description, url, upload_id, insertId);
-    })
-  );
+  if (req.uploadedFiles) {
+    await Promise.all(
+      req.uploadedFiles.forEach(
+        async ({ name, description, upload_id, url }) => {
+          await createUploadQuery(name, description, url, upload_id, insertId);
+        }
+      )
+    );
+  }
+
   res.status(201).json({ success: "Successfully created idea" });
 };
 
@@ -43,7 +57,14 @@ const increaseIdeaViewsReq = async (req, res) => {
 
 const updateIdeaReq = async (req, res) => {
   const { description, title } = req.body;
-  await updateIdeaQuery(title, description, req.params.id);
+  const { id } = req.params.id;
+  const author = await getIdeaAuthorQuery(id);
+  if (author !== req.user.id)
+    throw new CustomError(
+      "You are not the author of this idea, you cannot make changes",
+      400
+    );
+  await updateIdeaQuery(title, description, id);
   res.status(200).json({ title, description });
 };
 

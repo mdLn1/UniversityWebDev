@@ -2,26 +2,6 @@ const pool = require("../dbconn");
 const CustomError = require("../../utils/CustomError");
 const bcrypt = require("bcryptjs");
 
-// Use this function to add a user to the system, it requires the role and the department string (do not use the ID)
-// e.g. -> if you want to add a user to the department 'Human Resources', pass 'Human Resources' to the function, not its ID
-// make sure the password is hashed before passing it to the function
-function createUserByEntitiesNamesQuery(name, password, email, role, department) {
-  return new Promise((resolve, reject) =>
-    pool.query(
-      {
-        sql:
-          "insert into Users (name, password, email, role_id, department_id) values (?, ?, ?, (select id from Roles where role=?), (select id from Departments where department=?))",
-        timeout: 40000, // 40s
-        values: [name, password, email, role, department]
-      },
-      (error, result) => {
-        if (error) return reject(error);
-        return resolve();
-      }
-    )
-  );
-}
-
 // Use this function to add a user to the system if you have the role_id and department_id (do not use the string value)
 function createUserQuery(name, password, email, role_id, department_id) {
   return new Promise((resolve, reject) =>
@@ -130,14 +110,49 @@ function getUserDetailsQuery(id) {
 }
 
 // Updates user details
-function updateUserDetailsQuery(name, newEmail, role, department, oldEmail) {
+function updateUserDetailsQuery(name, email, id) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
         sql:
-          "update Users set name = ?, email = ?, role_id = ?, department_id = ? where email = ?",
+          "update Users set name = ?, email = ? where id = ?",
         timeout: 40000,
-        values: [name, newEmail, role, department, oldEmail]
+        values: [name, email, id]
+      },
+      (err, result) => {
+        if (err) return reject(err);
+        return resolve();
+      }
+    );
+  });
+}
+
+// Updates user details
+function adminUpdateUserDetailsQuery(name, email, roleId, departmentId, userId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql:
+          "update Users set name = ?, email = ?, role_id = ?, department_id = ? where id = ?",
+        timeout: 40000,
+        values: [name, email, roleId, departmentId, userId]
+      },
+      (err, result) => {
+        if (err) return reject(err);
+        return resolve();
+      }
+    );
+  });
+}
+
+function updateUserPasswordQuery(password, id) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql:
+          "update Users set password = ? where id = ?",
+        timeout: 40000,
+        values: [password, id]
       },
       (err, result) => {
         if (err) return reject(err);
@@ -149,10 +164,11 @@ function updateUserDetailsQuery(name, newEmail, role, department, oldEmail) {
 
 module.exports = {
   createUserQuery,
-  createUserByEntitiesNamesQuery,
   userLoginQuery,
   isEmailRegisteredAlreadyQuery,
   getAllUsersQuery,
   getUserDetailsQuery,
-  updateUserDetailsQuery
+  adminUpdateUserDetailsQuery,
+  updateUserDetailsQuery,
+  updateUserPasswordQuery
 };

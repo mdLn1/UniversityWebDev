@@ -8,8 +8,8 @@ const authorize = require("../middleware/authorizeMiddleware");
 const configPackage = require("config");
 const cloudinaryConfig = require("../utils/cloudinaryConfig");
 const multerUploads = require("../middleware/multerMiddleware");
-const { uploadFiles } = require("../controllers/fileUploadsController.js");
 const uploadFilesMiddleware = require("../middleware/uploadFilesMiddleware");
+const uploadRoutes = require("./uploadRoutes");
 const { admin, coordinator } = configPackage.get("roles");
 const {
   getAllIdeasReq,
@@ -19,6 +19,13 @@ const {
   updateIdeaReq,
   getIdeaByIdReq
 } = require("../controllers/ideasController");
+
+const {
+  getAllCommentsReq,
+  createCommentReq
+} = require("../controllers/commentsController");
+
+router.use("/:ideaId/uploads", uploadRoutes);
 
 // @route GET /api/ideas
 // @desc Returns all ideas
@@ -73,38 +80,6 @@ router.post(
   exceptionHandler(createIdeaReq)
 );
 
-// @route POST /api/ideas/:id/uploads
-// @desc Create upload files for idea
-// @access Private
-router.post(
-  "/:id/uploads",
-  [
-    multerUploads.any(),
-    check("id", "Id param must be an integer value")
-      .exists()
-      .isInt(),
-    errorChecker,
-    auth,
-    cloudinaryConfig
-  ],
-  exceptionHandler(uploadFiles)
-);
-
-// @route DELETE /api/ideas/:id
-// @desc Deletes an idea
-// @access Private and restricted
-router.delete(
-  "/:id",
-  [
-    check("id", "Id param must be an integer value")
-      .exists()
-      .isInt(),
-    errorChecker,
-    auth,
-    authorize([admin, coordinator])
-  ],
-  exceptionHandler(deleteIdeaReq)
-);
 
 // @route POST /api/ideas/:id
 // @desc Updates information for an idea
@@ -128,5 +103,58 @@ router.post(
   ],
   exceptionHandler(updateIdeaReq)
 );
+
+// @route DELETE /api/ideas/:id
+// @desc Deletes an idea
+// @access Private and restricted
+router.delete(
+  "/:id",
+  [
+    check("id", "Id param must be an integer value")
+      .exists()
+      .isInt(),
+    errorChecker,
+    auth,
+    authorize([admin, coordinator])
+  ],
+  exceptionHandler(deleteIdeaReq)
+);
+
+// @route GET /api/ideas/:ideaId/comments
+// @desc Returns all comments for an idea
+// @access Public
+router.get(
+  "/:ideaId",
+  [
+    check("ideaId", "Id param must be an integer value")
+      .exists()
+      .isInt(),
+    errorChecker,
+    auth
+  ],
+  exceptionHandler(getAllCommentsReq)
+);
+
+// @route POST /api/ideas/:ideaId/comments
+// @desc Create a comment for an idea
+// @access Private
+router.post(
+  "/:ideaId/comments",
+  [
+    check("comment", "Comment must be at least 5 characters long")
+      .exists()
+      .isLength({ min: 5 }),
+    check("isAnonymous", "Is Anonymous must be a boolean")
+      .exists()
+      .isBoolean(),
+    check("ideaId", "Idea Id must be an integer")
+      .exists()
+      .isInt(),
+    errorChecker,
+    auth
+  ],
+  exceptionHandler(createCommentReq)
+);
+
 
 module.exports = router;

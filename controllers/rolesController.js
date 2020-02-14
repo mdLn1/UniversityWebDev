@@ -6,27 +6,30 @@ const {
 } = require("../db/queries/roles");
 
 const createRoleReq = async (req, res) => {
-  // :todo Add authorization to ensure only priviliged users can add a new role
-  const { role, description } = req.body;
-  await createRoleQuery(role, description);
-  res
-    .status(201)
-    .json({ Success: "New role created", data: { role, description } });
+  const { role, description, isSelectable } = req.body;
+  isSelectable = isSelectable ? 1 : 0;
+  const { insertId } = await createRoleQuery(
+    role,
+    description,
+    isSelectable
+  );
+  res.status(201).json({ id: insertId, role, description, isSelectable });
 };
 
 const updateRoleReq = async (req, res) => {
   const { id } = req.params;
   const { newRole, newDescription, isSelectable } = req.body;
+  isSelectable = isSelectable ? 1 : 0;
   await updateRoleQuery(id, newRole, newDescription, isSelectable);
   res
     .status(200)
-    .json({ Success: "Role updated", data: { role, description } });
+    .json({ success: "Role successfully updated" });
 };
 
 const deleteRoleReq = async (req, res) => {
   const { id } = req.params;
   await deleteRoleQuery(id);
-  res.status(200).json({ success: "Successfully deleted" });
+  res.status(200).json({ success: "Role successfully deleted" });
 };
 
 const getAllRolesReq = async (req, res) => {

@@ -18,8 +18,9 @@ const uploadFiles = async (req, res, next) => {
   const uploads = await Promise.all(
     req.files.map(async element => {
       //element contains mimetype and fieldname
+      // path.extname(element.originalname).toString() get the extension of the file
       const newBuffer = dUri.format(
-        path.extname(element.originalname).toString(),
+        element.originalname,
         element.buffer
       );
       // once finished, new object data uri needs to be created

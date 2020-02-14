@@ -24,7 +24,7 @@ function updateDepartmentQuery(newDepartment, newDescription, selectable, id) {
     pool.query(
       {
         sql:
-          "update Departments department = ?, description = ?, isSelectable = ? where (ID = ?)",
+          "update Departments set department = ?, description = ?, isSelectable = ? where (ID = ?)",
         timeout: 40000, // 40s
         values: [newDepartment, newDescription, selectable, id]
       },

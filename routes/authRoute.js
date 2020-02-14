@@ -14,12 +14,12 @@ router.post(
     check("name", "Name must be at least 5 characters long")
       .trim()
       .isLength({ min: 5 }),
-    check("email", "Email must be at least 6 charaters long")
+    check("email", "Email must be at least 6 characters long")
       .trim()
       .isLength({ min: 6 }),
     check("password", "Password needs to be at least 6 characters long")
       .trim()
-      .isLength({ min: 6 }),
+      .isLength({ min: 8 }),
     check("roleId", "Role Id must be provided and should be an integer")
       .exists()
       .isInt(),
