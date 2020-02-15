@@ -13,7 +13,8 @@ function getAllRolesQuery() {
         if (error) return reject(error);
 
         return resolve(
-          result.map(({ role, isSelectable, description }) => ({
+          result.map(({ ID, role, isSelectable, description }) => ({
+            id: ID,
             role,
             isSelectable,
             description

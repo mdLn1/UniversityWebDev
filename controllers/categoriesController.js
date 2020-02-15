@@ -24,7 +24,7 @@ const updateCategoryByIdReq = async (req, res) => {
 
 const getAllCategoriesReq = async (req, res) => {
   const categories = await getAllCategoriesQuery();
-  res.status(200).json(categories);
+  res.status(200).json({categories});
 };
 
 module.exports = {

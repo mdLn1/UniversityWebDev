@@ -62,13 +62,14 @@ function getAllDepartmentsQuery() {
         sql: "select department, isSelectable, description from Departments",
         timeout: 40000 // 40s
       },
-      function(error, results) {
+      function(error, result) {
         if (error) return reject(error);
         return resolve(
-          results.map(({ department, isSelectable, description }) => ({
-            department,
+          result.map(({ ID, description, isSelectable, department }) => ({
+            id: ID,
+            description,
             isSelectable,
-            description
+            department
           }))
         );
       }

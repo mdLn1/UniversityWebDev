@@ -64,7 +64,14 @@ function getAllCategoriesQuery() {
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve(result);
+        return resolve(
+          result.map(({ ID, tag, isSelectable, description }) => ({
+            id: ID,
+            tag,
+            isSelectable,
+            description
+          }))
+        );
       }
     )
   );

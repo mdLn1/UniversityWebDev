@@ -7,7 +7,7 @@ const {
 
 const getAllDepartmentsReq = async (req, res) => {
   const departments = await getAllDepartmentsQuery();
-  res.status(200).json(departments);
+  res.status(200).json({departments});
 };
 
 const createDepartmentReq = async (req, res) => {
