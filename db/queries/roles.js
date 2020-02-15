@@ -40,18 +40,18 @@ function createRoleQuery(role, description, isSelectable = 1) {
         if (err) {
           return reject(err);
         }
-        return resolve();
+        return resolve(result);
       }
     );
   });
 }
 
-function updateRoleQuery(id, role, description, isSelectable = 1) {
+function updateRoleQuery(id, role, description, isSelectable) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
         sql:
-          "update Roles role = ?, description = ?, isSelectable = ? where (id = ?)",
+          "update Roles set role = ?, description = ?, isSelectable = ? where (id = ?)",
         timeout: 40000,
         values: [role, description, isSelectable, id]
       },

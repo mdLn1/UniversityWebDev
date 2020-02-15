@@ -1,7 +1,9 @@
-const express = require('express');
+const express = require("express");
 const PORT = process.env.PORT || 5000;
 const app = express();
 const writeFeedback = require("./utils/writeFeedback");
+const compression = require("compression");
+const helmet = require("helmet");
 // const cors = require("cors");
 
 // var allowedOrigins = ['https://localhost:3000', 'https://localhost:5000', 'http://localhost:5000', 'http://localhost:3000', 'https://medev.co.uk', 'https://www.medev.co.uk'];
@@ -19,33 +21,43 @@ const writeFeedback = require("./utils/writeFeedback");
 // }
 // app.use(cors(corsOptions));
 
-// Initialise middleware
+app.use(compression());
+app.use(helmet());
+
+// Initialize middleware
 app.use(express.json({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
+
+// testing route
+app.post("/hello", async (req, res, next) => {
+  const id = req.params.id;
+  const obj = req.body;
+  res.send("200 ok");
+});
 
 // WARNING! Errors may show if the routes files don't have module.exports = router;
-app.use('/api/user', require('./routes/userRoute'));
-app.use('/api/auth', require('./routes/authRoute'));
-app.use('/api/roles', require('./routes/rolesRoute'));
-app.use('/api/ideas', require('./routes/ideasRoute'));
-app.use('/api/departments', require('./routes/departmentsRoute'))
-app.use('/api/categories', require('./routes/categoriesRoute'))
-app.use('/api/comments', require('./routes/commentsRoute'))
+app.use("/api/user", require("./routes/userRoute"));
+app.use("/api/auth", require("./routes/authRoute"));
+app.use("/api/roles", require("./routes/rolesRoute"));
+app.use("/api/ideas", require("./routes/ideasRoute"));
+app.use("/api/departments", require("./routes/departmentsRoute"));
+app.use("/api/categories", require("./routes/categoriesRoute"));
+app.use("/api/management", require("./routes/managementRoute"));
 
 // Handling pages not found
 app.use((req, res, next) => {
-	res.status(404).json(writeFeedback('Resource not found'));
+  res.status(404).json(writeFeedback("Resource not found"));
 });
 
 // Global error handling through middleware
 app.use((err, req, res, next) => {
-	console.log(err);
-	if (err.statusCode) {
-		return res.status(err.statusCode).json(writeFeedback(err.message));
-	}
-	res.status(500).json(writeFeedback(err.message));
+  console.log(err);
+  if (err.statusCode) {
+    return res.status(err.statusCode).json(writeFeedback(err.message));
+  }
+  res.status(500).json(writeFeedback(err.message));
 });
-
 
 app.listen(PORT, () => console.log("API is listening on port " + PORT));
 
-module.exports = {app}
+module.exports = { app };

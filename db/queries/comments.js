@@ -16,15 +16,15 @@ function createCommentQuery(comment, isAnonymous, userId, ideaId) {
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve();
+        return resolve(result);
       }
     )
   );
 }
 
 // Returns comments of a specific idea by the latest comments first.
-function getCommentsByIdQuery(ideaID) {
-  return new Promise( (resolve, reject) => {
+function getAllCommentsForIdeaQuery(ideaId) {
+  return new Promise((resolve, reject) => {
     pool.query(
       {
         sql: `SELECT comment, commentTime, isAnonymous,
@@ -32,17 +32,68 @@ function getCommentsByIdQuery(ideaID) {
         FROM Comments WHERE idea_id = ? 
         ORDER BY commentTime`,
         timeout: 40000,
-        values: [ideaID]
+        values: [ideaId]
       },
       (error, result) => {
         if (error) return reject(error);
         return resolve();
       }
-    )
-  })
+    );
+  });
+}
+
+function updateCommentForIdeaQuery(commentId, content) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: `update Comments set comment = ? where commentId = ? and user_id = ?`,
+        timeout: 40000,
+        values: [content, commentId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    );
+  });
+}
+
+function deleteCommentQuery(commentId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: `delete from Comments where id = ?`,
+        timeout: 40000,
+        values: [commentId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    );
+  });
+}
+
+function getCommentAuthorQuery(commentId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: `select user_id from Comments where id = ?`,
+        timeout: 40000,
+        values: [commentId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result[0].user_id);
+      }
+    );
+  });
 }
 
 module.exports = {
   createCommentQuery,
-  getCommentsByIdQuery
+  getAllCommentsForIdeaQuery,
+  deleteCommentQuery,
+  updateCommentForIdeaQuery,
+  getCommentAuthorQuery
 };

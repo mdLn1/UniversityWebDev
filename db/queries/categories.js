@@ -12,7 +12,7 @@ function createCategoryQuery(tag, description, selectable = true) {
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve();
+        return resolve(result);
       }
     )
   );

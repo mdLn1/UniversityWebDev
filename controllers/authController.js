@@ -8,23 +8,23 @@ const {
   createUserQuery
 } = require("../db/queries/users");
 
-const {isRoleSelectableQuery} = require('../db/queries/roles');
-
-// authentication specific requests below
+const { isRoleSelectableQuery } = require("../db/queries/roles");
+const isEmailValid = require("../utils/isEmailValid");
+const isPasswordValid = require("../utils/isPasswordValid");
 
 const registerUserReq = async (req, res) => {
   const { name, password, email, roleId, departmentId } = req.body;
-
-  const re = new RegExp(
-    /^([\w\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/
-  );
-  const validDomain =
-    email.endsWith("@gre.ac.uk") || email.endsWith("@greenwich.ac.uk");
-  if (!re.test(email) || !validDomain)
+  if (!isEmailValid(email))
     throw new CustomError("Invalid email address or wrong email domain", 400);
-  const userExists = await isEmailRegisteredAlreadyQuery(email);
+
+  if (!isPasswordValid(password)) {
+    throw new CustomError(
+      "Password must contain at least one uppercase letter, one lowercase letter and a digit", 400
+    );
+  }
 
   // check user exists
+  const userExists = await isEmailRegisteredAlreadyQuery(email);
   if (userExists) throw new CustomError("User already exists", 400);
 
   // produce a password hash and save it to user

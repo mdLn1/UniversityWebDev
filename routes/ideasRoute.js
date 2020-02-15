@@ -3,10 +3,12 @@ const router = express.Router();
 const { check } = require("express-validator");
 const errorChecker = require("../middleware/errorCheckerMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
-const auth = require("../middleware/authMiddleware");
-const authorize = require("../middleware/authorizeMiddleware");
-const config = require("config");
-const { admin, coordinator } = config.get("roles");
+const authMiddleware = require("../middleware/authMiddleware");
+const cloudinaryConfig = require("../utils/cloudinaryConfig");
+const multerUploads = require("../middleware/multerMiddleware");
+const uploadFilesMiddleware = require("../middleware/uploadFilesMiddleware");
+const uploadRoute = require("./uploadsRoute");
+const commentRoute = require("./commentsRoute");
 const {
   getAllIdeasReq,
   createIdeaReq,
@@ -16,6 +18,8 @@ const {
   getIdeaByIdReq
 } = require("../controllers/ideasController");
 
+router.use("/:ideaId/uploads", uploadRoute);
+router.use("/:ideaId/comments", commentRoute)
 // @route GET /api/ideas
 // @desc Returns all ideas
 // @access Public
@@ -46,6 +50,7 @@ router.get("/:id/increase-views", exceptionHandler(increaseIdeaViewsReq));
 router.post(
   "/",
   [
+    multerUploads.any(),
     check("description", "Description must contain at least 20 characters")
       .exists()
       .trim()
@@ -61,25 +66,11 @@ router.post(
       .trim()
       .isLength({ min: 5 }),
     errorChecker,
-    auth
+    authMiddleware,
+    cloudinaryConfig,
+    uploadFilesMiddleware
   ],
   exceptionHandler(createIdeaReq)
-);
-
-// @route DELETE /api/ideas/:id
-// @desc Deletes an idea
-// @access Private and restricted
-router.delete(
-  "/:id",
-  [
-    check("id", "Id param must be an integer value")
-      .exists()
-      .isInt(),
-    errorChecker,
-    auth,
-    authorize([admin, coordinator])
-  ],
-  exceptionHandler(deleteIdeaReq)
 );
 
 // @route POST /api/ideas/:id
@@ -100,9 +91,25 @@ router.post(
       .trim()
       .isLength({ min: 20 }),
     errorChecker,
-    auth
+    authMiddleware
   ],
   exceptionHandler(updateIdeaReq)
+);
+
+// @route DELETE /api/ideas/:id
+// @desc Deletes an idea
+// @access Private and restricted
+router.delete(
+  "/:id",
+  [
+    check("id", "Id param must be an integer value")
+      .exists()
+      .isInt(),
+    errorChecker,
+    authMiddleware,
+    cloudinaryConfig
+  ],
+  exceptionHandler(deleteIdeaReq)
 );
 
 module.exports = router;

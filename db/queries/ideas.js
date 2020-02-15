@@ -16,7 +16,7 @@ function createIdeaQuery(title, description, isAnonymous, categoryId, userId) {
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve();
+        return resolve(result);
       }
     )
   );
@@ -28,18 +28,15 @@ function getAllIdeasQuery() {
     pool.query(
       {
         // add full query for retrieving ideas
-        sql: `SELECT i.ID, i.description, i.views, i.posted_time, i.Title, i.isAnonymous, 
-        (SELECT name FROM Users WHERE ID=i.user_id) AS author, 
-        (SELECT COUNT(comment) FROM Comments WHERE i.ID = Comments.idea_id ) AS commentsNo, 
-        (SELECT COUNT(vote) FROM Ratings WHERE vote=1) AS positiveVotes, 
-        (SELECT COUNT(vote) FROM Ratings WHERE vote=0) AS negativeVotes, 
-        (SELECT tag FROM Categories WHERE ID = i.category_id) AS category, 
-        (SELECT name FROM Uploads WHERE idea_id = i.ID) AS uploadName, 
-        (SELECT description FROM Uploads WHERE idea_id = i.ID) AS uploadDesc, 
-        (SELECT url FROM Uploads WHERE idea_id = i.ID) AS uploadUrl, 
-        (SELECT upload_id FROM Uploads WHERE idea_id = i.ID) AS uploadId
-        FROM Ideas AS i 
-        ORDER BY posted_time DESC`,
+        sql: `SELECT i.ID, i.description, i.views, i.posted_time, i.Title, i.isAnonymous,
+        (SELECT name FROM Users WHERE ID=i.user_id) AS author,
+        (SELECT COUNT(*) FROM Comments WHERE i.ID = Comments.idea_id ) AS commentsCount,
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=1) AS positiveVotes,
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=0) AS negativeVotes,
+        (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
+        (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS uploadsCount
+        FROM Ideas AS i
+        ORDER BY postedTime DESC`,
         timeout: 40000, // 40s
         values: []
       },
@@ -69,13 +66,13 @@ function increaseIdeaViewsQuery(ideaId) {
 }
 
 // update just description for now
-function updateIdeaQuery(description, id) {
+function updateIdeaQuery(description, ideaId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
         sql: "update Ideas set description = ? where ID = ?",
         timeout: 40000, // 40s
-        values: [description, id]
+        values: [description, ideaId]
       },
       (error, result) => {
         if (error) return reject(error);
@@ -103,22 +100,19 @@ function deleteIdeaQuery(ideaId) {
   });
 }
 
-// @desc Returns an idea based of its ID, along with its associated values for 
+// @desc Returns an idea based of its ID, along with its associated values for
 //  that idea such as its upload url, name, description, numb of votes, positive and negative votes
 function getIdeaByIdQuery(ideaId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: `SELECT i.ID, i.description, i.views, i.posted_time, i.Title, i.isAnonymous, 
-        (SELECT name FROM Users WHERE ID=i.user_id) AS author, 
-        (SELECT COUNT(comment) FROM Comments WHERE i.ID = Comments.idea_id ) AS commentsNo, 
-        (SELECT COUNT(vote) FROM Ratings WHERE vote=1) AS positiveVotes, 
-        (SELECT COUNT(vote) FROM Ratings WHERE vote=0) AS negativeVotes, 
-        (SELECT tag FROM Categories WHERE ID = i.category_id) AS category, 
-        (SELECT name FROM Uploads WHERE idea_id = i.ID) AS uploadName, 
-        (SELECT description FROM Uploads WHERE idea_id = i.ID) AS uploadDesc, 
-        (SELECT url FROM Uploads WHERE idea_id = i.ID) AS uploadUrl, 
-        (SELECT upload_id FROM Uploads WHERE idea_id = i.ID) AS uploadId
+        sql: `SELECT i.ID, i.description, i.views, i.posted_time, i.Title, i.isAnonymous,
+        (SELECT name FROM Users WHERE ID=i.user_id) AS author,
+        (SELECT COUNT(*) FROM Comments WHERE i.ID = Comments.idea_id ) AS commentsCount,
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=1) AS positiveVotes,
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=0) AS negativeVotes,
+        (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
+        (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS uploadsCount
         FROM Ideas AS i
         WHERE i.ID = ?`,
         timeout: 40000, // 40s
@@ -132,11 +126,28 @@ function getIdeaByIdQuery(ideaId) {
   });
 }
 
+function getIdeaAuthorQuery(ideaId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: `SELECT user_id from Ideas WHERE ID = ?`,
+        timeout: 40000, // 40s
+        values: [ideaId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result[0].user_id);
+      }
+    );
+  });
+}
+
 module.exports = {
   createIdeaQuery,
   updateIdeaQuery,
   deleteIdeaQuery,
   increaseIdeaViewsQuery,
   getAllIdeasQuery,
-  getIdeaByIdQuery
+  getIdeaByIdQuery,
+  getIdeaAuthorQuery
 };

@@ -24,10 +24,10 @@ Login = "/api/auth/login/" (request type = POST )
 
 ## Users management
 
-Users = "/api/user/all" (request type = GET )
+Users = "/api/management/update-user/:userId" (request type = GET )
 
     => On success returns { ID, name, password, email, role_id, department_id } Status 200
-    => On failure { error: Error } Status 500
+    => On failure { errors: Array } Status 500
 
 ## Roles
 
@@ -165,16 +165,82 @@ IncreaseViewCounter = "/api/ideas/:id/increase-views" (request type = GET )
 
 ## Comments
 
-GetAllComments (for an idea) = "/api/comments/:ideaId/" (request type = GET )
+GetAllComments (for an idea) = "/api/ideas/:ideaId/comments" (request type = GET )
 
     req param {ideaId} expected as integer, no request body expected
 
     => On success returns {comments: Array} Status 200
     => On failure { errors: Array } Status 500, 400
 
-CreateComment (for an idea) = "/api/comments/:ideaId/" (request type = POST )
+CreateComment (for an idea) = "/api/ideas/:ideaId/comments" (request type = POST )
 
     req param {ideaId} expected as integer, request body {comment, isAnonymous}
 
+    => On success returns {success: string} Status 201
+    => On failure { errors: Array } Status 500, 400
+
+UpdateComment (for an idea) = "/api/ideas/:ideaId/comments/:commentId" (request type = POST )
+
+    req param {ideaId, commentId} expected as integer, request body {comment, isAnonymous}
+
     => On success returns {success: string} Status 200
+    => On failure { errors: Array } Status 500, 400
+
+DeleteComment (for an idea) = "/api/ideas/:ideaId/comments/:commentId" (request type = DELETE )
+
+    req param {ideaId, commentId} expected as integer, no request body expected
+
+    => On success returns {success: string} Status 200
+    => On failure { errors: Array } Status 500, 400
+
+## Uploads
+
+DownloadZippedUploads (for an idea) = "/api/ideas/:ideaId/uploads/download" (request type = GET )
+
+    req param {ideaId} expected as integer, no request body expected
+
+    => On success returns {zipDetails: Object} Status 200
+    => On failure { errors: Array } Status 500, 400
+
+GetAllUploads (for an idea) = "/api/ideas/:ideaId/uploads/" (request type = GET )
+
+    req param {ideaId} expected as integer, no request body expected
+
+    => On success returns {uploads: Array} Status 200
+    => On failure { errors: Array } Status 500, 400
+
+CreateUploads (for an idea) = "/api/ideas/:ideaId/uploads" (request type = POST )
+
+    req param {ideaId} expected as integer, request body {comment, isAnonymous}
+
+    => On success returns {success: string} Status 201
+    => On failure { errors: Array } Status 500, 400
+
+DeleteUpload (for an idea) = "/api/ideas/:ideaId/uploads/:uploadId" (request type = DELETE )
+
+    req param {ideaId, commentId} expected as integer, no request body expected
+    => On success returns {success: string} Status 200
+    => On failure { errors: Array } Status 500, 400
+
+## User
+
+GetUserDetails = "/api/user/" (request type = GET )
+
+    no req params expected, no request body expected
+
+    => On success returns {user: Object} Status 200
+    => On failure { errors: Array } Status 500, 400
+
+UpdateUserPassword = "/api/user/update-password" (request type = POST )
+
+    no req params expected, request body {oldPassword, newPassword, newPasswordConfirmed}
+
+    => On success returns {success: String} Status 200
+    => On failure { errors: Array } Status 500, 400
+
+UpdateUserDetails = "/api/user/update-details" (request type = POST )
+
+    no req params expected, request body {name, email}
+
+    => On success returns {success: String} Status 200
     => On failure { errors: Array } Status 500, 400

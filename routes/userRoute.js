@@ -1,84 +1,46 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const user = require('../testObjects/user');
-const authMiddleware = require('../middleware/authMiddleware');
-const {getAllUsers} = require('../db/queries/users')
-// express-validator; data validation
+const authMiddleware = require("../middleware/authMiddleware");
+const exceptionHandler = require("../utils/exceptionHandler");
 const {
-    check,
-    validationResult
-} = require('express-validator');
+  updateUserDetailsReq,
+  updateUserPasswordReq,
+  getUserDetailsReq
+} = require("../controllers/userController");
+const errorChecker = require("../middleware/errorCheckerMiddleware");
+const { check } = require("express-validator");
 
-//@route POST api/user/
-//@desc Receive user details
+//@route POST api/user/update-details
+//@desc Update user details
 //@access Private
-router.post('/', [
-    authMiddleware,
-    check("firstName", "firstName must have a value").not().isEmpty().trim().escape(),
-    check("lastName", "lastName must have a value").not().isEmpty().trim().escape(),
-    check("age", "age must have a value").not().isEmpty()
-], async (req, res, next) => {
-    try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({
-                feedback: errors.array().map(obj => {
-                    return {
-                        msg: obj.msg,
-                        type: 'danger'
-                    };
-                })
-            });
-        }
-        const {
-            firstName,
-            lastName,
-            age
-        } = req.body;
-        res.status(201).json({
-            firstName,
-            lastName,
-            age
-        });
-    } catch (err) {
-        next(err);
-    }
-})
+router.post(
+  "/update-details",
+  [
+    check("name", "Name must be at least 5 characters long")
+      .trim()
+      .isLength({ min: 5 }),
+    check("email", "Email must be at least 6 characters long")
+      .trim()
+      .isLength({ min: 7 }),
+    errorChecker,
+    authMiddleware
+  ],
+  exceptionHandler(updateUserDetailsReq)
+);
+
+//@route POST api/user/update-password
+//@desc Update user password
+//@access Private
+router.post(
+  "/update-password",
+  [authMiddleware],
+  exceptionHandler(updateUserPasswordReq)
+);
 
 //@route GET api/user/
 //@desc Return user details
 //@access Private
-router.get('/', async (req, res, next) => {
-    try {
-        const {
-            firstName,
-            lastName,
-            age
-        } = user;
-        res.status(200).json({
-            firstName,
-            lastName,
-            age
-        });
-    } catch (err) {
-        next(err);
-    }
-})
-
-// @desc Returns all users for the QA manager 
-// @route GET /api/user/all - Route could be modified to suit REST principles
-// @access Private
-router.get('/all', async (req, res, next) => {
-    try {
-        const users = await getAllUsers()
-        res.status(200).json(users)
-        return next()
-    } catch (err) {
-        // :todo Replace error being logged to console with global error handler
-        res.status(500).json( { error : err} )
-        return next()
-    }
-})
+router.get("/", authMiddleware, exceptionHandler(getUserDetailsReq));
 
 // necessary line for every route
 module.exports = router;

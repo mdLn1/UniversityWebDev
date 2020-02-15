@@ -1,18 +1,29 @@
 const express = require("express");
 const router = express.Router();
-const writeFeedback = require("../utils/writeFeedback");
-const CustomError = require("../utils/CustomError");
 const IsInRole = require("../middleware/authorizeMiddleware");
+const authMiddleware = require("../middleware/authMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
-const { updateUserByIdReq } = require("../controllers/managementController");
+const config = require("config");
+const { admin, coordinator } = config.get("roles");
+const {
+  adminUpdateUserDetailsReq
+} = require("../controllers/managementController");
+// const rolesRouter = require("./rolesRoute");
+// const categoriesRouter = require("./categoriesRoute");
+// const departmentsRouter = require("./departmentsRoute");
 
-//@route POST api/management/:id/update-user
+// adding other routes to management router
+// router.use("/roles", rolesRouter);
+// router.user("/categories", categoriesRouter);
+// router.user("/departments", departmentsRouter);
+
+//@route POST api/management/update-user/:id
 //@desc Change user details
 //@access Private and limited access
 router.post(
-  "/:id/update-user",
-  [auth, IsInRole(["Admin", "Manager"])],
-  exceptionHandler(updateUserByIdReq)
+  "/update-user/:userId",
+  [authMiddleware, IsInRole([admin, coordinator])],
+  exceptionHandler(adminUpdateUserDetailsReq)
 );
 
 module.exports = router;
