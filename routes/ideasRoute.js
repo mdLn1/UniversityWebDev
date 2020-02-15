@@ -3,14 +3,12 @@ const router = express.Router();
 const { check } = require("express-validator");
 const errorChecker = require("../middleware/errorCheckerMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
-const auth = require("../middleware/authMiddleware");
-const authorize = require("../middleware/authorizeMiddleware");
-const configPackage = require("config");
+const authMiddleware = require("../middleware/authMiddleware");
 const cloudinaryConfig = require("../utils/cloudinaryConfig");
 const multerUploads = require("../middleware/multerMiddleware");
 const uploadFilesMiddleware = require("../middleware/uploadFilesMiddleware");
-const uploadRoutes = require("./uploadRoutes");
-const { admin, coordinator } = configPackage.get("roles");
+const uploadRoute = require("./uploadsRoute");
+const commentRoute = require("./commentsRoute");
 const {
   getAllIdeasReq,
   createIdeaReq,
@@ -20,13 +18,8 @@ const {
   getIdeaByIdReq
 } = require("../controllers/ideasController");
 
-const {
-  getAllCommentsReq,
-  createCommentReq
-} = require("../controllers/commentsController");
-
-router.use("/:ideaId/uploads", uploadRoutes);
-
+router.use("/:ideaId/uploads", uploadRoute);
+router.use("/:ideaId/comments", commentRoute)
 // @route GET /api/ideas
 // @desc Returns all ideas
 // @access Public
@@ -73,13 +66,12 @@ router.post(
       .trim()
       .isLength({ min: 5 }),
     errorChecker,
-    auth,
+    authMiddleware,
     cloudinaryConfig,
     uploadFilesMiddleware
   ],
   exceptionHandler(createIdeaReq)
 );
-
 
 // @route POST /api/ideas/:id
 // @desc Updates information for an idea
@@ -99,7 +91,7 @@ router.post(
       .trim()
       .isLength({ min: 20 }),
     errorChecker,
-    auth
+    authMiddleware
   ],
   exceptionHandler(updateIdeaReq)
 );
@@ -114,47 +106,10 @@ router.delete(
       .exists()
       .isInt(),
     errorChecker,
-    auth,
-    authorize([admin, coordinator])
+    authMiddleware,
+    cloudinaryConfig
   ],
   exceptionHandler(deleteIdeaReq)
 );
-
-// @route GET /api/ideas/:ideaId/comments
-// @desc Returns all comments for an idea
-// @access Public
-router.get(
-  "/:ideaId",
-  [
-    check("ideaId", "Id param must be an integer value")
-      .exists()
-      .isInt(),
-    errorChecker,
-    auth
-  ],
-  exceptionHandler(getAllCommentsReq)
-);
-
-// @route POST /api/ideas/:ideaId/comments
-// @desc Create a comment for an idea
-// @access Private
-router.post(
-  "/:ideaId/comments",
-  [
-    check("comment", "Comment must be at least 5 characters long")
-      .exists()
-      .isLength({ min: 5 }),
-    check("isAnonymous", "Is Anonymous must be a boolean")
-      .exists()
-      .isBoolean(),
-    check("ideaId", "Idea Id must be an integer")
-      .exists()
-      .isInt(),
-    errorChecker,
-    auth
-  ],
-  exceptionHandler(createCommentReq)
-);
-
 
 module.exports = router;

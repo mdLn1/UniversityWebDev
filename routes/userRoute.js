@@ -14,7 +14,7 @@ const { check } = require("express-validator");
 //@desc Update user details
 //@access Private
 router.post(
-  "/user/update-details",
+  "/update-details",
   [
     check("name", "Name must be at least 5 characters long")
       .trim()
@@ -32,7 +32,7 @@ router.post(
 //@desc Update user password
 //@access Private
 router.post(
-  "/user/update-password",
+  "/update-password",
   [authMiddleware],
   exceptionHandler(updateUserPasswordReq)
 );

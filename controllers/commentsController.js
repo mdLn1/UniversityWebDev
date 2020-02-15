@@ -29,7 +29,7 @@ const updateCommentForIdeaReq = async (req, res) => {
   const author = await getCommentAuthorQuery(commentId);
   if (author !== req.user.id)
     throw new CustomError(
-      "You are not the author of this idea, you cannot make changes",
+      "You are not the author of this comment, you cannot make changes",
       400
     );
 
@@ -42,7 +42,7 @@ const deleteCommentReq = async (req, res) => {
   const author = await getCommentAuthorQuery(commentId);
   if (author !== req.user.id)
     throw new CustomError(
-      "You are not the author of this idea, you cannot make changes",
+      "You are not the author of this comment, you cannot make changes",
       400
     );
   await deleteCommentQuery(commentId);

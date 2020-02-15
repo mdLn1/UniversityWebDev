@@ -84,7 +84,7 @@ function getCommentAuthorQuery(commentId) {
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve();
+        return resolve(result[0].user_id);
       }
     );
   });

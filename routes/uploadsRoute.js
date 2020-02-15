@@ -9,7 +9,8 @@ const multerUploads = require("../middleware/multerMiddleware");
 const {
   deleteUploadReq,
   uploadFilesReq,
-  downloadUploadsReq
+  downloadUploadsReq,
+  getAllUploadsReq
 } = require("../controllers/fileUploadsController.js");
 
 // @route POST /api/ideas/:id/uploads
@@ -19,10 +20,6 @@ router.post(
   "/",
   [
     multerUploads.any(),
-    check("id", "Id param must be an integer value")
-      .exists()
-      .isInt(),
-    errorChecker,
     authMiddleware,
     cloudinaryConfig
   ],
@@ -42,14 +39,20 @@ router.delete(
       .exists()
       .isInt(),
     errorChecker,
-    authMiddleware
+    authMiddleware,
+    cloudinaryConfig
   ],
   exceptionHandler(deleteUploadReq)
 );
 
 // @route GET /api/ideas/:ideaId/uploads
+// @desc Get all uploads details from database
+// @access Public
+router.get("/",cloudinaryConfig, exceptionHandler(getAllUploadsReq));
+
+// @route GET /api/ideas/:ideaId/uploads
 // @desc Download zipped uploads
-// @access Private
-router.get("/",cloudinaryConfig, exceptionHandler(downloadUploadsReq));
+// @access Public
+router.get("/download",cloudinaryConfig, exceptionHandler(downloadUploadsReq));
 
 module.exports = router;

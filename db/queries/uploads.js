@@ -34,6 +34,42 @@ function getIdeaAllUploadsQuery(ideaId) {
   );
 }
 
+
+function getUploadQuery(uploadId) {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql:
+          "select * from Uploads where upload_id = ?",
+        timeout: 40000, // 40s
+        values: [uploadId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result);
+      }
+    )
+  );
+}
+
+
+function getUploadsCountQuery() {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql:
+          "select COUNT(*) from Uploads",
+        timeout: 40000, // 40s
+        values: []
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result[0]["COUNT(*)"]);
+      }
+    )
+  );
+}
+
 function deleteUploadQuery(ideaId, uploadId) {
   return new Promise((resolve, reject) =>
     pool.query(
@@ -54,5 +90,7 @@ function deleteUploadQuery(ideaId, uploadId) {
 module.exports = {
   createUploadQuery,
   deleteUploadQuery,
-  getIdeaAllUploadsQuery
+  getIdeaAllUploadsQuery,
+  getUploadsCountQuery,
+  getUploadQuery
 };

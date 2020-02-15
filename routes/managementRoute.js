@@ -21,7 +21,7 @@ const {
 //@desc Change user details
 //@access Private and limited access
 router.post(
-  "/update-user/:id",
+  "/update-user/:userId",
   [authMiddleware, IsInRole([admin, coordinator])],
   exceptionHandler(adminUpdateUserDetailsReq)
 );
