@@ -11,8 +11,14 @@ const {
   createUploadQuery,
   getIdeaAllUploadsQuery
 } = require("../db/queries/uploads");
+const {
+  getUserDepartmentIdQuery,
+  getDepartmentCoordinatorQuery
+} = require("../db/queries/departments");
 const CustomError = require("../utils/CustomError");
 const cloudinary = require("cloudinary");
+const config = require("config");
+const sendMail = require("../utils/emailSender");
 
 const getAllIdeasReq = async (req, res) => {
   const ideas = await getAllIdeasQuery();
@@ -21,12 +27,12 @@ const getAllIdeasReq = async (req, res) => {
 
 const deleteIdeaReq = async (req, res) => {
   const { id } = req.params;
-  // const author = await getIdeaAuthorQuery(id);
-  // if (author !== req.user.id)
-  //   throw new CustomError(
-  //     "You are not the author of this idea, you cannot make changes",
-  //     400
-  //   );
+  const {userId: author} = await getIdeaAuthorQuery(id);
+  if (author !== req.user.id)
+    throw new CustomError(
+      "You are not the author of this idea, you cannot make changes",
+      400
+    );
   const uploads = await getIdeaAllUploadsQuery(id);
   await Promise.all(
     uploads.map(
@@ -42,7 +48,7 @@ const deleteIdeaReq = async (req, res) => {
 
 const createIdeaReq = async (req, res) => {
   const { description, isAnonymous, title, categoryId } = req.body;
-  const userId = req.user.ID;
+  const userId = req.user.id;
   const { insertId } = await createIdeaQuery(
     title,
     description,
@@ -59,6 +65,14 @@ const createIdeaReq = async (req, res) => {
       )
     );
   }
+  const userDepartmentId = await getUserDepartmentIdQuery(userId);
+  const coordinator = await getDepartmentCoordinatorQuery(userDepartmentId);
+  // email needs to be configured to show this
+  // sendMail({
+  //   receiver: coordinator.email,
+  //   subject: 'New idea created',
+  //   html: `Please follow this link to check it out <a href="${config.get("server_route")}ideas/${insertId}">click here</a>`
+  // });
 
   res.status(201).json({ success: "Successfully created idea" });
 };
@@ -71,7 +85,7 @@ const increaseIdeaViewsReq = async (req, res) => {
 const updateIdeaReq = async (req, res) => {
   const { description, title } = req.body;
   const { id } = req.params.id;
-  const author = await getIdeaAuthorQuery(id);
+  const {userId: author} = await getIdeaAuthorQuery(id);
   if (author !== req.user.id)
     throw new CustomError(
       "You are not the author of this idea, you cannot make changes",

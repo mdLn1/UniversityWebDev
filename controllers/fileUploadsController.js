@@ -22,7 +22,7 @@ const getAllUploadsReq = async (req, res) => {
 const uploadFilesReq = async (req, res) => {
   const { ideaId } = req.params;
   let uploadsCount = await getUploadsCountQuery();
-  const author = await getIdeaAuthorQuery(ideaId);
+  const {userId: author} = await getIdeaAuthorQuery(ideaId);
   if (author !== req.user.id)
     throw new CustomError(
       "You are not the author of this idea, you cannot make changes",
@@ -87,7 +87,7 @@ const uploadFilesReq = async (req, res) => {
 
 const deleteUploadReq = async (req, res) => {
   const { ideaId, uploadId } = req.params;
-  const author = await getIdeaAuthorQuery(ideaId);
+  const {userId: author} = await getIdeaAuthorQuery(ideaId);
   if (author !== req.user.id)
     throw new CustomError(
       "You are not the author of this idea, you cannot make changes",

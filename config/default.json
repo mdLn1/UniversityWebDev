@@ -7,5 +7,6 @@
     "unsigned_upload_preset": "th12e0km",
     "cloud_name": "mdln97",
     "api_key": "737562788677313",
-    "api_secret": "EM-0wrg11zgW4_KpjSrNlavkvoU"
+    "api_secret": "EM-0wrg11zgW4_KpjSrNlavkvoU",
+    "server_route": "http://localhost:5000/"
 }

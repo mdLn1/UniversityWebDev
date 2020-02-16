@@ -1,5 +1,5 @@
 const pool = require("../dbconn");
-
+const CustomError = require("../../utils/CustomError");
 // Use this function to add a category to the portal
 function createCategoryQuery(tag, description, selectable = true) {
   return new Promise((resolve, reject) =>
@@ -77,9 +77,30 @@ function getAllCategoriesQuery() {
   );
 }
 
+function isCategoryUsedQuery(categoryId) {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: "select COUNT(*) from Ideas where category_id = ?",
+        timeout: 40000, // 40s
+        values: [categoryId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        if (result.length > 0)
+          return reject(
+            new CustomError("Category in use, cannot be deleted", 400)
+          );
+        resolve();
+      }
+    )
+  );
+}
+
 module.exports = {
   updateCategoryByIdQuery,
   createCategoryQuery,
   deleteCategoryByIdQuery,
-  getAllCategoriesQuery
+  getAllCategoriesQuery,
+  isCategoryUsedQuery
 };

@@ -7,8 +7,8 @@ const {
 const isEmailValid = require("../utils/isEmailValid");
 
 const adminUpdateUserDetailsReq = async (req, res) => {
-  const {userId} = req.params;
-  const {name, email, departmentId, roleId} = req.body;
+  const { userId } = req.params;
+  const { name, email, departmentId, roleId } = req.body;
   if (!isEmailValid)
     throw new CustomError("Invalid email address or wrong email domain", 400);
   const user = await getUserDetailsQuery(id);
@@ -19,5 +19,7 @@ const adminUpdateUserDetailsReq = async (req, res) => {
         400
       );
   await adminUpdateUserDetailsQuery(name, email, roleId, departmentId, userId);
-}
+  res.status(200).json({ success: "User details successfully updated" });
+};
+
 module.exports = { adminUpdateUserDetailsReq };

@@ -2,7 +2,8 @@ const {
   createCategoryQuery,
   deleteCategoryByIdQuery,
   updateCategoryByIdQuery,
-  getAllCategoriesQuery
+  getAllCategoriesQuery,
+  isCategoryUsedQuery
 } = require("../db/queries/categories");
 
 const createCategoryReq = async (req, res) => {
@@ -12,19 +13,26 @@ const createCategoryReq = async (req, res) => {
 };
 
 const deleteCategoryByIdReq = async (req, res) => {
-  await deleteCategoryByIdQuery(req.params.id);
+  const { id } = req.params;
+  await isCategoryUsedQuery(id);
+  await deleteCategoryByIdQuery(id);
   res.status(200).json({ success: "Category deleted" });
 };
 
 const updateCategoryByIdReq = async (req, res) => {
   const { newTag, newDescription, isSelectable } = req.body;
-  await updateCategoryByIdQuery(newTag, newDescription, isSelectable, req.params.id);
+  await updateCategoryByIdQuery(
+    newTag,
+    newDescription,
+    isSelectable,
+    req.params.id
+  );
   res.status(202).json({ success: "Successfully updated" });
 };
 
 const getAllCategoriesReq = async (req, res) => {
   const categories = await getAllCategoriesQuery();
-  res.status(200).json({categories});
+  res.status(200).json({ categories });
 };
 
 module.exports = {

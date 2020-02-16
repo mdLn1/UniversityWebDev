@@ -130,13 +130,13 @@ function getIdeaAuthorQuery(ideaId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: `SELECT user_id from Ideas WHERE ID = ?`,
+        sql: `SELECT user_id, email from Ideas WHERE ID = ?`,
         timeout: 40000, // 40s
         values: [ideaId]
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve(result[0].user_id);
+        return resolve({ userId: result[0].user_id, email: result[0].email });
       }
     );
   });

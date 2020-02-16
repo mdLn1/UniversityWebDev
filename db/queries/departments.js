@@ -77,9 +77,43 @@ function getAllDepartmentsQuery() {
   );
 }
 
+function getUserDepartmentIdQuery(userId) {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: `select department_id from Users where ID = ?`,
+        timeout: 40000, // 40s
+        values: [userId]
+      },
+      function(error, result) {
+        if (error) return reject(error);
+        return resolve(result[0].department_id);
+      }
+    )
+  );
+}
+
+function getDepartmentCoordinatorQuery(departmentId) {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: `SELECT Users.ID, Users.name, Users.email from Users left join Roles on Users.role_id = Roles.ID where Users.department_id = ? and Roles.role = ?`,
+        timeout: 40000, // 40s
+        values: [departmentId, "QA Coordinator"]
+      },
+      function(error, result) {
+        if (error) return reject(error);
+        return resolve(result[0]);
+      }
+    )
+  );
+}
+
 module.exports = {
   createDepartmentQuery,
   getAllDepartmentsQuery,
   updateDepartmentQuery,
-  deleteDepartmentQuery
+  deleteDepartmentQuery,
+  getUserDepartmentIdQuery,
+  getDepartmentCoordinatorQuery
 };
