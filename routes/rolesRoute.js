@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { check } = require("express-validator");
-const errorChecker = require("../utils/exceptionHandler");
+const errorChecker = require("../middleware/errorCheckerMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
 const auth = require("../middleware/authMiddleware");
 const authorize = require("../middleware/authorizeMiddleware");
@@ -38,7 +38,7 @@ router.post(
       .isBoolean(),
     errorChecker,
     auth,
-    authorize([admin])
+    authorize(admin)
   ],
   exceptionHandler(createRoleReq)
 );

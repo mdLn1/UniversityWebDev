@@ -51,7 +51,7 @@ app.use((req, res, next) => {
 
 // Global error handling through middleware
 app.use((err, req, res, next) => {
-  console.log(err);
+  console.log(err.stack);
   if (err.statusCode) {
     return res.status(err.statusCode).json(writeFeedback(err.message));
   }

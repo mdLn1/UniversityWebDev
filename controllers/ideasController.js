@@ -79,7 +79,7 @@ const createIdeaReq = async (req, res) => {
 
 const increaseIdeaViewsReq = async (req, res) => {
   await increaseIdeaViewsQuery(req.params.id);
-  res.status(204);
+  res.status(204).send();
 };
 
 const updateIdeaReq = async (req, res) => {
