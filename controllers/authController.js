@@ -17,7 +17,11 @@ const registerUserReq = async (req, res) => {
   if (!isEmailValid(email))
     throw new CustomError("Invalid email address or wrong email domain", 400);
 
+<<<<<<< HEAD
   if (!isPasswordValid(password)) { //REGEX not parsing digits passwords properly.
+=======
+  if (!isPasswordValid(password)) {
+>>>>>>> refs/remotes/origin/mdln
     throw new CustomError(
       "Password must contain at least one uppercase letter, one lowercase letter and a digit", 400
     );
