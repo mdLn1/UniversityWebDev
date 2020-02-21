@@ -2,6 +2,9 @@ const expect = require('expect')
 const request = require('supertest')
 const { app } = require('../server')
 
+const config = require("config");
+const token = config.get("test_token");
+
 describe("GET /api/ideas", () => {
 
     it("Should return 200 on success", (done) => {
