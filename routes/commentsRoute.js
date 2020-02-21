@@ -10,6 +10,7 @@ const {
   deleteCommentReq,
   updateCommentForIdeaReq
 } = require("../controllers/commentsController");
+
 // @route GET /api/ideas/:ideaId/comments
 // @desc Returns all comments for an idea
 // @access Public

@@ -22,7 +22,7 @@ router.get("/", exceptionHandler(getAllRolesReq));
 // @route POST /api/roles
 // @desc Adds new role to roles table
 // @access Private and restricted
-router.post(
+router.post( 
   "/",
   [
     check("role", "Role must be at least 3 characters long")

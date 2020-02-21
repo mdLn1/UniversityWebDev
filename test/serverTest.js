@@ -1,25 +1,9 @@
 const expect = require("expect");
 const request = require("supertest");
-const { ObjectID } = require("mongodb");
 
 const { app } = require("../server");
 const { User } = require("../models/user");
 const { users, populateUsers } = require("./seed/seed");
-
-// Simple Test Example
-describe("POST /hello", () => {
-  it("should return OK status", done => {
-    var text = "Hello World";
-
-    request(app)
-      .get("/hello")
-      .expect(200)
-      .expect(res => {
-        expect(res.body.msg).toBe(text);
-      })
-      .end(done);
-  });
-});
 
 // Register tests
 describe("POST /api/auth/register/", () => {
