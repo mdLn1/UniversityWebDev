@@ -18,12 +18,6 @@ export class IdeaDisplayer extends React.Component {
         
       }
 
-      
-
-      // idChangeHandler = e => {
-      //   this.setState({ id: this.state.id });
-      // };
-
       ideaTitleChangeHandler = e => {
         this.setState({ ideaTitle: this.state.ideaTitle });
       };

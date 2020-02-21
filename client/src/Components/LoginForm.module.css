@@ -132,8 +132,13 @@ padding-left: 10px;
 }
 
 .displayDiv{
-  margin-top: 2%;
+  margin-top: 4%;
   background-color: whitesmoke;
+  height: 40px;
+}
+
+.labelTitle{
+  justify-self: left;
 }
 
 .smallIdeaContainer{

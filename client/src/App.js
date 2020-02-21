@@ -13,7 +13,6 @@ function App() {
         </div>
         <Switch>
           <Route exact path="/">
-            {/* <IdeaDisplayer/> */}
             <Authentication/>
           </Route>
           <Route path = "/login"> 
@@ -21,6 +20,7 @@ function App() {
           </Route>
           <Route path = "/dashboard">
               <Dashboard/>
+              {/* <IdeaDisplayer/> */}
           </Route>
         </Switch>
         </Router>
