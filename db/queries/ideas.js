@@ -130,7 +130,11 @@ function getIdeaAuthorQuery(ideaId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: `SELECT user_id, email from Ideas WHERE ID = ?`,
+        sql: `SELECT u.email \
+        FROM Ideas AS i \
+        INNER JOIN Users AS u \
+        ON i.user_id = u.ID \
+        WHERE i.user_id= ?`,
         timeout: 40000, // 40s
         values: [ideaId]
       },

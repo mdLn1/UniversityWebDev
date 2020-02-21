@@ -2,6 +2,9 @@ const expect = require('expect')
 const request = require('supertest')
 const { app } = require('../server')
 
+const config = require("config");
+const token = config.get("test_token");
+
 describe("GET /api/ideas/:ideaId/comments", () => {
 
     it("Should return 400 as user is unauthorised", (done) => {
@@ -24,7 +27,8 @@ describe("POST /api/ideas/:ideaId/comments", () => {
         }
 
         request(app)
-        .post(`/api/ideas/${ideaToUpdate}/comments`)
+        .post(`/api/ideas/${ideaToUpdate.ideaId}/comments`)
+        .set({"x-auth-token" : token})
         .send(ideaToUpdate)
         .expect(400)
         .end(done)
