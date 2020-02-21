@@ -8,7 +8,6 @@ import {IdeaDisplayer} from './IdeaDisplayer';
 import axios from "axios";
 import { Button } from '@material-ui/core';
 
-
 export class Dashboard extends React.Component {
     constructor(props) {
         super(props);
@@ -29,45 +28,37 @@ export class Dashboard extends React.Component {
           res.data.forEach(idea => ideasTitleList.push(idea.Title) );
           res.data.forEach(idea => ideasCategoryList.push(idea.category) );
 
-
           for (let index = 0; index < ideasTitleList.length; index++) {
             
             var newElement = document.createElement('div');
+            //styling
+            newElement.style.backgroundColor = 'pink'; 
+            newElement.style.borderRadius = '20px';
+
+            //--------end styling-----------
             newElement.id = ideasTitleList[index];
             newElement.className = styles.displayDiv;
             newElement.innerText= ideasTitleList[index];
             let component = "<div> <label>  </label </div>"
-            newElement.innerHTML = "<div> <label> Idea Title:   " +  ideasTitleList[index] + " </label><br/><br/><label>Idea Category:" +ideasCategoryList[index] + " </label> </div>";
+            newElement.innerHTML = "<div> <label> Idea Title: " +  ideasTitleList[index] + " </label><br/><br/><label>Idea Category:" +ideasCategoryList[index] + " </label> <br/><br/><br/></div>";
             document.body.appendChild(newElement);
           }
-          console.log(ideasTitleList.length)
+
       }catch (err){
           console.log(err);
       }
     }
-    
+
       
     render() {
       return (
         <div >
-            {/* <Paper>
-                <Tabs
-                    //value={}
-                    // onChange={handleChange}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered
-                >
-                    <Tab label="Home" />
-                    <Tab label="Ideas" {...a11yProps(1)}  />
-                    <Tab label="Personal Area" />
-                </Tabs>
-            </Paper> */}
             <div className = {styles.dashboardNavigationBar}>
+              
               <Button> Home </Button>
               <Button onClick = {this.onClick}> Ideas </Button>
               <Button> Help </Button>
-        
+
             </div>
             <span> </span>
             <span></span>
