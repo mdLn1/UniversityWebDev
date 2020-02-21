@@ -36,7 +36,7 @@ function getAllIdeasQuery() {
         (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
         (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS uploadsCount
         FROM Ideas AS i
-        ORDER BY postedTime DESC`,
+        ORDER BY i.posted_time DESC`,
         timeout: 40000, // 40s
         values: []
       },

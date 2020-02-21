@@ -20,6 +20,7 @@ const {
 
 router.use("/:ideaId/uploads", uploadRoute);
 router.use("/:ideaId/comments", commentRoute)
+
 // @route GET /api/ideas
 // @desc Returns all ideas
 // @access Public

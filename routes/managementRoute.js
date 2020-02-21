@@ -8,6 +8,7 @@ const { admin, coordinator } = config.get("roles");
 const {
   adminUpdateUserDetailsReq
 } = require("../controllers/managementController");
+
 // const rolesRouter = require("./rolesRoute");
 // const categoriesRouter = require("./categoriesRoute");
 // const departmentsRouter = require("./departmentsRoute");

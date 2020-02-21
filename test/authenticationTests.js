@@ -1,25 +1,9 @@
 const expect = require("expect");
 const request = require("supertest");
-const { ObjectID } = require("mongodb");
 
 const { app } = require("../server");
 const { User } = require("../models/user");
 const { users, populateUsers } = require("./seed/seed");
-
-// Simple Test Example
-describe("POST /hello", () => {
-  it("should return OK status", done => {
-    var text = "Hello World";
-
-    request(app)
-      .get("/hello")
-      .expect(200)
-      .expect(res => {
-        expect(res.body.msg).toBe(text);
-      })
-      .end(done);
-  });
-});
 
 // Register tests
 describe("POST /api/auth/register/", () => {
@@ -57,9 +41,11 @@ describe("POST /api/auth/register/", () => {
     request(app)
       .post("/api/auth/register/")
       .send({
-        name: "nameone",
+        name: "TestUser",
+        role_id: 3,
+        department_id: 2,
         password: "useronepassword",
-        email: "hello@gmail.com"
+        email: "hello@gre.ac.uk"
       })
       .expect(400)
       .expect(res => {
