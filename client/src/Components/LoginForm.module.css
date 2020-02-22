@@ -134,13 +134,60 @@ padding-left: 10px;
 .displayDiv{
   margin-top: 4%;
   background-color: whitesmoke;
-  height: 40px;
+  height: 10%;
 }
 
 .labelTitle{
-  justify-self: left;
+  font-size: x-large;
 }
+
+.ideaTitleContainer{
+  text-align: left;
+  margin-left: 1%;
+}
+
 
 .smallIdeaContainer{
   background-color: blue;
+}
+
+.descriptionTextArea{
+  font-size: medium;
+  width: 98%;
+  height: 200%;
+}
+
+.ideaDescriptionContainer{
+  width: auto;
+  height: auto;
+  resize: none;
+}
+
+.likes{
+  text-align: left;
+}
+
+.likesLabel{
+  font-size: smaller;
+}
+
+.commentButton{
+  margin-right: 1%;
+  float: right;
+  
+}
+.labelDate{
+  margin-right: 1%;
+  float: right;
+  font-size: smaller;
+  margin-top: 1%;
+}
+.labelAuthor{
+  margin-left: 15%;
+  font-size: smaller;
+  float: center;
+}
+
+.likeButtons{
+  padding-left: 1em;
 }

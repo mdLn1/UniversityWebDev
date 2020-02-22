@@ -13,11 +13,11 @@ export class Dashboard extends React.Component {
         super(props);
         this.state = {
           areIdeasDisplayed:false,
-          listOfTitles: [],
-          listOfCategories:[],
-          listOfDescriptions: []
+          listOfDescriptions: [],
+          listOfIdeas:[]
         };
     }
+
 
     //Gets all ideas and displayes their title
     onClick = async e => {
@@ -28,21 +28,11 @@ export class Dashboard extends React.Component {
       });
       try {
           const res = await axios.get("/api/ideas");
-          const ideasTitleList = [];
-          const ideasCategoryList = [];
           const descriptionsList = [];
 
-
           console.log(res.data);
-
-          res.data.forEach(idea => ideasTitleList.push(idea.Title) );
-          res.data.forEach(idea => ideasCategoryList.push(idea.category) );
-          res.data.forEach(idea => descriptionsList.push(idea.description) );
           
-          this.setState({listOfTitles:ideasTitleList})
-          this.setState({listOfCategories: ideasCategoryList})
-          this.setState({listOfDescriptions:descriptionsList})
-
+          this.setState({listOfIdeas: res.data})
       }catch (err){
           console.log(err);
       }
@@ -63,8 +53,17 @@ export class Dashboard extends React.Component {
               <span> </span>
               <span> </span>
               {
-                this.state.listOfTitles.map(function(idea, ideax){
-                  return (<IdeaBar title={idea}> </IdeaBar> )
+                this.state.listOfIdeas.map(function(idea, key){
+                  return (
+                    <IdeaBar 
+                      title={idea.Title} 
+                      description={idea.description}
+                      date={idea.posted_time}
+                      author={idea.author}
+                      likes={idea.positiveVotes-idea.negativeVotes}
+                      comments = {idea.commentsCount}
+                    > 
+                    </IdeaBar> )
                 })
               }
               
