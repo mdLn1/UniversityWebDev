@@ -53,17 +53,7 @@ export class IdeaDisplayer extends React.Component {
         <div className ={styles.ideaDisplayerOuterBox}>
             <span/>
             <span/>
-            <h1> <b> IDEA DISPLAYER  </b></h1>
-            {/* Retrieve idea through its ID --- This might be useful to implement later on */}
-            {/* <div className = {styles.ideaTitle}>
-                <TextField
-                    id="idfield"
-                    label="Id field "
-                    variant="filled"
-                    onChange={this.idChangeHandler}
-                    value = {this.state.id}
-                />
-            </div> */}
+            <h1> <b> Create an Idea  </b></h1>
             <div className = {styles.ideaTitle}>
                 <label className ={styles.titleLabel}>Title:</label>
                 <TextField

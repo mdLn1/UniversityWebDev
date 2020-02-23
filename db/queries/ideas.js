@@ -59,7 +59,7 @@ function increaseIdeaViewsQuery(ideaId) {
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve();
+        resolve();
       }
     );
   });

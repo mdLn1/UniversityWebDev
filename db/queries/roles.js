@@ -90,15 +90,15 @@ function isRoleSelectableQuery(id) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: "select isSelectable from Roles where (id = ?)",
+        sql: "select isSelectable from Roles where id = ?",
         timeout: 40000,
-        values: [role, description, isSelectable, id]
+        values: [id]
       },
       (err, result) => {
         if (err) {
           return reject(err);
         }
-        if (result[0].isSelectable) return resolve();
+        if (result.length > 0) if (result[0].isSelectable) return resolve();
         reject(new CustomError("You cannot select this role", 400));
       }
     );

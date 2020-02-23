@@ -30,7 +30,7 @@ const registerUserReq = async (req, res) => {
   // produce a password hash and save it to user
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  await isRoleSelectableQuery(id);
+  await isRoleSelectableQuery(roleId);
   // perform user registration
   await createUserQuery(name, hashedPassword, email, roleId, departmentId);
 
