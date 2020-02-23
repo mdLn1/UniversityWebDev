@@ -19,7 +19,7 @@ describe("GET /api/ideas", () => {
         .get(`/api/ideas`)
         .expect(200)
         .expect(res => {
-            expect(res.body[0]).toBeDefined()
+            expect(res.body.ideas).toBeDefined()
         })
         .end(done)
     })

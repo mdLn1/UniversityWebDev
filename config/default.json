@@ -9,5 +9,5 @@
     "api_key": "737562788677313",
     "api_secret": "EM-0wrg11zgW4_KpjSrNlavkvoU",
     "server_route": "http://localhost:5000/",
-    "test_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im5hbWUiOiJNYXJjbyIsImVtYWlsIjoibWFyY29AZ3JlLmFjLnVrIiwicm9sZSI6IlFBIE1hbmFnZXIiLCJkZXBhcnRtZW50IjoiRmluYW5jZSIsImlkIjo4fSwiaWF0IjoxNTgyMjk0MzIyLCJleHAiOjE1ODIzMzAzMjJ9.aJMANOP8gq-IpjisPtcGHdDofq5ET_axS9pFdsvFXhU"
+    "test_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im5hbWUiOiJNYXJjbyIsImVtYWlsIjoibWFyY29AZ3JlLmFjLnVrIiwicm9sZSI6IlFBIE1hbmFnZXIiLCJkZXBhcnRtZW50IjoiRmluYW5jZSIsImlkIjo4fSwiaWF0IjoxNTgyNDQ0MDY4LCJleHAiOjE1ODI0ODAwNjh9.qJ_vlRuuJkGwNQluuGVKNSt3bPuFtenPAqxx0BQnPIo"
 }
