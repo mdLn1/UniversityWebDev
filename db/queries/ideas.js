@@ -23,7 +23,7 @@ function createIdeaQuery(title, description, isAnonymous, categoryId, userId) {
 }
 
 // Returns All ideas with the latest posts being returned first.
-function getAllIdeasQuery() {
+function getAllIdeasQuery(pageNo, itemsCount) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
@@ -36,9 +36,9 @@ function getAllIdeasQuery() {
         (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
         (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS uploadsCount
         FROM Ideas AS i
-        ORDER BY i.posted_time DESC`,
+        ORDER BY i.posted_time DESC LIMIT ? OFFSET ?`,
         timeout: 40000, // 40s
-        values: []
+        values: [itemsCount, itemsCount * (pageNo - 1)]
       },
       (error, result) => {
         if (error) return reject(error);
@@ -146,6 +146,22 @@ function getIdeaAuthorQuery(ideaId) {
   });
 }
 
+
+function getIdeasCountQuery() {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql:"select COUNT(ID) FROM Ideas",
+        timeout: 40000, // 40s
+        values: []
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result[0]["COUNT(ID)"]);
+      }
+    );
+  });
+}
 module.exports = {
   createIdeaQuery,
   updateIdeaQuery,
@@ -153,5 +169,6 @@ module.exports = {
   increaseIdeaViewsQuery,
   getAllIdeasQuery,
   getIdeaByIdQuery,
-  getIdeaAuthorQuery
+  getIdeaAuthorQuery,
+  getIdeasCountQuery
 };

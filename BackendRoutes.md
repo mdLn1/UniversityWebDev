@@ -128,11 +128,13 @@ CreateIdea = "/api/ideas" (request type = POST )
     => On success returns { success: string } Status 201
     => On failure { errors: Array } Status 500
 
-GetAllIdeas = "/api/ideas" (request type = GET )
+GetAllIdeas = "/api/ideas" (request type = GET ) with query params "/api/ideas?itemsCount=5&pageNo=1"
 
     no request params, nor request body expected
 
-    => On success returns {ideas: Array} Status 200
+    request query optional { itemsCount, pageNo }, default values 5 and 1
+
+    => On success returns {ideas: Array, totalIdeas: number} Status 200
     => On failure { errors: Array } Status 500
 
 GetIdeaById = "/api/ideas/:id" (request type = GET )
