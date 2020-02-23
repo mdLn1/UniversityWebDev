@@ -6,7 +6,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import axios from "axios";
 import { Button } from '@material-ui/core';
 
-export class IdeaDisplayer extends React.Component {
+export class IdeaCreator extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -53,31 +53,23 @@ export class IdeaDisplayer extends React.Component {
         <div className ={styles.ideaDisplayerOuterBox}>
             <span/>
             <span/>
-            <h1> <b> Create an Idea  </b></h1>
-            <div className = {styles.ideaTitle}>
-                <label className ={styles.titleLabel}>Title:</label>
+            <h1> <b> Submit Your Idea  </b></h1>
+            <div className = {styles.textfieldTitle}>
+                <label className ={styles.labelCreator}>Title:</label>
                 <TextField
                     id="idea-title"
                     label="Idea Title "
                     variant="filled"
                     onChange={this.ideaTitleChangeHandler}
-                    value = {this.state.ideaTitle}
-                    InputProps={{
-                      readOnly: true,
-                    }}
                 />
             </div>
             <div className = {styles.categoryTitle}>
-                <label>Category: </label>
+                <label className = {styles.labelCreator}>Category: </label>
                 <TextField
                     id="category-title"
                     label="Category Title "
                     variant="filled"
                     onChange={this.categoryTitleChangeHandler}
-                    value = {this.state.categoryTitle}
-                    InputProps={{
-                      readOnly: true,
-                    }}
                 />
             </div>
             <div className = {styles.categoryTitle}>
@@ -89,21 +81,20 @@ export class IdeaDisplayer extends React.Component {
                     rows="4"
                     variant = "filled"
                     onChange = {this.descriptionChangeHandler}
-                    value = {this.state.description}
-                    InputProps={{
-                      readOnly: true,
-                    }}
                 />
             </div>
-            <div>
+            <div className={styles.checkboxAnonymousSubmission}>
+              <label>Anonymos submission:</label>
+              <Checkbox></Checkbox>
+            </div>
             <Button variant="contained" 
                     size="medium" 
                     color="primary" 
                     onClick = {this.onSubmit}
+
             >
-                Retrieve 
+                Submit 
             </Button>
-            </div>
         </div>
       );
     }

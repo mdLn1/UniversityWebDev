@@ -129,6 +129,7 @@ padding-left: 10px;
 
 .ideaDisplayerOuterBox{
   background-color: whitesmoke;
+  text-align: left;
 }
 
 .displayDiv{
@@ -190,4 +191,24 @@ padding-left: 10px;
 
 .likeButtons{
   padding-left: 1em;
+}
+
+.editBar{
+  margin-top: 1%;
+  background-color: whitesmoke;
+  border-style: dashed;
+  border-width: 3px;
+}
+
+.checkboxAnonymousSubmission{
+  text-align: left;
+}
+
+.textfieldTitle{
+  width: 90%;
+  height: 20%;
+}
+
+.labelCreator{
+  margin-top: 2%%;
 }

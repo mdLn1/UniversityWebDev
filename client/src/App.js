@@ -3,14 +3,12 @@ import './App.css';
 import { Switch, BrowserRouter as Router, NavLink, Route} from "react-router-dom";
 import {Authentication} from './Pages/Authentication';
 import {Dashboard} from './Components/Dashboard';
-import {IdeaDisplayer} from './Components/IdeaDisplayer';
+import {IdeaCreator} from './Components/IdeaCreator';
 
 function App() {
   return (
     <div className="App">
       <Router>
-        <div>
-        </div>
         <Switch>
           <Route exact path="/">
             <Authentication/>
@@ -19,7 +17,9 @@ function App() {
               <Authentication/>
           </Route>
           <Route path = "/dashboard">
-              <Dashboard/>
+              <IdeaCreator/>
+              
+              {/* <Dashboard/> */}
               {/* <IdeaDisplayer/> */}
           </Route>
         </Switch>

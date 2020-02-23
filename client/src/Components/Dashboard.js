@@ -1,49 +1,39 @@
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import React from 'react';
+import React, { Fragment } from 'react';
 import styles from "./LoginForm.module.css";
-import {IdeaContainer} from './IdeaContainer';
-import {IdeaDisplayer} from './IdeaDisplayer';
 import axios from "axios";
 import { Button } from '@material-ui/core';
 import IdeaBar from "./IdeaBar";
+import { Redirect } from 'react-router-dom';
 export class Dashboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
           areIdeasDisplayed:false,
           listOfDescriptions: [],
-          listOfIdeas:[]
+          listOfIdeas:[],
+          creatorMode:false
         };
     }
 
-
     //Gets all ideas and displayes their title
     onClick = async e => {
-
-
       this.setState({
         areIdeasDisplayed: true
       });
       try {
           const res = await axios.get("/api/ideas");
-          const descriptionsList = [];
-
           console.log(res.data);
-          
           this.setState({listOfIdeas: res.data})
       }catch (err){
           console.log(err);
       }
-
     }
-
       
     render() {
       if(this.state.areIdeasDisplayed){
         return(
           <div >
+            <Fragment>
               <div className = {styles.dashboardNavigationBar}>
                 {this.props.children}
                 <Button> Home </Button>
@@ -52,6 +42,11 @@ export class Dashboard extends React.Component {
               </div>
               <span> </span>
               <span> </span>
+              <div className = {styles.editBar}>
+                <Button> Create Idea </Button>
+                <Button> Edit Idea </Button>
+                <Button> Remove Idea </Button>
+              </div>
               {
                 this.state.listOfIdeas.map(function(idea, key){
                   return (
@@ -66,7 +61,7 @@ export class Dashboard extends React.Component {
                     </IdeaBar> )
                 })
               }
-              
+              </Fragment>
           </div>
         );
       } else {
@@ -77,7 +72,6 @@ export class Dashboard extends React.Component {
                 <Button> Home </Button>
                 <Button onClick = {this.onClick}> Ideas </Button>
                 <Button> Help </Button>
-
               </div>
               <span> </span>
               <span> </span>

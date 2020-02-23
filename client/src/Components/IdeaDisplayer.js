@@ -119,3 +119,6 @@ export class IdeaDisplayer extends React.Component {
     }
 
   }
+
+
+  export default IdeaDisplayer;
