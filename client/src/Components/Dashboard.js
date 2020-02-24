@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import styles from "./LoginForm.module.css";
 import axios from "axios";
 import { Button } from '@material-ui/core';
-import IdeaBar from "./IdeaBar";
+import ideaBar from "./ideaBar";
 import { Redirect } from 'react-router-dom';
 export class Dashboard extends React.Component {
     constructor(props) {
@@ -50,7 +50,7 @@ export class Dashboard extends React.Component {
               {
                 this.state.listOfIdeas.map(function(idea, key){
                   return (
-                    <IdeaBar 
+                    <ideaBar 
                       title={idea.Title} 
                       description={idea.description}
                       date={idea.posted_time}
@@ -58,7 +58,7 @@ export class Dashboard extends React.Component {
                       likes={idea.positiveVotes-idea.negativeVotes}
                       comments = {idea.commentsCount}
                     > 
-                    </IdeaBar> )
+                    </ideaBar> )
                 })
               }
               </Fragment>
@@ -80,6 +80,4 @@ export class Dashboard extends React.Component {
         );
     }
   }
-
-
 }
