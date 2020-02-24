@@ -5,7 +5,8 @@ const {
   increaseIdeaViewsQuery,
   updateIdeaQuery,
   getIdeaByIdQuery,
-  getIdeaAuthorQuery
+  getIdeaAuthorQuery,
+  getIdeasCountQuery
 } = require("../db/queries/ideas");
 const {
   createUploadQuery,
@@ -21,8 +22,26 @@ const config = require("config");
 const sendMail = require("../utils/emailSender");
 
 const getAllIdeasReq = async (req, res) => {
-  const ideas = await getAllIdeasQuery();
-  res.status(200).json(ideas);
+  let {pageNo, itemsCount} = req.query;
+  if(!itemsCount || itemsCount < 5) {
+    itemsCount = 5;
+  }
+  if(!pageNo || pageNo < 1) {
+    pageNo = 1;
+  }
+  if(isNaN(pageNo) || isNaN(itemsCount)){
+    pageNo = 1;
+    itemsCount = 5;
+  }
+  pageNo = parseInt(pageNo);
+  itemsCount = parseInt(itemsCount);
+  const totalIdeas = await getIdeasCountQuery();
+  if(pageNo * itemsCount > totalIdeas + itemsCount ){
+    pageNo = 1;
+    itemsCount = 5;
+  }
+  const ideas = await getAllIdeasQuery(pageNo, itemsCount);
+  res.status(200).json({ideas, totalIdeas});
 };
 
 const deleteIdeaReq = async (req, res) => {

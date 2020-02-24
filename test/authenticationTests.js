@@ -5,6 +5,9 @@ const { app } = require("../server");
 const { User } = require("../models/user");
 const { users, populateUsers } = require("./seed/seed");
 
+const config = require("config");
+const token = config.get("test_token");
+
 // Register tests
 describe("POST /api/auth/register/", () => {
   // await beforeEach(populateUsers);
@@ -26,10 +29,11 @@ describe("POST /api/auth/register/", () => {
     request(app)
       .post("/api/auth/register/")
       .send({
-        name: "nameonetwo",
+        name: "nameonetwothree",
         password: "useronetwopassword",
         email: "hello@gre.ac.uk"
       })
+      .set({"x-auth-token" : token})
       .expect(200)
       .expect(res => {
         expect(res.headers["x-auth-token"]).not.toBeNull();
