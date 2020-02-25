@@ -34,8 +34,8 @@ describe("POST /api/auth/register/", () => {
         departmentId: 1,
         roleId: 3
       })
-      //.set({"x-auth-token" : token})
-      .expect(200)
+      //Should return 400 as user has already been created via this test.
+      .expect(400)
       .expect(res => {
         expect(res.headers["x-auth-token"]).not.toBeNull();
       })
@@ -44,7 +44,7 @@ describe("POST /api/auth/register/", () => {
 
   it("should not create a new user", done => {
     request(app)
-      .post("/api/auth/register/")
+      .post("/api/auth/register")
       .send({
         name: "TestUser",
         role_id: 3,
@@ -63,14 +63,12 @@ describe("POST /api/auth/register/", () => {
 // Login Tests
 describe("POST /api/auth/login/", () => {
   it("Returns whether or not the user password is at least 6 characters long", done => {
-    const expected = "Password is required for login"
-
     request(app)
       .post("/api/auth/login")
       .send({ email: "hamza"})
       .expect(400)
       .expect(res => {
-        expect(res.body.errors).toBeDefined()
+        expect(res.body.errors[0]).toEqual("Password is required for login")
       })
       .end(done);
   });
