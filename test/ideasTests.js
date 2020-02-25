@@ -56,3 +56,82 @@ describe("GET /api/ideas/:id/increase-views", () => {
         .end(done)
     })
 })
+
+describe("POST /api/ideas", () => {
+    it("Should create a new idea and return 201", (done) => {
+        testIdea = {
+            description: "My test idea that is being added by me",
+            categoryId: 1,
+            isAnonymous: 1,
+            title: "Testing"
+        }
+
+        request(app)
+        .post("/api/ideas")
+        .set({"x-auth-token" : token})
+        .send(testIdea)
+        .expect(201)
+        .expect( res => {
+            expect(res.body)
+        })
+        .end(done)
+    })
+
+    it("Testing whether or not a description with less than 15 character is accepted", (done) => {
+        testIdea = {
+            description: "My test idea",
+            categoryId: 1,
+            isAnonymous: 1,
+            title: "Testing"
+        }
+
+        request(app)
+        .post("/api/ideas")
+        .set({"x-auth-token" : token})
+        .send(testIdea)
+        .expect(400)
+        .expect( res => {
+            expect(res.body.errors[0]).toBe("Description must contain at least 15 characters")
+        })
+        .end(done)
+    })
+
+    it("Testing whether or not a title with less than 5 character is accepted", (done) => {
+        testIdea = {
+            description: "My test idea is appropriate",
+            categoryId: 1,
+            isAnonymous: 1,
+            title: "Test"
+        }
+
+        request(app)
+        .post("/api/ideas")
+        .set({"x-auth-token" : token})
+        .send(testIdea)
+        .expect(400)
+        .expect( res => {
+            expect(res.body.errors[0]).toBe("Title must be at least 5 characters long")
+        })
+        .end(done)
+    })
+
+    it("Testing whether or non int passed as a category id is accepted", (done) => {
+        testIdea = {
+            description: "My test idea is appropriate",
+            categoryId: "1",
+            isAnonymous: 1,
+            title: "Tester"
+        }
+
+        request(app)
+        .post("/api/ideas")
+        .set({"x-auth-token" : token})
+        .send(testIdea)
+        .expect(400)
+        .expect( res => {
+            expect(res.body.errors[0]).toBe("Category Id must be an integer")
+        })
+        .end(done)
+    })
+})
+

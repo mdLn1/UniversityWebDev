@@ -41,14 +41,14 @@ describe("POST /api/ideas/:ideaId/comments", () => {
 describe("POST /api/ideas/:ideaId/comments", () => {
 
     it("Test if unauthorised user can create a comment", (done) => {
-        const ideaToCreate = {
+        const commentToCreate = {
             comment : "My first comment on the platform",
             isAnonymous : 1,
             ideaId : 2
         }
 
         request(app)
-        .post(`/api/ideas/${ideaToCreate.ideaId}/comments`)
+        .post(`/api/ideas/${commentToCreate.ideaId}/comments`)
         .send(ideaToCreate)
         .expect(400)
         .expect(res => {
