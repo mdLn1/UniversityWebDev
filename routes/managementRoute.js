@@ -7,7 +7,8 @@ const config = require("config");
 const { admin, coordinator } = config.get("roles");
 const {
   adminUpdateUserDetailsReq,
-  adminDisableUserAccountReq
+  adminDisableUserAccountReq,
+  adminEnableUserAccountReq
 } = require("../controllers/managementController");
 
 // const rolesRouter = require("./rolesRoute");
