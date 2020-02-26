@@ -6,7 +6,8 @@ const exceptionHandler = require("../utils/exceptionHandler");
 const config = require("config");
 const { admin, coordinator } = config.get("roles");
 const {
-  adminUpdateUserDetailsReq
+  adminUpdateUserDetailsReq,
+  adminDisableUserAccountReq
 } = require("../controllers/managementController");
 
 // const rolesRouter = require("./rolesRoute");
@@ -25,6 +26,18 @@ router.post(
   "/update-user/:userId",
   [authMiddleware, IsInRole([admin, coordinator])],
   exceptionHandler(adminUpdateUserDetailsReq)
+);
+
+router.get(
+  "/disable-user/:userId",
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(adminDisableUserAccountReq)
+);
+
+router.get(
+  "/enable-user/:userId",
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(adminEnableUserAccountReq)
 );
 
 module.exports = router;
