@@ -17,10 +17,9 @@ function App() {
               <Authentication/>
           </Route>
           <Route path = "/dashboard">
-              <IdeaCreator/>
-              
-              {/* <Dashboard/> */}
-              {/* <IdeaDisplayer/> */}
+            <Dashboard/>
+            {/* <IdeaCreator/>
+            <IdeaDisplayer/> */}
           </Route>
         </Switch>
         </Router>

@@ -2,8 +2,10 @@ import React, { Fragment } from 'react';
 import styles from "./LoginForm.module.css";
 import axios from "axios";
 import { Button } from '@material-ui/core';
-import ideaBar from "./ideaBar";
+import IdeaBar from "./IdeaBar";
 import { Redirect } from 'react-router-dom';
+//import Pagination from '@material-ui/Pagination';
+
 export class Dashboard extends React.Component {
     constructor(props) {
         super(props);
@@ -11,8 +13,13 @@ export class Dashboard extends React.Component {
           areIdeasDisplayed:false,
           listOfDescriptions: [],
           listOfIdeas:[],
-          creatorMode:false
+          creatorMode:false,
+          selectedPage: 1
         };
+    }
+
+    something() {
+      this.setState({selectedPage: 1})
     }
 
     //Gets all ideas and displayes their title
@@ -21,9 +28,8 @@ export class Dashboard extends React.Component {
         areIdeasDisplayed: true
       });
       try {
-          const res = await axios.get("/api/ideas");
-          console.log(res.data);
-          this.setState({listOfIdeas: res.data})
+          const res = await axios.get(`/api/ideas?itemsCount=5&pageNo=${this.state.selectedPage}`);
+          this.setState({listOfIdeas: res.data.ideas})
       }catch (err){
           console.log(err);
       }
@@ -50,7 +56,8 @@ export class Dashboard extends React.Component {
               {
                 this.state.listOfIdeas.map(function(idea, key){
                   return (
-                    <ideaBar 
+                    <IdeaBar 
+                      key= {key}
                       title={idea.Title} 
                       description={idea.description}
                       date={idea.posted_time}
@@ -58,9 +65,16 @@ export class Dashboard extends React.Component {
                       likes={idea.positiveVotes-idea.negativeVotes}
                       comments = {idea.commentsCount}
                     > 
-                    </ideaBar> )
+                    </IdeaBar>
+                    )
                 })
               }
+           
+            <div>
+              <strong><button onClick={this.something} >1     </button></strong>
+              <strong><button >2</button></strong>
+            </div>
+
               </Fragment>
           </div>
         );
