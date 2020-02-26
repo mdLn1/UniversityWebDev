@@ -190,6 +190,22 @@ function isAccountDisabledQuery(id){
   });
 }
 
+function adminEnableDisableUserAccountQuery(id, disabled) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "update Users set disable = ? where id = ?",
+        timeout: 40000,
+        values: [disabled, id]
+      },
+      (err, result) => {
+        if (err) return reject(err);
+        return resolve();
+      }
+    );
+  });
+}
+
 function updateUserPasswordQuery(password, id) {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -216,5 +232,6 @@ module.exports = {
   updateUserDetailsQuery,
   updateUserPasswordQuery,
   userLastLoginQuery,
-  isAccountDisabledQuery
+  isAccountDisabledQuery,
+  adminEnableDisableUserAccountQuery
 };

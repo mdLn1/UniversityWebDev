@@ -22,11 +22,21 @@ Login = "/api/auth/login/" (request type = POST )
 
     => On failure { errors = Array } Status 500, 400
 
-## Users management
+## Admin management
 
 Users = "/api/management/update-user/:userId" (request type = GET )
 
     => On success returns { ID, name, password, email, role_id, department_id } Status 200
+    => On failure { errors: Array } Status 500
+
+EnableUserAccount = "/api/management/enable-user/:userId" (request type = GET )
+
+    => On success returns { success: String } Status 200
+    => On failure { errors: Array } Status 500
+
+DisableUserAccount = "/api/management/disable-user/:userId" (request type = GET )
+
+    => On success returns { success: String } Status 200
     => On failure { errors: Array } Status 500
 
 ## Roles

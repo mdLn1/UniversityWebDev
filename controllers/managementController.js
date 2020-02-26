@@ -2,7 +2,8 @@ const {
   createUserQuery,
   getUserDetailsQuery,
   isEmailRegisteredAlreadyQuery,
-  adminUpdateUserDetailsQuery
+  adminUpdateUserDetailsQuery,
+  adminEnableDisableUserAccountQuery
 } = require("../db/queries/users");
 const isEmailValid = require("../utils/isEmailValid");
 
@@ -22,4 +23,16 @@ const adminUpdateUserDetailsReq = async (req, res) => {
   res.status(200).json({ success: "User details successfully updated" });
 };
 
-module.exports = { adminUpdateUserDetailsReq };
+const adminDisableUserAccountReq = async (req, res) => {
+  const {userId} = req.params;
+  await adminEnableDisableUserAccountQuery(userId, 1);
+  res.status(200).json({success: "Account Disabled"})
+}
+
+const adminEnableUserAccountReq = async (req, res) => {
+  const {userId} = req.params;
+  await adminEnableDisableUserAccountQuery(userId, 0);
+  res.status(200).json({success: "Account Enabled"})
+}
+
+module.exports = { adminUpdateUserDetailsReq, adminDisableUserAccountReq, adminEnableUserAccountReq };
