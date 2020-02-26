@@ -62,7 +62,7 @@ const userLoginReq = async (req, res) => {
 
   if (!token) throw new Error("Could not create token, please try again later");
   await userLastLoginQuery(email);
-  res.status(200).json({ user: { email, name: user.name }, token });
+  res.status(200).json({ user: { email, name: user.name, lastLogin: user.lastLogin }, token });
 };
 
 module.exports = {

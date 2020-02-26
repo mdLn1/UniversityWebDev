@@ -161,6 +161,13 @@ UpdateIdea = "/api/ideas/:id" (request type = POST )
     => On success returns {success: string} Status 200
     => On failure { errors: Array } Status 500, 400
 
+ReportIdea = "/api/ideas/:ideaId/report" (request type = POST )
+
+    req param {ideaId} expected as integer, request body {problem}
+
+    => On success returns {success: string} Status 200
+    => On failure { errors: Array } Status 500, 400
+
 DeleteIdea = "/api/ideas/:id" (request type = DELETE )
 
     req param {id} expected as integer, no request body expected
@@ -194,6 +201,13 @@ CreateComment (for an idea) = "/api/ideas/:ideaId/comments" (request type = POST
 UpdateComment (for an idea) = "/api/ideas/:ideaId/comments/:commentId" (request type = POST )
 
     req param {ideaId, commentId} expected as integer, request body {comment, isAnonymous}
+
+    => On success returns {success: string} Status 200
+    => On failure { errors: Array } Status 500, 400
+
+ReportComment = "/api/ideas/:ideaId/comments/:commentId/report" (request type = POST )
+
+    req param {ideaId, commentId} expected as integer, request body {problem}
 
     => On success returns {success: string} Status 200
     => On failure { errors: Array } Status 500, 400

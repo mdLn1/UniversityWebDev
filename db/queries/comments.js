@@ -27,16 +27,15 @@ function getAllCommentsForIdeaQuery(ideaId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: `SELECT comment, commentTime, isAnonymous,
-        (SELECT name FROM Users WHERE ID=user_id) AS username
-        FROM Comments WHERE idea_id = ? 
+        sql: `SELECT Comments.ID, Comments.comment, Comments.commentTime, Comments.isAnonymous, Users.email, Users.name
+        FROM Comments left join Users ON Comments.user_id = Users.ID WHERE idea_id = ?
         ORDER BY commentTime`,
         timeout: 40000,
         values: [ideaId]
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve();
+        return resolve(result);
       }
     );
   });
@@ -90,10 +89,27 @@ function getCommentAuthorQuery(commentId) {
   });
 }
 
+function reportCommentQuery(commentId, userReportingId, problem) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: `insert into ReportedComments (problem, comment_id, user_id, acknowledged) values (?, ?, ?, ?)`,
+        timeout: 40000,
+        values: [problem, commentId, userReportingId, 0]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    );
+  });
+}
+
 module.exports = {
   createCommentQuery,
   getAllCommentsForIdeaQuery,
   deleteCommentQuery,
   updateCommentForIdeaQuery,
-  getCommentAuthorQuery
+  getCommentAuthorQuery,
+  reportCommentQuery
 };

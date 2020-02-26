@@ -6,7 +6,8 @@ const {
   updateIdeaQuery,
   getIdeaByIdQuery,
   getIdeaAuthorQuery,
-  getIdeasCountQuery
+  getIdeasCountQuery,
+  reportIdeaQuery
 } = require("../db/queries/ideas");
 const {
   createUploadQuery,
@@ -22,31 +23,31 @@ const config = require("config");
 const sendMail = require("../utils/emailSender");
 
 const getAllIdeasReq = async (req, res) => {
-  let {pageNo, itemsCount} = req.query;
-  if(!itemsCount || itemsCount < 5) {
+  let { pageNo, itemsCount } = req.query;
+  if (!itemsCount || itemsCount < 5) {
     itemsCount = 5;
   }
-  if(!pageNo || pageNo < 1) {
+  if (!pageNo || pageNo < 1) {
     pageNo = 1;
   }
-  if(isNaN(pageNo) || isNaN(itemsCount)){
+  if (isNaN(pageNo) || isNaN(itemsCount)) {
     pageNo = 1;
     itemsCount = 5;
   }
   pageNo = parseInt(pageNo);
   itemsCount = parseInt(itemsCount);
   const totalIdeas = await getIdeasCountQuery();
-  if(pageNo * itemsCount > totalIdeas + itemsCount ){
+  if (pageNo * itemsCount > totalIdeas + itemsCount) {
     pageNo = 1;
     itemsCount = 5;
   }
   const ideas = await getAllIdeasQuery(pageNo, itemsCount);
-  res.status(200).json({ideas, totalIdeas});
+  res.status(200).json({ ideas, totalIdeas });
 };
 
 const deleteIdeaReq = async (req, res) => {
   const { id } = req.params;
-  const {userId: author} = await getIdeaAuthorQuery(id);
+  const { userId: author } = await getIdeaAuthorQuery(id);
   if (author !== req.user.id)
     throw new CustomError(
       "You are not the author of this idea, you cannot make changes",
@@ -104,7 +105,7 @@ const increaseIdeaViewsReq = async (req, res) => {
 const updateIdeaReq = async (req, res) => {
   const { description, title } = req.body;
   const { id } = req.params.id;
-  const {userId: author} = await getIdeaAuthorQuery(id);
+  const { userId: author } = await getIdeaAuthorQuery(id);
   if (author !== req.user.id)
     throw new CustomError(
       "You are not the author of this idea, you cannot make changes",
@@ -112,6 +113,13 @@ const updateIdeaReq = async (req, res) => {
     );
   await updateIdeaQuery(title, description, id);
   res.status(200).json({ title, description });
+};
+
+const reportIdeaReq = async (req, res) => {
+  const { ideaId } = req.params;
+  const { problem } = req.body;
+  await reportIdeaQuery(ideaId, req.user.id, problem);
+  res.status(200).json({ success: "Idea has been reported" });
 };
 
 const getIdeaByIdReq = async (req, res) => {
@@ -125,5 +133,6 @@ module.exports = {
   increaseIdeaViewsReq,
   updateIdeaReq,
   createIdeaReq,
-  getIdeaByIdReq
+  getIdeaByIdReq,
+  reportIdeaReq
 };

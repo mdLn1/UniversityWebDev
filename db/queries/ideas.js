@@ -82,6 +82,23 @@ function updateIdeaQuery(description, ideaId) {
   });
 }
 
+
+function reportIdeaQuery(ideaId, userReportingId, reason) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "insert into ReportedIdeas (problem, idea_id, user_id) values (?, ?, ?)",
+        timeout: 40000, // 40s
+        values: [reason, ideaId, userReportingId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    );
+  });
+}
+
 // This is just a temporary solution, as it will be a chained removal, where if
 // an idea is delete, all comments+uploads+ratings are also deleted
 function deleteIdeaQuery(ideaId) {
@@ -170,5 +187,6 @@ module.exports = {
   getAllIdeasQuery,
   getIdeaByIdQuery,
   getIdeaAuthorQuery,
-  getIdeasCountQuery
+  getIdeasCountQuery,
+  reportIdeaQuery
 };
