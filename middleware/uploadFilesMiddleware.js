@@ -6,6 +6,9 @@ const uploadPreset = config.get("unsigned_upload_preset");
 const Datauri = require("datauri");
 
 const uploadFiles = async (req, res, next) => {
+  if(!req.files)
+    return next();
+
   const nrFiles = req.files.length;
   req.uploads = [];
   let dUri = new Datauri();
@@ -13,7 +16,7 @@ const uploadFiles = async (req, res, next) => {
   if (nrFiles > 6) {
     throw new CustomError("Too many files, maximum allowed is six");
   } else if (nrFiles == 0) {
-    next();
+    return next();
   }
   const uploads = await Promise.all(
     req.files.map(async element => {

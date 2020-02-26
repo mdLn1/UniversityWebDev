@@ -5,7 +5,8 @@ const CustomError = require("../utils/CustomError");
 const {
   userLoginQuery,
   isEmailRegisteredAlreadyQuery,
-  createUserQuery
+  createUserQuery,
+  userLastLoginQuery
 } = require("../db/queries/users");
 
 const { isRoleSelectableQuery } = require("../db/queries/roles");
@@ -60,7 +61,7 @@ const userLoginReq = async (req, res) => {
   });
 
   if (!token) throw new Error("Could not create token, please try again later");
-
+  await userLastLoginQuery(email);
   res.status(200).json({ user: { email, name: user.name }, token });
 };
 

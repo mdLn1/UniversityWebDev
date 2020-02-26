@@ -4,6 +4,7 @@ const { check } = require("express-validator");
 const errorChecker = require("../middleware/errorCheckerMiddleware");
 const authMiddleware = require("../middleware/authMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
+const userDisabledMiddleware = require("../middleware/userDisabledMiddleware");
 const {
   getAllCommentsReq,
   createCommentReq,
@@ -42,7 +43,8 @@ router.post(
       .exists()
       .isInt(),
     errorChecker,
-    authMiddleware
+    authMiddleware,
+    userDisabledMiddleware
   ],
   exceptionHandler(createCommentReq)
 );

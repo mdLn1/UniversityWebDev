@@ -49,6 +49,26 @@ function userLoginQuery(email, password) {
   );
 }
 
+function userLastLoginQuery(email) {
+  const date = new Date()
+    .toISOString()
+    .slice(0, 19)
+    .replace("T", " ");
+  return new Promise((resolve, reject) =>
+  pool.query(
+    {
+      sql: "update Users set lastLogin = ? where email = ?",
+      timeout: 40000,
+      values: [date, email]
+    },
+    (error, result) => {
+      if (error) return reject(error);
+      return resolve();
+    }
+  )
+);
+}
+
 // Use this function to check if user exists
 function isEmailRegisteredAlreadyQuery(email) {
   return new Promise((resolve, reject) =>
@@ -154,6 +174,22 @@ function adminUpdateUserDetailsQuery(
   });
 }
 
+function isAccountDisabledQuery(id){
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: `select disabled from Users where ID = ?`,
+        timeout: 40000,
+        values: [id]
+      },
+      (err, result) => {
+        if (err) return reject(err);
+        return resolve(result[0].disabled);
+      }
+    );
+  });
+}
+
 function updateUserPasswordQuery(password, id) {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -178,5 +214,7 @@ module.exports = {
   getUserDetailsQuery,
   adminUpdateUserDetailsQuery,
   updateUserDetailsQuery,
-  updateUserPasswordQuery
+  updateUserPasswordQuery,
+  userLastLoginQuery,
+  isAccountDisabledQuery
 };
