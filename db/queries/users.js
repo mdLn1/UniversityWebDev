@@ -26,7 +26,7 @@ function userLoginQuery(email, password) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
-        sql: `select Users.ID, Users.name, Users.email, Users.password, Roles.role, Departments.department from Users left join Roles on 
+        sql: `select Users.ID, Users.name, Users.lastLogin, Users.email, Users.password, Roles.role, Departments.department from Users left join Roles on 
         Users.role_id=Roles.ID left join Departments on Users.department_id=Departments.ID where email = ?`,
         timeout: 40000,
         values: [email]
@@ -116,7 +116,7 @@ function getUserDetailsQuery(id) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: `select Users.ID, Users.name, Users.email, Users.password, Roles.role, Departments.department from Users left join Roles on 
+        sql: `select Users.ID, Users.name, Users.lastLogin, Users.email, Users.password, Roles.role, Departments.department from Users left join Roles on 
         Users.role_id=Roles.ID left join Departments on Users.department_id=Departments.ID where email = ?`,
         timeout: 40000,
         values: [id]
@@ -194,7 +194,7 @@ function adminEnableDisableUserAccountQuery(id, disabled) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: "update Users set disable = ? where id = ?",
+        sql: "update Users set disabled = ? where id = ?",
         timeout: 40000,
         values: [disabled, id]
       },

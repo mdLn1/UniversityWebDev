@@ -16,11 +16,12 @@ const {
   deleteIdeaReq,
   increaseIdeaViewsReq,
   updateIdeaReq,
-  getIdeaByIdReq
+  getIdeaByIdReq,
+  reportIdeaReq
 } = require("../controllers/ideasController");
 
 router.use("/:ideaId/uploads", uploadRoute);
-router.use("/:ideaId/comments", commentRoute)
+router.use("/:ideaId/comments", commentRoute);
 
 // @route GET /api/ideas
 // @desc Returns all ideas
@@ -97,6 +98,24 @@ router.post(
     authMiddleware
   ],
   exceptionHandler(updateIdeaReq)
+);
+
+// @route POST /api/ideas/:ideaId/report
+// @desc Reports an idea
+// @access Private
+router.post(
+  "/:ideaId/report",
+  [
+    check("ideaId", "Idea id param must be an integer value")
+      .exists()
+      .isInt(),
+    check("problem", "Problem must be between 10 characters and 200")
+      .exists()
+      .isLength({ min: 10, max: 200 }),
+    errorChecker,
+    authMiddleware
+  ],
+  exceptionHandler(reportIdeaReq)
 );
 
 // @route DELETE /api/ideas/:id

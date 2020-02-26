@@ -9,7 +9,8 @@ const {
   getAllCommentsReq,
   createCommentReq,
   deleteCommentReq,
-  updateCommentForIdeaReq
+  updateCommentForIdeaReq,
+  reportCommentReq
 } = require("../controllers/commentsController");
 
 // @route GET /api/ideas/:ideaId/comments
@@ -71,6 +72,28 @@ router.post(
     authMiddleware
   ],
   exceptionHandler(updateCommentForIdeaReq)
+);
+
+// @route POST /api/ideas/:ideaId/comments/:commentId
+// @desc Update a comment for an idea
+// @access Private
+router.post(
+  "/:commentId/report",
+  [
+    check("ideaId", "Idea Id must be an integer")
+      .exists()
+      .isInt(),
+    check("commentId", "Comment Id must be an integer")
+      .exists()
+      .isInt(),
+    check("problem", "Problem must be between 10 characters and 200")
+      .exists()
+      .trim()
+      .isLength({ min: 10, max: 200 }),
+    errorChecker,
+    authMiddleware
+  ],
+  exceptionHandler(reportCommentReq)
 );
 
 // @route DELETE /api/ideas/:ideaId/comments/:commentId

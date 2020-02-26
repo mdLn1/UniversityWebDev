@@ -3,7 +3,8 @@ const {
   createCommentQuery,
   deleteCommentQuery,
   updateCommentForIdeaQuery,
-  getCommentAuthorQuery
+  getCommentAuthorQuery,
+  reportCommentQuery
 } = require("../db/queries/comments");
 
 const { getIdeaAuthorQuery } = require("../db/queries/ideas");
@@ -11,7 +12,8 @@ const config = require("config");
 const sendMail = require("../utils/emailSender");
 
 const getAllCommentsReq = async (req, res) => {
-  const comments = await getAllCommentsForIdeaQuery(req.params.id);
+  const {ideaId} = req.params;
+  const comments = await getAllCommentsForIdeaQuery(ideaId);
   res.status(200).json(comments);
 };
 
@@ -61,9 +63,17 @@ const deleteCommentReq = async (req, res) => {
   res.status(200).json({ success: "Successfully deleted" });
 };
 
+const reportCommentReq = async (req, res) => {
+  const { commentId } = req.params;
+  const { problem } = req.body;
+  await reportCommentQuery(commentId, req.user.id, problem);
+  res.status(200).json({ success: "Comment has been reported successfully" });
+};
+
 module.exports = {
   getAllCommentsReq,
   createCommentReq,
   updateCommentForIdeaReq,
-  deleteCommentReq
+  deleteCommentReq,
+  reportCommentReq
 };
