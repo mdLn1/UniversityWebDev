@@ -32,7 +32,7 @@ const createCommentReq = async (req, res) => {
   //   subject: 'New comment added',
   //   html: `Please follow this link to check it out <a href="${config.get("server_route")}ideas/${ideaId}">click here</a>`
   // });
-  res.status(201).status({ ID: insertId, comment, isAnonymous });
+  res.status(201).json({ ID: insertId, comment, isAnonymous });
 };
 
 const updateCommentForIdeaReq = async (req, res) => {

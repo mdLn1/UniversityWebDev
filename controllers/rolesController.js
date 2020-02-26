@@ -6,7 +6,7 @@ const {
 } = require("../db/queries/roles");
 
 const createRoleReq = async (req, res) => {
-  const { role, description, isSelectable } = req.body;
+  let { role, description, isSelectable } = req.body;
   isSelectable = isSelectable ? 1 : 0;
   const { insertId } = await createRoleQuery(
     role,
