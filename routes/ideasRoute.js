@@ -52,10 +52,10 @@ router.post(
   "/",
   [
     multerUploads.any(),
-    check("description", "Description must contain at least 20 characters")
+    check("description", "Description must contain at least 15 characters")
       .exists()
       .trim()
-      .isLength({ min: 20 }),
+      .isLength({ min: 15 }),
     check("isAnonymous", "Is Anonymous does not exist")
       .exists()
       .isBoolean(),

@@ -31,7 +31,9 @@ describe("POST /api/ideas/:ideaId/comments", () => {
         .set({"x-auth-token" : token})
         .send(ideaToUpdate)
         .expect(400)
-        .end(done)
+        .expect(res => {
+            expect(res.body)
+        }).end(done)
     })
 })
 
@@ -39,17 +41,19 @@ describe("POST /api/ideas/:ideaId/comments", () => {
 describe("POST /api/ideas/:ideaId/comments", () => {
 
     it("Test if unauthorised user can create a comment", (done) => {
-        const ideaToCreate = {
+        const commentToCreate = {
             comment : "My first comment on the platform",
             isAnonymous : 1,
             ideaId : 2
         }
 
         request(app)
-        .post(`/api/ideas/${ideaToCreate.ideaId}/comments`)
+        .post(`/api/ideas/${commentToCreate.ideaId}/comments`)
         .send(ideaToCreate)
         .expect(400)
-        .end(done)
+        .expect(res => {
+            expect(res.body).toBeDefined
+        }).end(done)
     })
 })
 
@@ -66,6 +70,8 @@ describe("DELETE /api/ideas/:ideaId/comments/:commentId", () => {
         .delete(`/api/ideas/${ideaToCreate.ideaId}/comments/${ideaToCreate.commentId}`)
         .send(ideaToCreate)
         .expect(400)
-        .end(done)
+        .expect(res => {
+            expect(res.body).toBeDefined
+        }).end(done)
     })
 })

@@ -2,6 +2,9 @@ const expect = require('expect')
 const request = require('supertest')
 const { app } = require('../server')
 
+const config = require("config");
+const token = config.get("test_token");
+
 describe("GET /api/roles", () => {
     it("Should return all roles", (done) => {
         request(app)
@@ -18,9 +21,10 @@ describe("POST /api/roles", () => {
   
         request(app)
         .post("/api/roles")
+        .set({"x-auth-token" : token})
         .send({
             role: "QA Manager",
-            description: "Lab assistant in test",
+            description: "Lab assistant in testing",
             isSelectable: 1
         })
         .expect(201)
