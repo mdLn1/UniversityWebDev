@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { check } = require("express-validator");
+const userDisabledMiddleware = require("../middleware/userDisabledMiddleware");
 const errorChecker = require("../middleware/errorCheckerMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
 const authMiddleware = require("../middleware/authMiddleware");
@@ -68,6 +69,7 @@ router.post(
       .isLength({ min: 5 }),
     errorChecker,
     authMiddleware,
+    userDisabledMiddleware,
     cloudinaryConfig,
     uploadFilesMiddleware
   ],
