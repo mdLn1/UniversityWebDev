@@ -210,5 +210,24 @@ padding-left: 10px;
 }
 
 .labelCreator{
-  margin-top: 2%%;
+  margin-top: 2%;
+}
+
+.whiteBox{
+  background-color: white;
+  size: 100%;
+  width: 40%;
+  height: 400%;
+}
+
+.row {
+  display: flex;
+}
+
+/* Create three equal columns that sits next to each other */
+.column {
+  margin-top: 17%;
+  flex: 33.33%;
+  padding: 5%;
+  background-color: white;
 }
