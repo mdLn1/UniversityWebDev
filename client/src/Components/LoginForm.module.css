@@ -38,22 +38,14 @@ margin-bottom: 1%;
 background-color: whitesmoke;
 }
 
-button{
-background-color: pink;
-}
-
-label{
-margin: auto;
-}
 
 a{
 color: darkblue;
 }
 
 .termslabel {
-font-size: 10px;
-margin: inherit;
-
+  font-size: 10px;
+  margin: inherit;
 }
 
 .join_link{
@@ -125,11 +117,15 @@ padding-left: 10px;
 
 .titleLabel{
   margin-top: 5%;
+  padding-top: 5%;
 }
 
 .ideaDisplayerOuterBox{
   background-color: whitesmoke;
-  text-align: left;
+  width: 40%;
+  margin-left: 32%;
+  margin-top: 8%;
+  margin-bottom: 8%;
 }
 
 .displayDiv{
@@ -201,16 +197,12 @@ padding-left: 10px;
 }
 
 .checkboxAnonymousSubmission{
-  text-align: left;
+  text-align: center;
 }
 
 .textfieldTitle{
   width: 90%;
   height: 20%;
-}
-
-.labelCreator{
-  margin-top: 2%;
 }
 
 .whiteBox{
@@ -230,4 +222,25 @@ padding-left: 10px;
   flex: 33.33%;
   padding: 5%;
   background-color: white;
+  margin-right: 3%;
+  border-radius: 50%;
+}
+
+.pageTitle{
+  text-align: center;
+  margin-top: 4%;
+  padding-top: 1%;
+}
+
+
+.fields{
+  padding-left: 2%;
+  margin-top: 2%;
+  align-content: left;
+  align-self: left;
+}
+
+.submissionButton{
+  align-content: center;
+  padding-bottom: 2%;
 }

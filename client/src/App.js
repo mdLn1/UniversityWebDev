@@ -18,10 +18,10 @@ function App() {
               <Authentication/>
           </Route>
           <Route path = "/dashboard">
-            <Home/>
+            {/* <Home/> */}
             {/* <Dashboard/> */}
-            {/* <IdeaCreator/>
-            <IdeaDisplayer/> */}
+            <IdeaCreator/>
+            {/* <IdeaDisplayer/> */}
           </Route>
         </Switch>
         </Router>

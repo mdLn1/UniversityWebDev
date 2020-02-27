@@ -28,19 +28,26 @@ export class Home extends React.Component {
             </div>
             <div className = {styles.row}>
                 <div className={styles.column}>
-                    <view>
-                        <img src={CreateLogo}></img>
-                    </view>
+                {/* add here where to redirect */}
+                    <a> 
+                        <view>
+                            <img src={CreateLogo}></img>
+                        </view>
+                    </a>
                 </div>
                 <div className={styles.column}>
-                    <view>
-                        <img src={EditLogo}></img>
-                    </view>
+                    <a>
+                        <view>
+                            <img src={EditLogo}></img>
+                        </view>
+                    </a>
                 </div>
                 <div className={styles.column}>
-                    <view>
-                        <img src={DeleteLogo}></img>
-                    </view>
+                    <a>    
+                        <view>
+                            <img src={DeleteLogo}></img>
+                        </view>
+                    </a>
                 </div>
             </div>
         </Fragment>
