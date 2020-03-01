@@ -4,6 +4,7 @@ import { Switch, BrowserRouter as Router, NavLink, Route} from "react-router-dom
 import {Authentication} from './Pages/Authentication';
 import {Dashboard} from './Components/Dashboard';
 import {IdeaCreator} from './Components/IdeaCreator';
+import {Home} from "./Components/Home";
 
 function App() {
   return (
@@ -11,15 +12,16 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/">
-            <Authentication/>
+              <Authentication/>
           </Route>
           <Route path = "/login"> 
               <Authentication/>
           </Route>
           <Route path = "/dashboard">
-            <Dashboard/>
-            {/* <IdeaCreator/>
-            <IdeaDisplayer/> */}
+            {/* <Home/> */}
+            {/* <Dashboard/> */}
+            <IdeaCreator/>
+            {/* <IdeaDisplayer/> */}
           </Route>
         </Switch>
         </Router>

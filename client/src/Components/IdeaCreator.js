@@ -2,7 +2,6 @@ import React from 'react';
 import styles from "./LoginForm.module.css";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import axios from "axios";
 import { Button } from '@material-ui/core';
 
@@ -36,12 +35,12 @@ export class IdeaCreator extends React.Component {
         try {
             const res = await axios.get("/api/ideas/" + this.state.id);
             const arrayOfContents = res.data[0];
+            console.log(arrayOfContents)
             this.setState({description: arrayOfContents.description});
             this.setState({ideaTitle: arrayOfContents.Title});
             this.setState({categoryTitle: arrayOfContents.category});
-            console.log(res.data) //-> use this to know the parameters we need to populate the component 
-            console.log(this.state.id);
-        }catch (err){
+
+          }catch (err){
             console.log(err);
         }
       }
@@ -53,9 +52,12 @@ export class IdeaCreator extends React.Component {
         <div className ={styles.ideaDisplayerOuterBox}>
             <span/>
             <span/>
-            <h1> <b> Submit Your Idea  </b></h1>
-            <div className = {styles.textfieldTitle}>
-                <label className ={styles.labelCreator}>Title:</label>
+            <div className = {styles.pageTitle}>
+              <h1> <b> Submit Your Idea  </b></h1>
+            </div>
+            <hr/>
+            <div>
+                <label >Title:</label>
                 <TextField
                     id="idea-title"
                     label="Idea Title "
@@ -63,8 +65,8 @@ export class IdeaCreator extends React.Component {
                     onChange={this.ideaTitleChangeHandler}
                 />
             </div>
-            <div className = {styles.categoryTitle}>
-                <label className = {styles.labelCreator}>Category: </label>
+            <div  >
+                <label>Category: </label>
                 <TextField
                     id="category-title"
                     label="Category Title "
@@ -72,8 +74,8 @@ export class IdeaCreator extends React.Component {
                     onChange={this.categoryTitleChangeHandler}
                 />
             </div>
-            <div className = {styles.categoryTitle}>
-                <label className={styles.titleLabel}>Idea Description:</label>
+            <div >
+                <label >Idea Description:</label>
                 <TextField
                     id="standard-multiline-static"
                     label="Description"
@@ -85,16 +87,20 @@ export class IdeaCreator extends React.Component {
             </div>
             <div className={styles.checkboxAnonymousSubmission}>
               <label>Anonymos submission:</label>
-              <Checkbox></Checkbox>
+              <Checkbox 
+                  color="primary">
+              </Checkbox>
             </div>
-            <Button variant="contained" 
-                    size="medium" 
-                    color="primary" 
-                    onClick = {this.onSubmit}
+            <div className={styles.submissionButton}>
+              <Button variant="contained" 
+                      size="medium" 
+                      color="primary" 
+                      onClick = {this.onSubmit}
 
-            >
-                Submit 
-            </Button>
+              >
+                  Submit 
+              </Button>
+            </div>
         </div>
       );
     }

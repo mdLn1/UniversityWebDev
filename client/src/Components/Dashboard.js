@@ -2,8 +2,7 @@ import React, { Fragment } from "react";
 import styles from "./LoginForm.module.css";
 import axios from "axios";
 import { Button } from "@material-ui/core";
-import IdeaBar from "./ideaBar";
-import { Redirect } from "react-router-dom";
+import IdeaBar from "./IdeaBar";
 //import Pagination from '@material-ui/Pagination';
 
 export class Dashboard extends React.Component {
