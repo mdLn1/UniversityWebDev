@@ -20,7 +20,13 @@ const helmet = require("helmet");
 // }
 // }
 // app.use(cors(corsOptions));
-
+app.use(function(req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  next();
+});
 app.use(compression());
 app.use(helmet());
 
@@ -29,10 +35,10 @@ app.use(express.json({ extended: false }));
 app.use(express.urlencoded({ extended: true }));
 
 // testing route
-app.post("/hello", async (req, res, next) => {
+app.get("/hello", async (req, res, next) => {
   const id = req.params.id;
   const obj = req.body;
-  res.send("200 ok");
+  res.status(200).send(req);
 });
 
 // WARNING! Errors may show if the routes files don't have module.exports = router;
