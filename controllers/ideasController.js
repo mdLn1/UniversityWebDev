@@ -17,6 +17,14 @@ const {
   getUserDepartmentIdQuery,
   getDepartmentCoordinatorQuery
 } = require("../db/queries/departments");
+
+const {
+  createRatingQuery,
+  deleteRatingQuery,
+  getRatingsQuery,
+  updateRatingQuery,
+  userRatedAlreadyQuery
+} = require("../db/queries/ratings");
 const CustomError = require("../utils/CustomError");
 const cloudinary = require("cloudinary");
 const config = require("config");
@@ -24,6 +32,10 @@ const sendMail = require("../utils/emailSender");
 
 const getAllIdeasReq = async (req, res) => {
   let { pageNo, itemsCount } = req.query;
+  let userId = -1;
+  if (req.user) {
+    userId = req.user.id;
+  }
   if (!itemsCount || itemsCount < 5) {
     itemsCount = 5;
   }
@@ -41,7 +53,7 @@ const getAllIdeasReq = async (req, res) => {
     pageNo = 1;
     itemsCount = 5;
   }
-  const ideas = await getAllIdeasQuery(pageNo, itemsCount);
+  const ideas = await getAllIdeasQuery(pageNo, itemsCount, userId);
   res.status(200).json({ ideas, totalIdeas });
 };
 
@@ -102,6 +114,27 @@ const increaseIdeaViewsReq = async (req, res) => {
   res.status(204).send();
 };
 
+const rateIdeaReq = async (req, res) => {
+  const { ideaId } = req.params;
+  const userId = req.user.id;
+  let { vote } = req.query;
+  let action = "";
+  if ((vote && vote == 1) || vote == 0) {
+    vote = parseInt(vote);
+    if (await userRatedAlreadyQuery(ideaId, userId)) {
+      await updateRatingQuery(ideaId, userId, vote);
+      action = vote ? "updated thumbs up" : "updated thumbs down";
+    } else {
+      action = vote ? "created thumbs up" : "created thumbs down";
+      await createRatingQuery(ideaId, userId, vote);
+    }
+  } else {
+    action = "deleted";
+    await deleteRatingQuery(ideaId, userId);
+  }
+  res.status(200).json({ success: "Rating " + action });
+};
+
 const updateIdeaReq = async (req, res) => {
   const { description, title } = req.body;
   const { id } = req.params.id;
@@ -134,5 +167,6 @@ module.exports = {
   updateIdeaReq,
   createIdeaReq,
   getIdeaByIdReq,
-  reportIdeaReq
+  reportIdeaReq,
+  rateIdeaReq
 };

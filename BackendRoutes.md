@@ -161,6 +161,17 @@ UpdateIdea = "/api/ideas/:id" (request type = POST )
     => On success returns {success: string} Status 200
     => On failure { errors: Array } Status 500, 400
 
+RateIdea = "/api/ideas/:id/rate" (request type = GET )
+
+    req param {id} expected as integer, request body not expected, request query vote optional
+
+    EXAMPLES: Thumbs up "/api/ideas/:id/rate?vote=1"
+              Thumbs down "/api/ideas/:id/rate?vote=0"
+              Remove rating "/api/ideas/:id/rate"
+              
+    => On success returns {success: string} Status 200
+    => On failure { errors: Array } Status 500, 400
+
 ReportIdea = "/api/ideas/:ideaId/report" (request type = POST )
 
     req param {ideaId} expected as integer, request body {problem}

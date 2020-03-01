@@ -8,6 +8,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const cloudinaryConfig = require("../utils/cloudinaryConfig");
 const multerUploads = require("../middleware/multerMiddleware");
 const uploadFilesMiddleware = require("../middleware/uploadFilesMiddleware");
+const checkIfLoggedInMiddleware = require("../middleware/checkIfLoggedInMiddleware");
 const uploadRoute = require("./uploadsRoute");
 const commentRoute = require("./commentsRoute");
 const {
@@ -17,7 +18,8 @@ const {
   increaseIdeaViewsReq,
   updateIdeaReq,
   getIdeaByIdReq,
-  reportIdeaReq
+  reportIdeaReq,
+  rateIdeaReq
 } = require("../controllers/ideasController");
 
 router.use("/:ideaId/uploads", uploadRoute);
@@ -26,7 +28,7 @@ router.use("/:ideaId/comments", commentRoute);
 // @route GET /api/ideas
 // @desc Returns all ideas
 // @access Public
-router.get("/", exceptionHandler(getAllIdeasReq));
+router.get("/", checkIfLoggedInMiddleware, exceptionHandler(getAllIdeasReq));
 
 // @route GET /api/ideas/:id
 // @desc Returns a specific idea based on passed ID
@@ -116,6 +118,21 @@ router.post(
     authMiddleware
   ],
   exceptionHandler(reportIdeaReq)
+);
+
+// @route GET /api/ideas/:ideaId/rate?vote={1 or 0}
+// @desc Deals with rating ideas
+// @access Private
+router.get(
+  "/:ideaId/rate",
+  [
+    check("ideaId", "Idea id param must be an integer value")
+      .exists()
+      .isInt(),
+    errorChecker,
+    authMiddleware
+  ],
+  exceptionHandler(rateIdeaReq)
 );
 
 // @route DELETE /api/ideas/:id

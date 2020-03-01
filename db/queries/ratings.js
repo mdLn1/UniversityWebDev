@@ -44,7 +44,10 @@ function userRatedAlreadyQuery(ideaId, userId) {
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve(result);
+        if(result.length > 0){
+          return resolve(true);
+        }
+        return resolve(false)
       }
     );
   });
