@@ -32,11 +32,17 @@ export class Dashboard extends React.Component {
     }
   };
 
+
+  buttonClicked = event => {
+    console.log(event.target.value);
+    
+  }
+
   
    pageList = () => {
      const listOfPages = [];
     for (let i = 0; i < (this.state.totalIdeas/5); i++) {
-      listOfPages.push(<button>{i+1}</button>);
+      listOfPages.push(<button onClick={this.buttonClicked} value= {i+1}>{i+1}</button>);
     }
     return listOfPages;
   };
