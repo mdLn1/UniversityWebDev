@@ -19,8 +19,8 @@ function App() {
           </Route>
           <Route path = "/dashboard">
             {/* <Home/> */}
-            {/* <Dashboard/> */}
-            <IdeaCreator/>
+            <Dashboard/>
+            {/* <IdeaCreator/> */}
             {/* <IdeaDisplayer/> */}
           </Route>
         </Switch>
