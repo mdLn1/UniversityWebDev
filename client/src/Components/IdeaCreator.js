@@ -13,7 +13,7 @@ export class IdeaCreator extends React.Component {
           ideaTitle: "",
           categoryTitle: "",
           isAnonymous: false,
-          termsAgreed: true
+          termsAgreed: false
         }
       }
 
@@ -34,7 +34,7 @@ export class IdeaCreator extends React.Component {
       };  
 
       termsAgreedChangeHandler = event => {
-        this.setState({ termsAgreed: event.target.value});
+        this.setState({ termsAgreed: event.target.checked});
       };
       
       onSubmit = async e => {
@@ -116,7 +116,9 @@ export class IdeaCreator extends React.Component {
               <label>Terms and Conditions:</label>
               <Checkbox 
                   color="primary"
-                  onChange = {this.termsAgreedChangeHandler}>
+                  onChange = {this.termsAgreedChangeHandler}
+                  defaultChecked = {false}
+                  >
               </Checkbox>
             </div>
 
