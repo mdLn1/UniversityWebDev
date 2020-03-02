@@ -43,6 +43,7 @@ export class LoginForm extends React.Component {
       const obj = { email: this.state.username, password: this.state.password };
         const res = await axios.post("/api/auth/login/", obj, config);
         localStorage.setItem("token", res.data.token);
+        console.log(res.data.token);
         this.setState({ loggedIn: true });
     } catch (err) {
       console.log(err);

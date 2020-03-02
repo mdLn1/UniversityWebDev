@@ -12,37 +12,51 @@ export class IdeaCreator extends React.Component {
           description: "",
           ideaTitle: "",
           categoryTitle: "",
-          id: 11
-        }
+          isAnonymous:"",
+          termsAgreed: 1
+         }
         
       }
-
-      ideaTitleChangeHandler = e => {
-        this.setState({ ideaTitle: this.state.ideaTitle });
+      
+      ideaTitleChangeHandler = event => {
+        this.setState({ ideaTitle: event.target.value });
       };
 
-      descriptionChangeHandler = e => {
-        this.setState({ description: this.state.description });
+      descriptionChangeHandler = event => {
+        this.setState({ description: event.target.value });
       };
 
-      categoryTitleChangeHandler = e => {
-        this.setState({ categoryTitle: this.state.categoryTitle });
+      categoryTitleChangeHandler = event => {
+        this.setState({ categoryTitle: event.target.value });
+      };
+      
+      anonymousChangeHandler = event => {
+        this.setState({ isAnonymous: event.target.value });
       };
 
-
-            
       onSubmit = async e => {
-        try {
-            const res = await axios.get("/api/ideas/" + this.state.id);
-            const arrayOfContents = res.data[0];
-            console.log(arrayOfContents)
-            this.setState({description: arrayOfContents.description});
-            this.setState({ideaTitle: arrayOfContents.Title});
-            this.setState({categoryTitle: arrayOfContents.category});
 
-          }catch (err){
-            console.log(err);
-        }
+        console.log(this.state.description);
+        console.log(this.state.ideaTitle);
+        console.log(this.state.categoryTitle);
+        try {
+              const config = {
+                headers: {
+                  "Content-Type": "application/json",
+                  "x-auth-token": localStorage.getItem("token")
+                }
+              };
+              const obj = {
+                description: "someithitnsadjiaiussdadashiudsahdsaiuhda",
+                isAnonymous: 1,
+                title: "usaudahausda",
+                categoryId: 2,
+                termsAgreed: 1
+              };
+                const res = await axios.post("/api/ideas", obj, config);
+            } catch (err) {
+              console.log(err);
+            }
       }
 
 
@@ -88,7 +102,8 @@ export class IdeaCreator extends React.Component {
             <div className={styles.checkboxAnonymousSubmission}>
               <label>Anonymos submission:</label>
               <Checkbox 
-                  color="primary">
+                  color="primary"
+                  onChange = {this.anonymousChangeHandler}>
               </Checkbox>
             </div>
             <div className={styles.submissionButton}>
