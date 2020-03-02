@@ -34,9 +34,15 @@ export class IdeaCreator extends React.Component {
       };  
 
       termsAgreedChangeHandler = event => {
+<<<<<<< HEAD
         this.setState({ termsAgreed: event.target.value});
       };
       
+=======
+        this.setState({ termsAgreed: event.target.value });
+      };
+
+>>>>>>> 194fd07c31d4326de82c9a75963cae283ec9b4ca
       onSubmit = async e => {
             console.log(this.state.description);
             console.log(this.state.ideaTitle);
@@ -111,6 +117,15 @@ export class IdeaCreator extends React.Component {
               >
               </Checkbox>
             </div>
+
+            <div className={styles.checkboxTermsAgreedSubmission}>
+              <label>Terms and Conditions:</label>
+              <Checkbox 
+                  color="primary"
+                  onChange = {this.termsAgreedChangeHandler}>
+              </Checkbox>
+            </div>
+
             <div className={styles.submissionButton}>
               <Button variant="contained" 
                       size="medium" 
