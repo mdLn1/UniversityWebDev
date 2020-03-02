@@ -39,6 +39,30 @@ DisableUserAccount = "/api/management/disable-user/:userId" (request type = GET 
     => On success returns { success: String } Status 200
     => On failure { errors: Array } Status 500
 
+HideUserActivity = "/api/management/hide-user-activity/:userId" (request type = GET )
+
+    => On success returns { success: String } Status 200
+    => On failure { errors: Array } Status 500
+
+ShowUserActivity = "/api/management/show-user-activity/:userId" (request type = GET )
+
+    => On success returns { success: String } Status 200
+    => On failure { errors: Array } Status 500
+
+DeleteIdea = "/api/management/ideas/:ideaId" (request type = DELETE )
+
+    req param {id} expected as integer, no request body expected
+
+    => On success returns {success: string} Status 200
+    => On failure { errors: Array } Status 500, 400
+
+DeleteIComment = "/api/management/comment/:commentId" (request type = DELETE )
+
+    req param {id} expected as integer, no request body expected
+
+    => On success returns {success: string} Status 200
+    => On failure { errors: Array } Status 500, 400
+
 ## Roles
 
 CreateRole = "/api/roles" (request type = POST )
@@ -133,7 +157,7 @@ DeleteDepartment = "/api/departments/:id" (request type = DELETE )
 
 CreateIdea = "/api/ideas" (request type = POST )
 
-    no request params expected, request body must contain { title, description, categoryId, isAnonymous }
+    no request params expected, request body must contain { title, description, categoryId, isAnonymous, termsAgreed }
 
     => On success returns { success: string } Status 201
     => On failure { errors: Array } Status 500

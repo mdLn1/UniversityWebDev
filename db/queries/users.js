@@ -206,6 +206,24 @@ function adminEnableDisableUserAccountQuery(id, disabled) {
   });
 }
 
+
+function hideShowUserActivityQuery(id, hide) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "update Users set hideActivities = ? where id = ?",
+        timeout: 40000,
+        values: [hide, id]
+      },
+      (err, result) => {
+        if (err) return reject(err);
+        return resolve();
+      }
+    );
+  });
+}
+
+
 function updateUserPasswordQuery(password, id) {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -233,5 +251,6 @@ module.exports = {
   updateUserPasswordQuery,
   userLastLoginQuery,
   isAccountDisabledQuery,
-  adminEnableDisableUserAccountQuery
+  adminEnableDisableUserAccountQuery,
+  hideShowUserActivityQuery
 };

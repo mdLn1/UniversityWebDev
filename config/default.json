@@ -4,6 +4,13 @@
         "admin": "QA Manager",
         "coordinator": "QA Coordinator"
     },
+    "database_credentials": {
+        "host": "entwebdev.cxcnuff93kd9.eu-west-2.rds.amazonaws.com",
+        "database": "entwebdev",
+        "user": "admin",
+        "password": "Gabriel1234!",
+        "port": 3306
+    },
     "unsigned_upload_preset": "th12e0km",
     "cloud_name": "mdln97",
     "api_key": "737562788677313",

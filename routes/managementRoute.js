@@ -8,7 +8,11 @@ const { admin, coordinator } = config.get("roles");
 const {
   adminUpdateUserDetailsReq,
   adminDisableUserAccountReq,
-  adminEnableUserAccountReq
+  adminEnableUserAccountReq,
+  adminHideUserActivityReq,
+  adminShowUserActivityReq,
+  adminDeleteCommentReq,
+  adminDeleteIdeaReq
 } = require("../controllers/managementController");
 
 // const rolesRouter = require("./rolesRoute");
@@ -39,6 +43,30 @@ router.get(
   "/enable-user/:userId",
   [authMiddleware, IsInRole(admin)],
   exceptionHandler(adminEnableUserAccountReq)
+);
+
+router.get(
+  "/hide-user-activity/:userId",
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(adminHideUserActivityReq)
+);
+
+router.get(
+  "/show-user-activity/:userId",
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(adminShowUserActivityReq)
+);
+
+router.delete(
+  "/delete-comment/:commentId",
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(adminDeleteCommentReq)
+);
+
+router.delete(
+  "/delete-idea/:ideaId",
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(adminDeleteIdeaReq)
 );
 
 module.exports = router;

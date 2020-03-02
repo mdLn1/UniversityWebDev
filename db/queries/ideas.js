@@ -36,7 +36,7 @@ function getAllIdeasQuery(pageNo, itemsCount, userId) {
         (SELECT vote FROM Ratings WHERE user_id=? and i.ID=idea_id) as voted,
         (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
         (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS uploadsCount
-        FROM Ideas AS i
+        FROM Ideas AS i where hidden=0
         ORDER BY i.posted_time DESC LIMIT ? OFFSET ?`,
         timeout: 40000, // 40s
         values: [userId, itemsCount, itemsCount * (pageNo - 1)]
@@ -169,7 +169,7 @@ function getIdeasCountQuery() {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql:"select COUNT(ID) FROM Ideas",
+        sql:"select COUNT(ID) FROM Ideas where hidden=0",
         timeout: 40000, // 40s
         values: []
       },
@@ -180,6 +180,23 @@ function getIdeasCountQuery() {
     );
   });
 }
+
+function hideShowAllUserIdeasQuery(userId, hidden) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql:"update Ideas set hidden = ? where user_id=?",
+        timeout: 40000, // 40s
+        values: [hidden, userId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    );
+  });
+}
+
 module.exports = {
   createIdeaQuery,
   updateIdeaQuery,
@@ -189,5 +206,6 @@ module.exports = {
   getIdeaByIdQuery,
   getIdeaAuthorQuery,
   getIdeasCountQuery,
-  reportIdeaQuery
+  reportIdeaQuery,
+  hideShowAllUserIdeasQuery
 };
