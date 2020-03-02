@@ -34,6 +34,10 @@ export class IdeaCreator extends React.Component {
         this.setState({ isAnonymous: event.target.value });
       };
 
+      termsAgreedChangeHandler = event => {
+        this.setState({ termsAgreed: event.target.value });
+      };
+
       onSubmit = async e => {
 
         console.log(this.state.description);
@@ -106,6 +110,15 @@ export class IdeaCreator extends React.Component {
                   onChange = {this.anonymousChangeHandler}>
               </Checkbox>
             </div>
+
+            <div className={styles.checkboxTermsAgreedSubmission}>
+              <label>Terms and Conditions:</label>
+              <Checkbox 
+                  color="primary"
+                  onChange = {this.termsAgreedChangeHandler}>
+              </Checkbox>
+            </div>
+
             <div className={styles.submissionButton}>
               <Button variant="contained" 
                       size="medium" 
