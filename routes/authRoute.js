@@ -20,12 +20,10 @@ router.post(
     check("password", "Password needs to be at least 6 characters long")
       .trim()
       .isLength({ min: 8 }),
-    check("roleId", "Role Id must be provided and should be an integer")
-      .exists()
-      .isInt(),
-    check("departmentId", "Department Id must be provided and should be an integer")
-      .exists()
-      .isInt(),
+    check("role", "Role Id must be provided")
+      .exists(),
+    check("department", "Department Id must be provided")
+      .exists(),
     errorChecker
   ],
   exceptionHandler(registerUserReq)

@@ -13,12 +13,9 @@ export class Dashboard extends React.Component {
       listOfDescriptions: [],
       listOfIdeas: [],
       creatorMode: false,
-      selectedPage: 1
+      selectedPage: "",
+      totalIdeas: ""
     };
-  }
-
-  something() {
-    this.setState({ selectedPage: 1 });
   }
 
   //Gets all ideas and displayes their title
@@ -27,13 +24,27 @@ export class Dashboard extends React.Component {
       areIdeasDisplayed: true
     });
     try {
-      const res = await axios.get(
-        `/api/ideas?itemsCount=5&pageNo=${this.state.selectedPage}`
-      );
+      const res = await axios.get(`/api/ideas?itemsCount=5&pageNo=${this.state.selectedPage}`);
       this.setState({ listOfIdeas: res.data.ideas });
+      this.setState({totalIdeas: res.data['totalIdeas']});
     } catch (err) {
       console.log(err);
     }
+  };
+
+
+  buttonClicked = event => {
+    console.log(event.target.value);
+    
+  }
+
+  
+   pageList = () => {
+     const listOfPages = [];
+    for (let i = 0; i < (this.state.totalIdeas/5); i++) {
+      listOfPages.push(<button onClick={this.buttonClicked} value= {i+1}>{i+1}</button>);
+    }
+    return listOfPages;
   };
 
   render() {
@@ -70,10 +81,9 @@ export class Dashboard extends React.Component {
 
             <div>
               <strong>
-                <button onClick={this.something}>1 </button>
-              </strong>
-              <strong>
-                <button>2</button>
+                {
+                  <div>{this.pageList()}</div>
+                }
               </strong>
             </div>
           </Fragment>

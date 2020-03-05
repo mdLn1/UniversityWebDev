@@ -81,7 +81,7 @@ const deleteIdeaReq = async (req, res) => {
 const createIdeaReq = async (req, res) => {
   const { description, isAnonymous, title, categoryId, termsAgreed } = req.body;
   const userId = req.user.id;
-  if (!!termsAgreed) {
+  if (termsAgreed == undefined || !termsAgreed) {
     throw new CustomError(
       "You must agree to our terms and conditions before submitting an idea",
       400

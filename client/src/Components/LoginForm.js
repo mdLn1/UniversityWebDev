@@ -3,49 +3,64 @@ import styles from "./LoginForm.module.css";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
+import { ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 
 export class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
+      email: "",
       password: "",
+      emailError: false,
+      passwordError: false,
       loggedIn: false
     };
     this.changeForm = this.props.changeForm;
-    this.onClick = this.onClick.bind(this);
-    //this.handleUserNameChange = this.handleUserNameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
   }
 
-  onClick(e) {
-    console.log(this.state.username);
-    console.log(this.state.password);
-  }
-
-  handleUserNameChange = event => {
-    this.setState({ username: event.target.value });
+  handleEmailChange = event => {
+    this.setState({ email: event.target.value });
+    this.setState({ emailError: false});
   };
 
   handlePasswordChange = event => {
     this.setState({ password: event.target.value });
+    this.setState({ passwordError: false});
   };
 
   handleSubmit = async e => {
-    console.log(this.state.username);
+    if (!this.state.email && !this.state.password) {
+      this.setState({ emailError: true});
+      this.setState({ passwordError: true});
+      return;
+    } else if (!this.state.email) {
+      this.setState({ emailError: true});
+      this.setState({ passwordError: false});
+      return;
+    } else if (!this.state.password) {
+      this.setState({ emailError: false});
+      this.setState({ passwordError: true});
+      return;
+    } else {
+      this.setState({ emailError: false});
+      this.setState({ passwordError: false});
+    }
+
     try {
       const config = {
         headers: {
           "Content-Type": "application/json"
         }
       };
-      const obj = { email: this.state.username, password: this.state.password };
-        const res = await axios.post("/api/auth/login/", obj, config);
-        localStorage.setItem("token", res.data.token);
-        this.setState({ loggedIn: true });
+      const obj = { email: this.state.email, password: this.state.password };
+      const res = await axios.post("/api/auth/login/", obj, config);
+      localStorage.setItem("token", res.data.token);
+      console.log(res.data.token);
+      this.setState({ loggedIn: true });
     } catch (err) {
-      console.log(err);
+      window.alert('Login Failed Wrong User/Password Combination');
     }
   };
 
@@ -62,46 +77,58 @@ export class LoginForm extends React.Component {
               alt={"Person and Locker"}
             />
             <h1>Login Details</h1>
-            <TextField
-              id="username"
-              label="Username"
-              variant="filled"
-              onChange={this.handleUserNameChange}
-              value={this.state.username}
-            />
-            <br />
-            <br />
-            <TextField
-              id="password"
-              label="Password"
-              type="password"
-              autoComplete="current-password"
-              variant="filled"
-              onChange={this.handlePasswordChange}
-            />
-            <br />
-            <br />
-            <label className={styles.label}>New to us ?</label>
-            <a
-              onClick={e => {
-                e.preventDefault();
-                this.changeForm(false);
-              }}
-              className={styles.join_link}
+            <ValidatorForm
+                ref="form"
+                onSubmit={this.handleSubmit}
+                onError={errors => console.log(errors)}
             >
-              Join now
-            </a>
-            <br></br>
-            <br></br>
-            <Button
-              variant="outlined"
-              size="large"
-              color="primary"
-              className={styles.button}
-              onClick={this.handleSubmit}
-            >
-              Login
-            </Button>
+              <TextValidator
+                required
+                error={this.state.emailError}
+                id="email"
+                label="Email"
+                variant="filled"
+                onChange={this.handleEmailChange}
+                value={this.state.email}
+                validators={['required', 'isEmail']}
+                errorMessages={['this field is required', 'email is not valid']}
+              />
+              <br />
+              <br />
+              <TextField
+                required
+                error={this.state.passwordError}
+                id="password"
+                label="Password"
+                type="password"
+                autoComplete="current-password"
+                variant="filled"
+                onChange={this.handlePasswordChange}
+              />
+              <br />
+              <br />
+              <label className={styles.label}>New to us ?</label>
+              <a
+                onClick={e => {
+                  e.preventDefault();
+                  this.changeForm(false);
+                }}
+                className={styles.join_link}
+              >
+                Join now
+              </a>
+              <br></br>
+              <br></br>
+              <Button
+                variant="outlined"
+                size="large"
+                color="primary"
+                className={styles.button}
+                onClick={this.handleSubmit}
+              >
+                Login
+              </Button>
+            </ValidatorForm>
           </div>
         </div>
       );

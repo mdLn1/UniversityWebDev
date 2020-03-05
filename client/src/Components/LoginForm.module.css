@@ -109,6 +109,15 @@ padding-left: 10px;
   padding-right: 100px;
 }
 
+.termsAgreedCheckbox{
+  margin-left: 0;
+}
+
+.termsAgreedButton{
+  justify-self: left;
+  padding-right: 100px;
+}
+
 .dashboardNavigationBar{
   background-color: whitesmoke;
   border-style: solid;
@@ -197,6 +206,10 @@ padding-left: 10px;
 }
 
 .checkboxAnonymousSubmission{
+  text-align: center;
+}
+
+.checkboxTermsAgreedSubmission{
   text-align: center;
 }
 

@@ -6,6 +6,7 @@ const {
   userLoginQuery,
   isEmailRegisteredAlreadyQuery,
   createUserQuery,
+  regUserQuery,
   userLastLoginQuery
 } = require("../db/queries/users");
 
@@ -14,7 +15,7 @@ const isEmailValid = require("../utils/isEmailValid");
 const isPasswordValid = require("../utils/isPasswordValid");
 
 const registerUserReq = async (req, res) => {
-  const { name, password, email, roleId, departmentId } = req.body;
+  const { name, password, email, role, department } = req.body;
   if (!isEmailValid(email))
     throw new CustomError("Invalid email address or wrong email domain", 400);
 
@@ -31,9 +32,9 @@ const registerUserReq = async (req, res) => {
   // produce a password hash and save it to user
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  await isRoleSelectableQuery(roleId);
+  await isRoleSelectableQuery(role);
   // perform user registration
-  await createUserQuery(name, hashedPassword, email, roleId, departmentId);
+  await regUserQuery(name, hashedPassword, email, role, department);
 
   const payload = { user: { name, email } };
   const token = jwt.sign(payload, config.get("jwtSecret"), {

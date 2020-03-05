@@ -2,14 +2,11 @@ import React from "react";
 import styles from "./LoginForm.module.css";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import MenuItem from "@material-ui/core/MenuItem";
 import axios from "axios";
-
-
-import { NavLink } from "react-router-dom";
-
+import { Redirect } from "react-router-dom";
 
 export class RegisterForm extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -18,7 +15,16 @@ export class RegisterForm extends React.Component {
       password: "",
       repeatPassword: "",
       role: "",
-      department: ""
+      department: "",
+      roles: [],
+      departments: [],
+      loggedIn: false,
+      errorName: false,
+      errorEmail: false,
+      errorPassword: false,
+      errorRepeatPassword: false,
+      errorRole: false,
+      errorDepartment: false
     };
     this.changeForm = this.props.changeForm;
     this.nameChangeHandler = this.nameChangeHandler.bind(this);
@@ -28,35 +34,51 @@ export class RegisterForm extends React.Component {
     this.departmentChangeHandler = this.departmentChangeHandler.bind(this);
   }
 
+  async componentDidMount() {
+    try {
+      const dptResponse = await axios.get('/api/departments');
+      this.setState({ departments: dptResponse.data.departments })
+      const rolesResponse = await axios.get('/api/roles');
+      this.setState({ roles: rolesResponse.data.roles })
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   nameChangeHandler = e => {
     this.setState({ name: e.target.value });
+    this.setState({ errorName: false })
   };
 
   emailChangeHandler = e => {
     this.setState({ email: e.target.value });
+    this.setState({ errorEmail: false })
   };
 
   passwordChangeHandler = e => {
     this.setState({ password: e.target.value });
+    this.setState({ errorPassword: false })
   };
 
   repeatPasswordChangeHandler = e => {
     this.setState({ repeatPassword: e.target.value });
+    this.setState({ errorRepeatPassword: false })
   };
 
   departmentChangeHandler = e => {
     this.setState({ department: e.target.value });
+    this.setState({ errorDepartment: false })
   };
 
   roleChangeHandler = e => {
     this.setState({ role: e.target.value });
+    this.setState({ errorRole: false })
   };
 
-  onClick = async e => {
+  registerUserHandler = async e => {
     try {
       let {
-        name: name,
+        name,
         email,
         password,
         repeatPassword,
@@ -64,7 +86,35 @@ export class RegisterForm extends React.Component {
         role
       } = this.state;
 
-      // Basic validation - please user better checks
+      if (!name) {
+        this.setState({ errorName: true });
+      }
+
+      if (!email) {
+        this.setState({ errorEmail: true });
+      }
+
+      if (!password) {
+        this.setState({ errorPassword: true });
+      }
+
+      if (!repeatPassword) {
+        this.setState({ errorRepeatPassword: true });
+      }
+
+      if (!role) {
+        this.setState({ errorRole: true });
+      }
+
+      if (!department) {
+        this.setState({ errorDepartment: true });
+      }
+
+      if (!name || !email || !password || !repeatPassword || !role || !department){
+        return;
+      }
+      
+      //Basic validation - please user better checks
       if (password !== repeatPassword) {
         return console.log("password do not match");
       } else {
@@ -77,89 +127,28 @@ export class RegisterForm extends React.Component {
         console.log(obj);
         let result = await axios.post("/api/auth/register/", obj, config);
         console.log(result);
+        localStorage.setItem("token", result.data.token);
+        this.setState({ loggedIn: true });
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  loginOnClick = async e => {
-    try {
-
-    } catch (err){ 
-      console.log(err);
-    }
-  }
-
   render() {
-
-  const departments = [
-      {
-        value: '',
-        label: ''
-      },
-      {
-        value: 'Human Resources',
-        label: 'Human Resources',
-      },
-      {
-        value: 'Finance',
-        label: 'Finance',
-      },
-      {
-        value: 'SMT',
-        label: 'CIS',
-      },
-      {
-        value: 'Student Ambassadors',
-        label: 'Student Ambassadors',
-      },
-      {
-        value : 'Library',
-        label : 'Library'
-      }
-
-    ];
-
-  const roles = [
-    {
-      value: '',
-      label: ''
-    },
-    {
-      value: 'QA Manager ',
-      label: ' QA Manager ',
-    },
-    {
-      value: 'QA Coordinator',
-      label: 'QA Coordinator',
-    },
-    {
-      value: 'General Staff',
-      label: 'General Staff',
-    },
-    {
-      value: 'Lecturer',
-      label: 'Lecturer',
-    },
-    {
-      value:'Lab Assistant',
-      label : 'Lab Assistant',
-    },
-    {
-      value: 'Librarian',
-      label: 'Librarian',
-    }
-  ];
+    const loggedIn = this.state.loggedIn;
+   
+    
     let {
-      name: name,
+      name,
       email,
       password,
       repeatPassword,
       department,
       role
     } = this.state;
-
+    if (loggedIn) return <Redirect to="/dashboard" />;
+    else
     return (
       <div className={styles.page}>
         <div className={styles.registerDivContainer}>
@@ -170,24 +159,29 @@ export class RegisterForm extends React.Component {
           />
           <h1>Register</h1>
           <TextField
+            required
             id="name-input"
             label="Name"
             variant="filled"
             value={name}
             onChange={this.nameChangeHandler}
+            error={this.state.errorName}
           />
           <span>  </span>
           <TextField
+            required
             id="email-input"
             label="Email"
             type="email"
             value={email}
             onChange={this.emailChangeHandler}
             variant="filled"
+            error={this.state.errorEmail}
           />
           <br/>
           <br/>
           <TextField
+            required
             id="password-input"
             label="Password"
             type="password"
@@ -195,9 +189,11 @@ export class RegisterForm extends React.Component {
             value={password}
             onChange={this.passwordChangeHandler}
             variant="filled"
+            error={this.state.errorPassword}
           />
           <span>  </span>
           <TextField
+            required
             id="repeat-password-input"
             label="Re-type your password"
             type="password"
@@ -205,44 +201,47 @@ export class RegisterForm extends React.Component {
             onChange={this.repeatPasswordChangeHandler}
             value={repeatPassword}
             variant="filled"
+            error={this.state.errorRepeatPassword}
           />
           <br />
           <br />
-           <TextField
-            id = "role-input"
+          <TextField
             select
+            id = "role-input"
             label = "Role"
-            value = {role}
             helperText = "Please select a role"
             variant = "filled"
-            onChange = {this.roleChangeHandler}
-            SelectProps={{
-              native:true,
-            }}
+            value={role}
+            onChange={this.roleChangeHandler}
+            error={this.state.errorRole}
           >
-            {roles.map(option =>(
-              <option key = {option.value} value = {option.value}>
-                {option.label}
-              </option>
+            <MenuItem value="">
+              <em></em>
+            </MenuItem>
+            {this.state.roles.map((role, index) =>(
+              <MenuItem key = {index} value = {role.role}>
+                {role.role}
+              </MenuItem>
             ))};
           </TextField>
           <span>  </span>
           <TextField
-            id = "department"
             select
+            id = "department"
             label = "Department"
-            value = {department}
             helperText = "Please select a department"
             variant = "filled"
-            onChange = {this.departmentChangeHandler}
-            SelectProps={{
-              native:true,
-            }}
+            value={department}
+            onChange={this.departmentChangeHandler}
+            error={this.state.errorDepartment}
           >
-            {departments.map(option =>(
-              <option key = {option.value} value = {option.value}>
-                {option.label}
-              </option>
+            <MenuItem value="">
+              <em></em>
+            </MenuItem>
+            {this.state.departments.map((dpt, index) =>(
+              <MenuItem key = {index} value = {dpt.department}>
+                {dpt.department}
+              </MenuItem>
             ))};
           </TextField>
           <br />
@@ -260,7 +259,7 @@ export class RegisterForm extends React.Component {
           <Button
           variant="outlined"
           size="large"
-          color="primary"
+          color="default"
           className={styles.button}
           >
             <a
@@ -269,7 +268,7 @@ export class RegisterForm extends React.Component {
                 this.changeForm(true);
               }}
             >
-              Login
+              Back
             </a>
 
           </Button>
@@ -280,7 +279,7 @@ export class RegisterForm extends React.Component {
             size="large"
             color="primary"
             className={styles.button}
-            onClick={this.onClick}
+            onClick={this.registerUserHandler}
           >
             Register
           </Button>
