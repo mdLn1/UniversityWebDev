@@ -3,7 +3,6 @@ const request = require("supertest");
 
 const { app } = require("../server");
 const { User } = require("../models/user");
-const { users, populateUsers } = require("./seed/seed");
 
 // Register tests
 describe("POST /api/auth/register/", () => {

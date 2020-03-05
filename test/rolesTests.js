@@ -23,7 +23,7 @@ describe("POST /api/roles", () => {
         .post("/api/roles")
         .set({"x-auth-token" : token})
         .send({
-            role: "QA Manager",
+            role: `Test${Math.random() * 1000 + 1} Manager`,
             description: "Lab assistant in testing",
             isSelectable: 1
         })

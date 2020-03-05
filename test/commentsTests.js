@@ -28,7 +28,6 @@ describe("POST /api/ideas/:ideaId/comments", () => {
 
         request(app)
         .post(`/api/ideas/${ideaToUpdate.ideaId}/comments`)
-        .set({"x-auth-token" : token})
         .send(ideaToUpdate)
         .expect(400)
         .expect(res => {
@@ -49,7 +48,7 @@ describe("POST /api/ideas/:ideaId/comments", () => {
 
         request(app)
         .post(`/api/ideas/${commentToCreate.ideaId}/comments`)
-        .send(ideaToCreate)
+        .send(commentToCreate)
         .expect(400)
         .expect(res => {
             expect(res.body).toBeDefined

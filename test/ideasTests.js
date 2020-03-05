@@ -118,7 +118,7 @@ describe("POST /api/ideas", () => {
     it("Testing whether or non int passed as a category id is accepted", (done) => {
         testIdea = {
             description: "My test idea is appropriate",
-            categoryId: "1",
+            categoryId: "test",
             isAnonymous: 1,
             title: "Tester"
         }
