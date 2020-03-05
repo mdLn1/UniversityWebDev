@@ -18,7 +18,7 @@ const createRoleReq = async (req, res) => {
 
 const updateRoleReq = async (req, res) => {
   const { id } = req.params;
-  const { newRole, newDescription, isSelectable } = req.body;
+  let { newRole, newDescription, isSelectable } = req.body;
   isSelectable = isSelectable ? 1 : 0;
   await updateRoleQuery(id, newRole, newDescription, isSelectable);
   res
