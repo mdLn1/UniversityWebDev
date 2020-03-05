@@ -86,13 +86,13 @@ function deleteRoleQuery(id) {
   });
 }
 
-function isRoleSelectableQuery(id) {
+function isRoleSelectableQuery(role) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: "select isSelectable from Roles where id = ?",
+        sql: "select isSelectable from Roles where role = ?",
         timeout: 40000,
-        values: [id]
+        values: [role]
       },
       (err, result) => {
         if (err) {

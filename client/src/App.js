@@ -1,10 +1,8 @@
 import React from 'react';
 import './App.css';
-import { Switch, BrowserRouter as Router, NavLink, Route} from "react-router-dom";
+import { Switch, BrowserRouter as Router, Route} from "react-router-dom";
 import {Authentication} from './Pages/Authentication';
 import {Dashboard} from './Components/Dashboard';
-import {IdeaCreator} from './Components/IdeaCreator';
-import {Home} from "./Components/Home";
 
 function App() {
   return (

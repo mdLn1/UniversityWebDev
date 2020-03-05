@@ -20,6 +20,23 @@ function createUserQuery(name, password, email, role_id, department_id) {
   );
 }
 
+function regUserQuery(name, password, email, role, department) {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql:
+          "insert into Users (name, password, email, role_id, department_id) values (?, ?, ?, (select id from Roles where role=?), (select id from Departments where department=?))",
+        timeout: 40000, // 40s
+        values: [name, password, email, role, department]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    )
+  );
+}
+
 // Use this function to verify the user login
 // email field is unique - so the results array will only contain max 1 result
 function userLoginQuery(email, password) {
@@ -252,5 +269,6 @@ module.exports = {
   userLastLoginQuery,
   isAccountDisabledQuery,
   adminEnableDisableUserAccountQuery,
-  hideShowUserActivityQuery
+  hideShowUserActivityQuery,
+  regUserQuery
 };

@@ -6,12 +6,12 @@ const { host, database, port, password, user } = config.get(
 );
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host,
-  database,
-  user,
-  password,
-  port
-});
+  host     : 'entwebdev.cxcnuff93kd9.eu-west-2.rds.amazonaws.com',
+  database : 'entwebdev',
+  user     : 'admin',
+  password : 'Gabriel1234!',
+  port     : 3306
+})
 
 // Ping database to check for common exception errors.
 pool.getConnection((err, connection) => {
