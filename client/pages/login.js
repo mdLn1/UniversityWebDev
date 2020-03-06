@@ -84,7 +84,6 @@ class LoginForm extends Component {
                   onChange={this.handlePasswordChange}
                   value={this.state.password}
                 />
-
                 <Button color="teal" fluid size="large">
                   Login
                 </Button>
