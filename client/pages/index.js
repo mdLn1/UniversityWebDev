@@ -1,75 +1,134 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Form,
-  Grid,
-  Header,
-  Message,
-  Segment,
-  Container
-} from "semantic-ui-react";
-import Head from "next/head";
+import Layout from "../components/Layout";
+import { Card, Icon, Button } from "semantic-ui-react";
+import { Link } from "../routes";
+import axios from "axios";
+import { Pagination } from "semantic-ui-react";
 
-class LoginForm extends Component {
+class ElectionIndex extends Component {
   state = {
-    username: "",
-    password: ""
+    selectedPage: "",
+    numberOfPages: "",
+    listOfIdeas: []
   };
 
-  loginHandler = async => {
-    console.log("clicked");
+  async componentDidMount() {
+    this.setState({ selectedPage: 1 });
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/ideas?itemsCount=5&pageNo=${this.state.selectedPage}`
+      );
+      this.setState({ listOfIdeas: res.data.ideas });
+      this.setState({ numberOfPages: Math.ceil(res.data["totalIdeas"] / 5) });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async updateListOfIdeas(activePage) {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/ideas?itemsCount=5&pageNo=${activePage}`
+      );
+      this.setState({ listOfIdeas: res.data.ideas });
+      this.setState({ numberOfPages: Math.ceil(res.data["totalIdeas"] / 5) });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  renderIdeas() {
+    const items = this.state.listOfIdeas.map((idea, index) => {
+      const rightStyle = {
+        float: "right",
+        textDecoration: "underline"
+      };
+
+      const leftStyle = {
+        float: "left",
+        textDecoration: "underline"
+      };
+
+      let header = (
+        <div>
+          <div style={leftStyle}>
+            <a>
+              <h2>{idea.Title}</h2>
+            </a>
+          </div>
+          <div style={rightStyle}>
+            <Button color="red" size="mini">
+              Report
+            </Button>
+          </div>
+        </div>
+      );
+
+      let extra = (
+        <div>
+          <div style={rightStyle}>
+            <p>
+              Posted by: <strong>{idea.author}</strong>
+            </p>
+            <p>
+              Date: <strong>{idea.posted_time.slice(0, 10)}</strong>
+            </p>
+          </div>
+          <div style={leftStyle}>
+            <p>
+              <Link route={`/`}>
+                <a>
+                  <Icon name="thumbs up outline"></Icon>
+                </a>
+              </Link>
+              <span>{idea.positiveVotes}</span>
+              <span style={{ marginRight: "2rem" }} />
+              <Link route={`/`}>
+                <a>
+                  <Icon name="thumbs down outline"></Icon>
+                </a>
+              </Link>
+              <span>{idea.negativeVotes}</span>
+            </p>
+            <Button size="tiny">Comments ({idea.commentsCount})</Button>
+            <Button size="tiny">Attachments ({idea.uploadsCount})</Button>
+          </div>
+        </div>
+      );
+      return {
+        key: index,
+        header: header,
+        description: idea.description,
+        fluid: true,
+        extra: extra
+      };
+    });
+    return <Card.Group items={items} />;
+  }
+
+  setPageNum = async (event, { activePage }) => {
+    this.setState({ selectedPage: activePage });
+    await this.updateListOfIdeas(activePage);
   };
 
   render() {
+    const { selectedPage, numberOfPages } = this.state;
     return (
-      <Container>
-        <Head>
-          <link
-            rel="stylesheet"
-            href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
+      <Layout>
+        <div>
+          <h3>Dashboard Homepage</h3>
+          {this.renderIdeas()}
+          <br></br>
+          <Pagination
+            activePage={selectedPage}
+            totalPages={numberOfPages}
+            siblingRange={1}
+            onPageChange={this.setPageNum}
           />
-        </Head>
-        <Grid
-          textAlign="center"
-          style={{ height: "100vh" }}
-          verticalAlign="middle"
-        >
-          <Grid.Column style={{ maxWidth: 450 }}>
-            <Header as="h2" color="teal" textAlign="center">
-              Log-in to your account
-            </Header>
-            <Form size="large" onSubmit={this.loginHandler}>
-              <Segment stacked>
-                <Form.Input
-                  required
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                  placeholder="E-mail address"
-                  type="email"
-                />
-                <Form.Input
-                  required
-                  fluid
-                  icon="lock"
-                  iconPosition="left"
-                  placeholder="Password"
-                  type="password"
-                />
-
-                <Button color="teal" fluid size="large">
-                  Login
-                </Button>
-              </Segment>
-            </Form>
-            <Message>
-              New to us? <a href="/signup">Sign Up</a>
-            </Message>
-          </Grid.Column>
-        </Grid>
-      </Container>
+        </div>
+      </Layout>
     );
   }
 }
 
-export default LoginForm;
+export default ElectionIndex;

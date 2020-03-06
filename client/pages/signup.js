@@ -5,11 +5,11 @@ import {
   Grid,
   Header,
   Message,
-  Segment,
-  Container
+  Segment
 } from "semantic-ui-react";
 import Head from "next/head";
 import axios from "axios";
+import Layout from "../components/Layout";
 
 class LoginForm extends Component {
   state = {
@@ -43,7 +43,7 @@ class LoginForm extends Component {
       value: role.role
     }));
     return (
-      <Container>
+      <Layout>
         <Head>
           <link
             rel="stylesheet"
@@ -53,7 +53,7 @@ class LoginForm extends Component {
         <Grid
           textAlign="center"
           style={{ height: "100vh" }}
-          verticalAlign="middle"
+          verticalAlign="top"
         >
           <Grid.Column style={{ maxWidth: 450 }}>
             <Header as="h2" color="teal" textAlign="center">
@@ -91,7 +91,6 @@ class LoginForm extends Component {
                   placeholder="Repeat Password"
                   type="password"
                 />
-
                 <Form.Dropdown
                   required
                   placeholder="Select Department"
@@ -99,7 +98,6 @@ class LoginForm extends Component {
                   selection
                   options={dptOptions}
                 />
-
                 <Form.Dropdown
                   required
                   placeholder="Select Role"
@@ -114,11 +112,11 @@ class LoginForm extends Component {
               </Segment>
             </Form>
             <Message>
-              Already Registred? <a href="/">Login</a>
+              Already Registred? <a href="/login">Login</a>
             </Message>
           </Grid.Column>
         </Grid>
-      </Container>
+      </Layout>
     );
   }
 }

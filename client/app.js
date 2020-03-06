@@ -5,6 +5,7 @@ const app = next({
 });
 const routes = require("./routes");
 const handler = routes.getRequestHandler(app);
+
 require("dotenv").config();
 
 app.prepare().then(() => {
