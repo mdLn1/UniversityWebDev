@@ -26706,9 +26706,9 @@ var assign=Object.assign.bind(Object);function g(){return assign;}Object.defineP
 
 /***/ }),
 
-/***/ "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Flogin&absolutePagePath=%2FUsers%2Fgabriel%2FDocuments%2FUniversityWebDev%2Fclient%2Fpages%2Flogin.js!./":
+/***/ "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Flogin&absolutePagePath=%2FUsers%2Fgabriel%2FDownloads%2FUniversityWebDev%2Fclient%2Fpages%2Flogin.js!./":
 /*!***********************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Flogin&absolutePagePath=%2FUsers%2Fgabriel%2FDocuments%2FUniversityWebDev%2Fclient%2Fpages%2Flogin.js ***!
+  !*** ./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Flogin&absolutePagePath=%2FUsers%2Fgabriel%2FDownloads%2FUniversityWebDev%2Fclient%2Fpages%2Flogin.js ***!
   \***********************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -63493,14 +63493,14 @@ module.exports = routes;
 
 /***/ }),
 
-/***/ 2:
+/***/ 3:
 /*!***************************************************************************************************************************************************!*\
-  !*** multi next-client-pages-loader?page=%2Flogin&absolutePagePath=%2FUsers%2Fgabriel%2FDocuments%2FUniversityWebDev%2Fclient%2Fpages%2Flogin.js ***!
+  !*** multi next-client-pages-loader?page=%2Flogin&absolutePagePath=%2FUsers%2Fgabriel%2FDownloads%2FUniversityWebDev%2Fclient%2Fpages%2Flogin.js ***!
   \***************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! next-client-pages-loader?page=%2Flogin&absolutePagePath=%2FUsers%2Fgabriel%2FDocuments%2FUniversityWebDev%2Fclient%2Fpages%2Flogin.js! */"./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Flogin&absolutePagePath=%2FUsers%2Fgabriel%2FDocuments%2FUniversityWebDev%2Fclient%2Fpages%2Flogin.js!./");
+module.exports = __webpack_require__(/*! next-client-pages-loader?page=%2Flogin&absolutePagePath=%2FUsers%2Fgabriel%2FDownloads%2FUniversityWebDev%2Fclient%2Fpages%2Flogin.js! */"./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Flogin&absolutePagePath=%2FUsers%2Fgabriel%2FDownloads%2FUniversityWebDev%2Fclient%2Fpages%2Flogin.js!./");
 
 
 /***/ }),
@@ -63516,5 +63516,5 @@ module.exports = dll_82519ec661270f7f484f;
 
 /***/ })
 
-},[[2,"static/runtime/webpack.js"]]]);
+},[[3,"static/runtime/webpack.js"]]]);
 //# sourceMappingURL=login.js.map

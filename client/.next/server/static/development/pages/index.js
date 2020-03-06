@@ -88,7 +88,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -384,14 +384,14 @@ module.exports = routes;
 
 /***/ }),
 
-/***/ 3:
+/***/ 4:
 /*!******************************!*\
   !*** multi ./pages/index.js ***!
   \******************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/gabriel/Documents/UniversityWebDev/client/pages/index.js */"./pages/index.js");
+module.exports = __webpack_require__(/*! /Users/gabriel/Downloads/UniversityWebDev/client/pages/index.js */"./pages/index.js");
 
 
 /***/ }),
