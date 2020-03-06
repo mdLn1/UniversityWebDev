@@ -14,68 +14,98 @@ import {
 import axios from "axios";
 import { Cookies } from "react-cookie";
 
-const cookies = new Cookies()
+const cookies = new Cookies();
 
 class submitIdea extends Component {
   state = {
     description: "",
     ideaTitle: "",
-    categoryTitle: "",
+    categoryTitle: "-1",
     isAnonymous: false,
-    termsAgreed: false
+    termsAgreed: false,
+    categories: []
   };
 
-  descriptionChangeHandler = event => {
-    this.setState({ description: event.target.value });
-  };
-
-  categoryChangeHandler = event => {
-    this.setState({ categoryTitle: event.target.value });
-  };
-
-  titleChangeHandler = event => {
-    this.setState({ ideaTitle: event.target.value });
-  };
-
-  termsChangeHandler = () => {
-    this.setState({ termsAgreed: !this.termsAgreed });
-    console.log(this.state.termsAgreed)
-  };
-
-  anonymousChangeHandler = () => {
-    this.setState({ isAnonymous: !this.isAnonymous });
-    console.log(this.state.isAnonymous);
-    
+  async componentWillMount() {
+    try {
+      const categoriesRes = await axios.get(
+        "http://localhost:5000/api/categories"
+      );
+      this.setState({ categories: categoriesRes.data.categories });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  onSubmit = async () => {
+  onChangeText = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  onSelectChange = e => {
+    this.setState({ categoryTitle: e.target.id });
+  };
+  // you do not need to create method for all
+  // descriptionChangeHandler = event => {
+  //   this.setState({ description: event.target.value });
+  // };
+
+  // categoryChangeHandler = event => {
+  //   this.setState({ categoryTitle: event.target.value });
+  // };
+
+  // titleChangeHandler = event => {
+  //   this.setState({ ideaTitle: event.target.value });
+  // };
+
+  // not needed
+  // termsChangeHandler = () => {
+  //   this.setState({ termsAgreed: !this.termsAgreed });
+  //   console.log(this.state.termsAgreed)
+  // };
+
+  // anonymousChangeHandler = () => {
+  //   this.setState({ isAnonymous: !this.isAnonymous });
+  //   console.log(this.state.isAnonymous);
+
+  // }
+
+  onSubmit = async (e) => {
+    e.preventDefault();
+    const form = document.forms[0];
     try {
       const config = {
         headers: {
           "Content-Type": "application/json",
-          "x-auth-token": cookies.get('token')
+          "x-auth-token": cookies.get("token")
         }
       };
+
       const obj = {
         description: this.state.description,
-        isAnonymous: false,
         title: this.state.ideaTitle,
         categoryId: this.state.categoryTitle,
-        termsAgreed: true
+        isAnonymous: !!form[3].checked,
+      termsAgreed: !!form[2].checked
       };
+
       const res = await axios.post(
-        "http://localhost:5000/api/ideas/", obj, config
+        "http://localhost:5000/api/ideas/",
+        obj,
+        config
       );
-    
     } catch (err) {
-      console.log(err);
+      console.log(err.response.data);
     }
-  }
+  };
 
   render() {
-
     // rendering goes here
-
+    const categoriesOptions = this.state.categories.map(category => ({
+      key: category.id,
+      text: category.tag,
+      value: category.id,
+      id: category.id
+    }));
     return (
       <Layout>
         <Head>
@@ -93,34 +123,39 @@ class submitIdea extends Component {
             <Header as="h2" color="teal" textAlign="center">
               Create an Idea
             </Header>
-            <Form size="large" onSubmit={this.onSubmit}>
+            <Form size="large" onSubmit={this.onSubmit} id="form">
               <Segment stacked>
                 <Form.Input
                   required
                   fluid
                   placeholder="Title"
-                  onChange={this.titleChangeHandler}
+                  name="ideaTitle"
+                  onChange={this.onChangeText}
                 />
-                <Form.Input
+                <Form.Dropdown
                   required
+                  placeholder="Select Category"
                   fluid
-                  placeholder="Category"
-                  onChange={this.categoryChangeHandler}
+                  selection
+                  name="categoryTitle"
+                  onChange={this.onSelectChange}
+                  options={categoriesOptions}
                 />
                 <Form.TextArea
                   required
                   placeholder="Type your Idea"
-                  onChange={this.descriptionChangeHandler}
+                  name="description"
+                  onChange={this.onChangeText}
                 />
                 <Form.Checkbox
                   required
                   label="Terms and Conditions"
-                  defaultChecked= {false}
-                  onClick={this.termsChangeHandler}
+                  name="termsAgreed"
+                  defaultChecked={false}
                 />
-                <Checkbox
+                <Form.Checkbox
                   label="Post Anonimously"
-                  onClick = { this.anonymousChangeHandler}
+                  name="isAnonymous"
                   defaultChecked={false}
                 />
                 <br></br>
@@ -141,7 +176,7 @@ class submitIdea extends Component {
                   options={rolesOptions}
                 /> */}
 
-                <Button color="teal" fluid size="large">
+                <Button color="teal" type="submit" fluid size="large">
                   Submit
                 </Button>
               </Segment>
