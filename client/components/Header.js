@@ -6,7 +6,7 @@ const cookies = new Cookies();
 
 class Header extends Component {
   state = {
-    token: ""
+    token: "",
   };
 
   componentDidMount() {
@@ -21,7 +21,10 @@ class Header extends Component {
             <a className="item">Ideas Portal</a>
           </Link>
           <Menu.Menu position="right">
-            <Link route="/ideas/new-idea">
+            <Link route="/manageCategories">
+              <a className = "item" href= "../pages/manageCategories">Manage Categories</a>
+            </Link>
+            <Link route="/submitIdea">
               <a className="item">Submit Idea</a>
             </Link>
             <Link route="/logout">
