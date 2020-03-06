@@ -61,9 +61,7 @@ describe("POST /api/roles/:id", () => {
             isSelectable: 1
         })
         .expect(200)
-        .expect(res => {
-            expect(res.body).toBe({"success": "Role successfully updated" })
-        }).end(done)
+        .end(done)
     })
 
     it("Test if an unauth user can update an idea", (done) => {

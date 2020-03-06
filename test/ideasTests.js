@@ -133,5 +133,23 @@ describe("POST /api/ideas", () => {
         })
         .end(done)
     })
+
+    it("Test if an unauthenticated user can add an idea ", (done) => {
+        testIdea = {
+            description: "My test idea is appropriate",
+            categoryId: 1,
+            isAnonymous: 1,
+            title: "Test"
+        }
+
+        request(app)
+        .post("/api/ideas")
+        .send(testIdea)
+        .expect(400)
+        .expect( res => {
+            expect(res.body.errors[0]).toBe("Title must be at least 5 characters long")
+        })
+        .end(done)
+    })
 })
 

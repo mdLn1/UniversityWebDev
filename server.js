@@ -4,7 +4,6 @@ const app = express();
 const writeFeedback = require("./utils/writeFeedback");
 const compression = require("compression");
 const helmet = require("helmet");
-// const cors = require("cors");
 
 // var allowedOrigins = ['https://localhost:3000', 'https://localhost:5000', 'http://localhost:5000', 'http://localhost:3000', 'https://medev.co.uk', 'https://www.medev.co.uk'];
 // var corsOptions = {origin: function(origin, callback) {
