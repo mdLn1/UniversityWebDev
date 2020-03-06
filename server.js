@@ -41,6 +41,7 @@ app.get("/hello", async (req, res, next) => {
 });
 
 // WARNING! Errors may show if the routes files don't have module.exports = router;
+app.use("/api/authenticated", require("./routes/checkAuthenticatedRoute"));
 app.use("/api/user", require("./routes/userRoute"));
 app.use("/api/auth", require("./routes/authRoute"));
 app.use("/api/roles", require("./routes/rolesRoute"));

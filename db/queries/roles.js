@@ -60,6 +60,9 @@ function updateRoleQuery(id, role, description, isSelectable) {
         if (err) {
           return reject(err);
         }
+        if (result.affectedRows == 0) {
+          reject(new CustomError("No role matching given id was found", 400));
+        }
 
         return resolve();
       }
