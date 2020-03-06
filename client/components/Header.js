@@ -21,7 +21,7 @@ class Header extends Component {
             <a className="item">Ideas Portal</a>
           </Link>
           <Menu.Menu position="right">
-            <Link route="/ideas/new-idea">
+            <Link route="/submitIdea">
               <a className="item">Submit Idea</a>
             </Link>
             <Link route="/logout">

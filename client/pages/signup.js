@@ -19,9 +19,7 @@ class LoginForm extends Component {
 
   async componentDidMount() {
     try {
-      const dptResponse = await axios.get(
-        "http://localhost:5000/api/departments"
-      );
+      const dptResponse = await axios.get("http://localhost:5000/api/departments");
       this.setState({ departments: dptResponse.data.departments });
       const rolesResponse = await axios.get("http://localhost:5000/api/roles");
       this.setState({ roles: rolesResponse.data.roles });
