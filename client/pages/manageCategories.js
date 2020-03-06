@@ -107,9 +107,6 @@ export default  class manageCategories extends Component {
                         <Button style = {{marginTop: '3%'}} color="teal"> Create Category</Button>
                     </Segment>
                     </Form>
-                    <Message>
-                    New to us? <a href="/signup">Sign Up</a>
-                    </Message>
                 </Grid.Column>
                 </Grid>
             </Layout>   
