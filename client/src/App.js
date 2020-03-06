@@ -3,6 +3,7 @@ import './App.css';
 import { Switch, BrowserRouter as Router, Route} from "react-router-dom";
 import {Authentication} from './Pages/Authentication';
 import {Dashboard} from './Components/Dashboard';
+import { IdeaCreator } from './Components/IdeaCreator';
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
             <Dashboard/>
             {/* <IdeaCreator/> */}
             {/* <IdeaDisplayer/> */}
+          </Route>
+          <Route path = "/createidea">
+            <IdeaCreator/>
           </Route>
         </Switch>
         </Router>
