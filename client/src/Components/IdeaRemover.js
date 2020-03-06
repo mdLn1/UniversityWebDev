@@ -7,11 +7,11 @@ import { Redirect } from "react-router-dom";
 
 //import Pagination from '@material-ui/Pagination';
 
-export class Dashboard extends React.Component {
+export class IdeaRemover extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      areIdeasDisplayed: false,
+      areIdeasDisplayed: true,
       listOfDescriptions: [],
       listOfIdeas: [],
       creatorMode: false,
@@ -36,29 +36,7 @@ export class Dashboard extends React.Component {
 
 
   buttonClicked = event => {
-     const selectedPage = event.target.value;
-    //just concatenate the number of the page to the URL instead of having a switch statement
-    // and route towards that URL
-  }
-
-  
-   pageList = () => {
-    const listOfPages = [];
-    //i=1 so we don't have page 0 displaying to the user 
-    for (let i = 1; i < (this.state.totalIdeas/5) + 1; i++) {
-      listOfPages.push(<button onClick={this.buttonClicked} value= {i}>{i}</button>);
-    }
-    return listOfPages;
-  };
-
-  redirectToMode = event => {
-    if (event.currentTarget.value == 'create'){
-      return <Redirect to="/createidea" />;
-    } else if ( event.currentTarget.value == "edit"){
-      // return <Redirect to="/editidea" />;
-    } else {
-      // return null//<Redirect to="/createidea" />;
-    }
+   
   }
 
   render() {
@@ -92,14 +70,6 @@ export class Dashboard extends React.Component {
                 ></IdeaBar>
               );
             })}
-
-            <div>
-              <strong>
-                {
-                  <div>{this.pageList()}</div>
-                }
-              </strong>
-            </div>
           </Fragment>
         </div>
       );

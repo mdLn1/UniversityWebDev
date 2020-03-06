@@ -57,7 +57,7 @@ export class LoginForm extends React.Component {
       const obj = { email: this.state.email, password: this.state.password };
       const res = await axios.post("/api/auth/login/", obj, config);
       localStorage.setItem("token", res.data.token);
-      console.log(res.data.token);
+      console.log( "token:" + res.data.token);
       this.setState({ loggedIn: true });
     } catch (err) {
       window.alert('Login Failed Wrong User/Password Combination');

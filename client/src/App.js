@@ -18,7 +18,7 @@ function App() {
           </Route>
           <Route path = "/dashboard">
             {/* <Home/> */}
-            <Dashboard/>
+            <Dashboard />
             {/* <IdeaCreator/> */}
             {/* <IdeaDisplayer/> */}
           </Route>
