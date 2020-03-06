@@ -6,7 +6,7 @@ const cookies = new Cookies();
 
 class Header extends Component {
   state = {
-    token: ""
+    token: "",
   };
 
   componentDidMount() {
