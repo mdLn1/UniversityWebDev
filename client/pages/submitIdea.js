@@ -25,8 +25,9 @@ class submitIdea extends Component {
     termsAgreed: false,
     categories: []
   };
-
-  async componentWillMount() {
+  // madalin changed to willMount not sure why? gives error
+  // async componentWillMount() {
+  async componentDidMount() {
     try {
       const categoriesRes = await axios.get(
         "http://localhost:5000/api/categories"
@@ -65,8 +66,7 @@ class submitIdea extends Component {
 
   // anonymousChangeHandler = () => {
   //   this.setState({ isAnonymous: !this.isAnonymous });
-  //   console.log(this.state.isAnonymous);
-
+  //   console.log(this.state.isAnonymous)
   // }
 
   onSubmit = async (e) => {
@@ -85,7 +85,7 @@ class submitIdea extends Component {
         title: this.state.ideaTitle,
         categoryId: this.state.categoryTitle,
         isAnonymous: !!form[3].checked,
-      termsAgreed: !!form[2].checked
+        termsAgreed: !!form[2].checked
       };
 
       const res = await axios.post(
@@ -158,24 +158,8 @@ class submitIdea extends Component {
                   name="isAnonymous"
                   defaultChecked={false}
                 />
-                <br></br>
-                <br></br>
-
-                {/* <Form.Dropdown
-                  required
-                  placeholder="Select Department"
-                  fluid
-                  selection
-                  options={dptOptions}
-                />
-                <Form.Dropdown
-                  required
-                  placeholder="Select Role"
-                  fluid
-                  selection
-                  options={rolesOptions}
-                /> */}
-
+                <br>
+                </br>
                 <Button color="teal" type="submit" fluid size="large">
                   Submit
                 </Button>
