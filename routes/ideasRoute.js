@@ -63,9 +63,6 @@ router.post(
     check("isAnonymous", "Is Anonymous does not exist")
       .exists()
       .isBoolean(),
-    check("categoryId", "Category Id must be an integer")
-      .exists()
-      .isInt(),
     check("title", "Title must be at least 5 characters long")
       .exists()
       .trim()
