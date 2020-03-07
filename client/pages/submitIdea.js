@@ -93,8 +93,12 @@ class submitIdea extends Component {
         obj,
         config
       );
+
+      alert("Your idea was submited successfully");
+
     } catch (err) {
       console.log(err.response.data);
+    //  alert("error" + err.response.data);
     }
   };
 
@@ -154,7 +158,7 @@ class submitIdea extends Component {
                   defaultChecked={false}
                 />
                 <Form.Checkbox
-                  label="Post Anonimously"
+                  label="Post Anonymously"
                   name="isAnonymous"
                   defaultChecked={false}
                 />
