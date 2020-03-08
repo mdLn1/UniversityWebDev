@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import Layout from "../components/Layout";
+import Layout from "../../components/Layout";
 import Head from "next/head";
+import { Router } from "../../routes";
 import {
   Button,
   Form,
@@ -12,6 +13,7 @@ import {
   Segment
 } from "semantic-ui-react";
 import axios from "axios";
+import { handleAuthSSR } from "../../utils/authSSR";
 import { Cookies } from "react-cookie";
 
 const cookies = new Cookies();
@@ -25,6 +27,12 @@ class submitIdea extends Component {
     termsAgreed: false,
     categories: []
   };
+
+  static async getInitialProps(props) {
+    await handleAuthSSR(props);
+    return {};
+  }
+
   // madalin changed to willMount not sure why? gives error
   // async componentWillMount() {
   async componentDidMount() {
@@ -45,31 +53,8 @@ class submitIdea extends Component {
   onSelectChange = e => {
     this.setState({ categoryTitle: e.target.id });
   };
-  // you do not need to create method for all
-  // descriptionChangeHandler = event => {
-  //   this.setState({ description: event.target.value });
-  // };
 
-  // categoryChangeHandler = event => {
-  //   this.setState({ categoryTitle: event.target.value });
-  // };
-
-  // titleChangeHandler = event => {
-  //   this.setState({ ideaTitle: event.target.value });
-  // };
-
-  // not needed
-  // termsChangeHandler = () => {
-  //   this.setState({ termsAgreed: !this.termsAgreed });
-  //   console.log(this.state.termsAgreed)
-  // };
-
-  // anonymousChangeHandler = () => {
-  //   this.setState({ isAnonymous: !this.isAnonymous });
-  //   console.log(this.state.isAnonymous)
-  // }
-
-  onSubmit = async (e) => {
+  onSubmit = async e => {
     e.preventDefault();
     const form = document.forms[0];
     try {
@@ -95,10 +80,10 @@ class submitIdea extends Component {
       );
 
       alert("Your idea was submited successfully");
-
+      Router.push("/");
     } catch (err) {
       console.log(err.response.data);
-    //  alert("error" + err.response.data);
+      //  alert("error" + err.response.data);
     }
   };
 
@@ -162,8 +147,7 @@ class submitIdea extends Component {
                   name="isAnonymous"
                   defaultChecked={false}
                 />
-                <br>
-                </br>
+                <br></br>
                 <Button color="teal" type="submit" fluid size="large">
                   Submit
                 </Button>
