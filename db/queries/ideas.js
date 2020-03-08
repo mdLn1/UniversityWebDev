@@ -27,7 +27,6 @@ function getAllIdeasQuery(pageNo, itemsCount, userId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        // add full query for retrieving ideas
         sql: `SELECT i.ID, i.description, i.views, i.posted_time, i.Title, i.isAnonymous,
         (SELECT name FROM Users WHERE ID=i.user_id) AS author,
         (SELECT COUNT(*) FROM Comments WHERE i.ID = Comments.idea_id ) AS commentsCount,
@@ -127,8 +126,9 @@ function getIdeaByIdQuery(ideaId) {
         sql: `SELECT i.ID, i.description, i.views, i.posted_time, i.Title, i.isAnonymous,
         (SELECT name FROM Users WHERE ID=i.user_id) AS author,
         (SELECT COUNT(*) FROM Comments WHERE i.ID = Comments.idea_id ) AS commentsCount,
-        (SELECT COUNT(vote) FROM Ratings WHERE vote=1) AS positiveVotes,
-        (SELECT COUNT(vote) FROM Ratings WHERE vote=0) AS negativeVotes,
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=1 and i.ID=idea_id) AS positiveVotes,
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=0 and i.ID=idea_id) AS negativeVotes,
+        (SELECT vote FROM Ratings WHERE user_id=? and i.ID=idea_id) as voted,
         (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
         (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS uploadsCount
         FROM Ideas AS i
