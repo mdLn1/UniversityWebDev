@@ -134,7 +134,7 @@ function getUserDetailsQuery(id) {
     pool.query(
       {
         sql: `select Users.ID, Users.name, Users.lastLogin, Users.email, Users.password, Roles.role, Departments.department from Users left join Roles on 
-        Users.role_id=Roles.ID left join Departments on Users.department_id=Departments.ID where email = ?`,
+        Users.role_id=Roles.ID left join Departments on Users.department_id=Departments.ID where Users.ID = ?`,
         timeout: 40000,
         values: [id]
       },

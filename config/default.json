@@ -16,5 +16,5 @@
     "api_key": "737562788677313",
     "api_secret": "EM-0wrg11zgW4_KpjSrNlavkvoU",
     "server_route": "http://localhost:5000/",
-    "test_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im5hbWUiOiJNYXJjbyIsImxhc3RMb2dpbiI6IjIwMjAtMDMtMDJUMTM6MDQ6MzQuMDAwWiIsImVtYWlsIjoibWFyY29AZ3JlLmFjLnVrIiwicm9sZSI6IlFBIE1hbmFnZXIiLCJkZXBhcnRtZW50IjoiRmluYW5jZSIsImlkIjo4fSwiaWF0IjoxNTgzNDM5NzI3LCJleHAiOjE1ODM0NzU3Mjd9._MSYcB2hO3wtL4hXXttGQmil7vCpo6xIObnsJCOxPEs"
+    "test_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im5hbWUiOiJhZG1pbiIsImxhc3RMb2dpbiI6bnVsbCwiZW1haWwiOiJhZG1pbkBncmUuYWMudWsiLCJyb2xlIjoiUUEgTWFuYWdlciIsImRlcGFydG1lbnQiOiJTTVQiLCJpZCI6MX0sImlhdCI6MTU4MzQ5MDQzOSwiZXhwIjoxNTgzNTI2NDM5fQ.r-4Dp3H1RAtMfXVINXc4PXe79JdgIg5l4YurLrrGFMg"
 }

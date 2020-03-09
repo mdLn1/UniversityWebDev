@@ -25,6 +25,7 @@ const {
   updateRatingQuery,
   userRatedAlreadyQuery
 } = require("../db/queries/ratings");
+
 const CustomError = require("../utils/CustomError");
 const cloudinary = require("cloudinary");
 const config = require("config");

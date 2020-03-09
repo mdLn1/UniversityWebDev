@@ -16,7 +16,7 @@ const adminUpdateUserDetailsReq = async (req, res) => {
   const { name, email, departmentId, roleId } = req.body;
   if (!isEmailValid)
     throw new CustomError("Invalid email address or wrong email domain", 400);
-  const user = await getUserDetailsQuery(id);
+  const user = await getUserDetailsQuery(userId);
   if (user.email !== email)
     if (await isEmailRegisteredAlreadyQuery(email))
       throw new CustomError(
