@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Layout from "../components/Layout";
-import { Card, Icon, Button } from "semantic-ui-react";
+import { Card, Icon, Button, Header, Menu, Dropdown } from "semantic-ui-react";
 import { Link } from "../routes";
 import axios from "axios";
 import { Pagination } from "semantic-ui-react";
@@ -52,9 +52,11 @@ class ElectionIndex extends Component {
       let header = (
         <div>
           <div style={leftStyle}>
-            <a>
-              <h2>{idea.Title}</h2>
-            </a>
+            <Link route={`/ideas/${idea.ID}`}>
+              <a>
+                <h2 style={{ color: "teal" }}>{idea.Title}</h2>
+              </a>
+            </Link>
           </div>
           <div style={rightStyle}>
             <Button color="red" size="mini">
@@ -113,10 +115,24 @@ class ElectionIndex extends Component {
 
   render() {
     const { selectedPage, numberOfPages } = this.state;
+    const sortOptions = [
+      { key: 1, text: "Date (new to old)", value: 1 },
+      { key: 2, text: "Date (old to new", value: 2 },
+      { key: 3, text: "Most Liked", value: 3 },
+      { keu: 4, text: "Most Viewed", value: 4 }
+    ];
     return (
       <Layout>
         <div>
-          <h3>Dashboard Homepage</h3>
+          <Header as="h2" color="teal" textAlign="center">
+            Ideas Portal Dashboard
+          </Header>
+          <div>
+            <Menu compact>
+              <Dropdown text="Sort by" options={sortOptions} simple item />
+            </Menu>
+          </div>
+          <br></br>
           {this.renderIdeas()}
           <br></br>
           <Pagination

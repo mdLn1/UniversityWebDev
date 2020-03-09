@@ -5,20 +5,20 @@ const writeFeedback = require("./utils/writeFeedback");
 const compression = require("compression");
 const helmet = require("helmet");
 
-// var allowedOrigins = ['https://localhost:3000', 'https://localhost:5000', 'http://localhost:5000', 'http://localhost:3000', 'https://medev.co.uk', 'https://www.medev.co.uk'];
-// var corsOptions = {origin: function(origin, callback) {
-// 	console.log(origin);
-// 	if (!origin) return callback(null, true);
-// 	if (allowedOrigins.indexOf(origin) === -1) {
-// 		var msg =
-// 			'The CORS policy for this site does not ' +
-// 			'allow access from the specified Origin.';
-// 		return callback(new Error(msg), false);
-// 	}
-// 	return callback(null, true);
-// }
-// }
-// app.use(cors(corsOptions));
+var allowedOrigins = ['https://localhost:3000', 'https://localhost:5000', 'http://localhost:5000', 'http://localhost:3000', 'https://medev.co.uk', 'https://www.medev.co.uk'];
+var corsOptions = {origin: function(origin, callback) {
+	console.log(origin);
+	if (!origin) return callback(null, true);
+	if (allowedOrigins.indexOf(origin) === -1) {
+		var msg =
+			'The CORS policy for this site does not ' +
+			'allow access from the specified Origin.';
+		return callback(new Error(msg), false);
+	}
+	return callback(null, true);
+}
+}
+app.use(cors(corsOptions));
 app.use(function(req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");

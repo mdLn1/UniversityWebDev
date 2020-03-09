@@ -44,6 +44,12 @@ class LoginForm extends Component {
       );
       cookies.set("token", res.data.token);
       console.log("token:" + res.data.token);
+      alert(
+        "Your last login was on the " +
+          res.data.user.lastLogin.slice(0, 10) +
+          " at " +
+          res.data.user.lastLogin.slice(11, 19)
+      );
       Router.pushRoute("/");
     } catch (err) {
       console.log(err);

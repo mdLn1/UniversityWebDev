@@ -82,9 +82,15 @@ const deleteIdeaReq = async (req, res) => {
 const createIdeaReq = async (req, res) => {
   const { description, isAnonymous, title, categoryId, termsAgreed } = req.body;
   const userId = req.user.id;
-  if (termsAgreed == undefined || !termsAgreed) {
+  if (!termsAgreed) {
     throw new CustomError(
       "You must agree to our terms and conditions before submitting an idea",
+      400
+    );
+  }
+  if(!categoryId || isNaN(categoryId)){
+    throw new CustomError(
+      "Category Id must be a number",
       400
     );
   }

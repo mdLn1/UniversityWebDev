@@ -1,9 +1,8 @@
 const routes = require("next-routes")();
 
-// routes
-//   .add("/elections/new-election", "/elections/new-election")
-//   .add("/elections/:address", "/elections/election-status")
-//   .add("/elections/:address/add-vote", "/elections/add-vote")
-//   .add("/elections/:address/add-candidate", "/elections/add-candidate");
+routes
+  .add("/ideas/submitIdea", "/ideas/submitIdea")
+  .add("/ideas/:id", "/ideas/displayIdea")
+  .add("/categories/addCategory", "/categories/addCategory");
 
 module.exports = routes;
