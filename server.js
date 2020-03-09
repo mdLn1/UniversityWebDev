@@ -49,6 +49,7 @@ app.use("/api/ideas", require("./routes/ideasRoute"));
 app.use("/api/departments", require("./routes/departmentsRoute"));
 app.use("/api/categories", require("./routes/categoriesRoute"));
 app.use("/api/management", require("./routes/managementRoute"));
+app.use("/api/stats", require("./routes/statsRoute"));
 
 // Handling pages not found
 app.use((req, res, next) => {
