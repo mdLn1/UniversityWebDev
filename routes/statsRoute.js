@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const exceptionHandler = require("../utils/exceptionHandler");
 
 const { 
     getHighestRatedIdeasReq,
@@ -35,4 +34,5 @@ router.get("/MostRecentIdeas", getMostRecentIdeasReq)
 //@access Public
 router.get("/UserWithMostComments", getUsersWithMostCommentsReq)
 
+// Exports routes binded to this routers context.
 module.exports = router;
