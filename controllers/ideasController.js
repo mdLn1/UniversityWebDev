@@ -60,10 +60,12 @@ const getAllIdeasReq = async (req, res) => {
 
 const deleteIdeaReq = async (req, res) => {
   const { id } = req.params;
-  const { userId: author } = await getIdeaAuthorQuery(id);
-  if (author !== req.user.id)
+  const { userId, email } = await getIdeaAuthorQuery(id);
+  if (
+    !(userId !== req.user.id || req.user.role !== config.get("roles")["admin"])
+  )
     throw new CustomError(
-      "You are not the author of this idea, you cannot make changes",
+      "You are not the author of this idea nor an admin,therefore you cannot make changes",
       400
     );
   const uploads = await getIdeaAllUploadsQuery(id);
@@ -88,11 +90,8 @@ const createIdeaReq = async (req, res) => {
       400
     );
   }
-  if(!categoryId || isNaN(categoryId)){
-    throw new CustomError(
-      "Category Id must be a number",
-      400
-    );
+  if (!categoryId || isNaN(categoryId)) {
+    throw new CustomError("Category Id must be a number", 400);
   }
   const { insertId } = await createIdeaQuery(
     title,
@@ -150,11 +149,13 @@ const rateIdeaReq = async (req, res) => {
 
 const updateIdeaReq = async (req, res) => {
   const { description, title } = req.body;
-  const { id } = req.params.id;
-  const { userId: author } = await getIdeaAuthorQuery(id);
-  if (author !== req.user.id)
+  const { id } = req.params;
+  const { userId, email } = await getIdeaAuthorQuery(id);
+  if (
+    !(userId !== req.user.id || req.user.role !== config.get("roles")["admin"])
+  )
     throw new CustomError(
-      "You are not the author of this idea, you cannot make changes",
+      "You are not the author of this idea nor an admin,therefore you cannot make changes",
       400
     );
   await updateIdeaQuery(title, description, id);
@@ -170,12 +171,12 @@ const reportIdeaReq = async (req, res) => {
 
 const getIdeaByIdReq = async (req, res) => {
   let idea;
-  if(req.user){
+  if (req.user) {
     idea = await getIdeaByIdQuery(req.params.id, req.user.id);
   } else {
     idea = await getIdeaByIdQuery(req.params.id);
   }
-  
+
   res.status(200).json(idea);
 };
 
