@@ -305,3 +305,49 @@ UpdateUserDetails = "/api/user/update-details" (request type = POST )
 
     => On success returns {success: String} Status 200
     => On failure { errors: Array } Status 500, 400
+
+## Stats
+
+These endpoints return information about collected user data.
+
+GetHighestRatedIdeas = "/api/stats/HighestRatedIdeas" ( request type = GET  )
+
+    no req params expected, no request body expected
+
+    => On success returns [ {Idea ID : Object} ] Status 200
+    => On failure { errors: Array } Status 500, 400
+
+MostRecentActiveUser = "/api/stats/MostRecentActiveUser" ( request type = GET  )
+
+    no req params expected, no request body expected
+
+    => On success returns [ {user : Object} ] Status 200
+    => On failure { errors: Array } Status 500, 400
+
+IdeasPerUser = "/api/stats/IdeasPerUser" ( request type = GET  )
+
+    no req params expected, no request body expected
+
+    => On success returns [ {email : Object} ] Status 200
+    => On failure { errors: Array } Status 500, 400
+
+MostViewedIdeas = "/api/stats/MostViewedIdeas" ( request type = GET  )
+
+    no req params expected, no request body expected
+
+    => On success returns [ {idea : Object} ] Status 200
+    => On failure { errors: Array } Status 500, 400
+
+MostRecentIdeas = "/api/stats/MostRecentIdeas" ( request type = GET  )
+
+    no req params expected, no request body expected
+
+    => On success returns [ {Idea ID : Object} ] Status 200
+    => On failure { errors: Array } Status 500, 400
+
+UserWithMostComments = "/api/stats/UserWithMostComments" ( request type = GET  )
+
+    no req params expected, no request body expected
+
+    => On success returns [ {email : Object} ] Status 200
+    => On failure { errors: Array } Status 500, 400
