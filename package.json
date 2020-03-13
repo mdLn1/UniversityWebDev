@@ -6,10 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "server": "nodemon server.js",
-    "client": "npm start --prefix client",
     "test": "mocha --exit || true",
     "clientinstall": "npm install --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "prod": "set NODE_ENV='production' && node server.js"
   },
   "repository": {
@@ -28,6 +26,15 @@
   },
   "homepage": "https://github.com/mdLn1/UniversityWebDev#readme",
   "dependencies": {
+    "axios": "^0.19.2",
+    "http-proxy-middleware": "^1.0.1",
+    "jwt-decode": "^2.2.0",
+    "next": "^9.2.2",
+    "next-routes": "^1.4.2",
+    "react": "^16.13.0",
+    "react-cookie": "^4.0.3",
+    "react-dom": "^16.13.0",
+    "semantic-ui-react": "^0.88.2",
     "bcrypt": "^3.0.7",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.19.0",
