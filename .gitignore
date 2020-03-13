@@ -1,6 +1,7 @@
 #dependencies server
 /node_modules
 /.vscode
+/.next
 # dependencies
 client/node_modules
 client/.pnp

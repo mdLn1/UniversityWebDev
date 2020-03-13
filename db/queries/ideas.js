@@ -119,7 +119,7 @@ function deleteIdeaQuery(ideaId) {
 
 // @desc Returns an idea based of its ID, along with its associated values for
 //  that idea such as its upload url, name, description, numb of votes, positive and negative votes
-function getIdeaByIdQuery(ideaId) {
+function getIdeaByIdQuery(ideaId,userId=-1) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
@@ -131,10 +131,9 @@ function getIdeaByIdQuery(ideaId) {
         (SELECT vote FROM Ratings WHERE user_id=? and i.ID=idea_id) as voted,
         (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
         (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS uploadsCount
-        FROM Ideas AS i
-        WHERE i.ID = ?`,
+        FROM Ideas AS i where i.ID=?`,
         timeout: 40000, // 40s
-        values: [ideaId]
+        values: [userId, ideaId]
       },
       (error, result) => {
         if (error) return reject(error);

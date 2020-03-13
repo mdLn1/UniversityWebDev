@@ -13,7 +13,7 @@ import {
   Segment
 } from "semantic-ui-react";
 import axios from "axios";
-import { handleAuthSSR } from "../../utils/authSSR";
+import { handleAuthSSR } from "../../utilsNext/authSSR";
 import { Cookies } from "react-cookie";
 
 const cookies = new Cookies();

@@ -39,7 +39,8 @@ router.get(
     check("id", "Id param must be an integer value")
       .exists()
       .isInt(),
-    errorChecker
+    errorChecker,
+    checkIfLoggedInMiddleware
   ],
   exceptionHandler(getIdeaByIdReq)
 );
