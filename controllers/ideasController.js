@@ -169,7 +169,13 @@ const reportIdeaReq = async (req, res) => {
 };
 
 const getIdeaByIdReq = async (req, res) => {
-  const idea = await getIdeaByIdQuery(req.params.id);
+  let idea;
+  if(req.user){
+    idea = await getIdeaByIdQuery(req.params.id, req.user.id);
+  } else {
+    idea = await getIdeaByIdQuery(req.params.id);
+  }
+  
   res.status(200).json(idea);
 };
 
