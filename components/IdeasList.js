@@ -13,8 +13,16 @@ export default class IdeasList extends Component {
     return (
       <Card.Group
         items={ideas.map((el, index) => {
-          const footer = <IdeaFooter {...el} />;
-          const header = <IdeaHeader ideaId={el.ID} ideaTitle={el.Title} />;
+          const footer = (
+            <IdeaFooter {...el} showComments={true} ideasListStyle={true} />
+          );
+          const header = (
+            <IdeaHeader
+              ideaId={el.ID}
+              ideaTitle={el.Title}
+              ideasListStyle={true}
+            />
+          );
           return {
             key: index,
             header: header,

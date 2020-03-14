@@ -7,17 +7,24 @@ export default class IdeaHeader extends Component {
     super(props);
   }
   render() {
-    const { ideaId, ideaTitle } = this.props;
+    const { ideaId, ideaTitle, ideasListStyle } = this.props;
+
     return (
       <Fragment>
-        <div style={{ float: "left", textDecoration: "underline" }}>
-          <Link href="/ideas/[id]" as={`/ideas/${ideaId}`}>
-            <a>
-              <h2 style={{ color: "teal" }}>{ideaTitle}</h2>
-            </a>
-          </Link>
-        </div>
-        <div style={{ float: "right", textDecoration: "underline" }}>
+        {!ideasListStyle ? (
+          <div style={{ float: "left", color: "teal", fontSize: "18px" }}>
+            <p>{ideaTitle}</p>
+          </div>
+        ) : (
+          <div style={{ float: "left", textDecoration: "underline" }}>
+            <Link href="/ideas/[id]" as={`/ideas/${ideaId}`}>
+              <a>
+                <h2 style={{ color: "teal" }}>{ideaTitle}</h2>
+              </a>
+            </Link>
+          </div>
+        )}
+        <div style={{ float: "right" }}>
           <Button color="red" size="mini">
             Report
           </Button>

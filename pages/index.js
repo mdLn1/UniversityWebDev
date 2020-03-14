@@ -16,7 +16,8 @@ class Dashboard extends Component {
       numberOfPages: this.props.numberOfPages || 1,
       connectionError: this.props.connectionError,
       loginSuccess: false,
-      registrationSuccess: false
+      registrationSuccess: false,
+      countDownTimer: 5
     };
   }
   static async getInitialProps({ query }) {
@@ -41,7 +42,7 @@ class Dashboard extends Component {
     if (this.props.connectionError) {
       setTimeout(() => {
         window.location.reload();
-      }, 10000);
+      }, 6000);
       setInterval(
         () =>
           this.setState((prevState, props) => ({
@@ -81,7 +82,8 @@ class Dashboard extends Component {
       numberOfPages,
       connectionError,
       loginSuccess,
-      registrationSuccess
+      registrationSuccess,
+      countDownTimer
     } = this.state;
     const sortOptions = [
       { key: 1, text: "Date (new to old)", value: 1 },
@@ -119,13 +121,6 @@ class Dashboard extends Component {
               success
               header="Registration successful"
               content={"You are now logged in as " + name}
-            />
-          )}
-          {this.state.connectionError && name && (
-            <Message
-              negative
-              header="Request failed, connection lost"
-              content="Please refresh the page in few seconds"
             />
           )}
           {loginSuccess && name && (

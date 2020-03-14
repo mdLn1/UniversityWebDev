@@ -30,8 +30,6 @@ export default class displayIdea extends Component {
       idea = res.data[0];
       const cmtsRes = await axios.get(`/api/ideas/${ID}/comments`);
       comments = cmtsRes.data;
-      console.log(cmtsRes.data);
-      console.log(res.data[0]);
     } catch (err) {
       console.log(err);
     }

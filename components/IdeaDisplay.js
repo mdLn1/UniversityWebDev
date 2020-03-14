@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Card, Button, Icon } from "semantic-ui-react";
-import { Link } from "../routes";
+import IdeaFooter from "../components/IdeaFooter";
+import IdeaHeader from "../components/IdeaHeader";
 
 export default class CommentsList extends Component {
   constructor(props) {
@@ -10,18 +11,7 @@ export default class CommentsList extends Component {
   render() {
     const { idea } = this.props;
 
-    let cardHeader = (
-      <div>
-        <div style={{ float: "left", color: "teal", fontSize: "18px" }}>
-          <p>{idea.Title}</p>
-        </div>
-        <div style={{ float: "right" }}>
-          <Button color="red" size="mini">
-            Report
-          </Button>
-        </div>
-      </div>
-    );
+    let cardHeader = <IdeaHeader ideaTitle={idea.Title} />;
 
     let cardDescription = (
       <div>
@@ -31,37 +21,7 @@ export default class CommentsList extends Component {
       </div>
     );
 
-    let cardExtra = (
-      <div>
-        <div style={{ float: "right", fontSize: "12px", textAlign: "left" }}>
-          <p>Category: {idea.category}</p>
-          <p>Total views: {idea.views}</p>
-          <p>
-            Posted by:
-            {idea.isAnonymous ? " Anonymous" : idea.author}
-          </p>
-          <p>Date: {idea.posted_time.slice(0, 10)}</p>
-        </div>
-        <div style={{ float: "left", fontSize: "14px", textAlign: "left" }}>
-          <p>
-            <Link route={`/`}>
-              <a>
-                <Icon name="thumbs up outline"></Icon>
-              </a>
-            </Link>
-            <span>{idea.positiveVotes}</span>
-            <span style={{ marginRight: "2rem" }} />
-            <Link route={`/`}>
-              <a>
-                <Icon name="thumbs down outline"></Icon>
-              </a>
-            </Link>
-            <span>{idea.negativeVotes}</span>
-          </p>
-          <Button size="tiny">Attachments ({idea.uploadsCount})</Button>
-        </div>
-      </div>
-    );
+    let cardExtra = <IdeaFooter {...idea} />;
 
     return (
       <Card fluid>
