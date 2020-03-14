@@ -17,7 +17,7 @@ const {
   getUserDepartmentIdQuery,
   getDepartmentCoordinatorQuery
 } = require("../db/queries/departments");
-
+const { isExistingCategory } = require("../db/queries/categories");
 const {
   createRatingQuery,
   deleteRatingQuery,
@@ -82,7 +82,7 @@ const deleteIdeaReq = async (req, res) => {
 };
 
 const createIdeaReq = async (req, res) => {
-  const { description, isAnonymous, title, categoryId, termsAgreed } = req.body;
+  const { description, isAnonymous, title, category, termsAgreed } = req.body;
   const userId = req.user.id;
   if (!termsAgreed) {
     throw new CustomError(
@@ -90,9 +90,8 @@ const createIdeaReq = async (req, res) => {
       400
     );
   }
-  if (!categoryId || isNaN(categoryId)) {
-    throw new CustomError("Category Id must be a number", 400);
-  }
+  const categoryId = await isExistingCategory(category);
+
   const { insertId } = await createIdeaQuery(
     title,
     description,
@@ -118,7 +117,9 @@ const createIdeaReq = async (req, res) => {
   //   html: `Please follow this link to check it out <a href="${config.get("server_route")}ideas/${insertId}">click here</a>`
   // });
 
-  res.status(201).json({ success: "Successfully created idea", ideaId: insertId });
+  res
+    .status(201)
+    .json({ success: "Successfully created idea", ideaId: insertId });
 };
 
 const increaseIdeaViewsReq = async (req, res) => {

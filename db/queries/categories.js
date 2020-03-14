@@ -97,10 +97,31 @@ function isCategoryUsedQuery(categoryId) {
   );
 }
 
+function isExistingCategory(tag) {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: "select ID from Categories where tag = ?",
+        timeout: 40000, // 40s
+        values: [tag]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        if (result.length === 0)
+          return reject(
+            new CustomError("Selected category does not exist", 400)
+          );
+        resolve(result[0].ID);
+      }
+    )
+  );
+}
+
 module.exports = {
   updateCategoryByIdQuery,
   createCategoryQuery,
   deleteCategoryByIdQuery,
   getAllCategoriesQuery,
-  isCategoryUsedQuery
+  isCategoryUsedQuery,
+  isExistingCategory
 };

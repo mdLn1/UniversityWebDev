@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import Link from "next/link";
 import axios from "axios";
+import Layout from "../components/Layout";
 import { Form, Input, Select, Message, Header } from "semantic-ui-react";
 import isPasswordValid from "../utils/isPasswordValid";
 import Router from "next/router";
@@ -113,7 +114,7 @@ export default class Register extends Component {
         localStorage.setItem("username", name);
         localStorage.setItem("email", email);
         localStorage.setItem("token", res.data.token);
-        Router.replace({ pathname: "/", query: { registrationSuccess: true } });
+        Router.replace({ pathname: "/", query: { registrationSuccess: true } }, "/");
       } catch (err) {
         this.setState({
           apiErrors: err.response.data.errors
@@ -249,95 +250,99 @@ export default class Register extends Component {
     }
 
     return (
-      <div style={{ maxWidth: "32rem", margin: "auto", padding: "5rem 2rem" }}>
-        {connectionError && (
-          <Message negative>
-            <Message.Header>
-              Sorry the connection to the server was interrupted
-            </Message.Header>
-            <p>{connectionError}</p>
-            <p>Refreshing automatically in {countDownTimer} seconds</p>
-          </Message>
-        )}
-        {apiErrors.length > 0 && (
-          <Message negative>
-            <Message.Header>
-              There were some errors with your submission
-            </Message.Header>
-            <Message.List items={apiErrors} />
-          </Message>
-        )}
-        <Form
-          name="registrationForm"
-          style={{
-            border: "1px solid black",
-            padding: "1.5rem",
-            borderRadius: "1rem"
-          }}
-          onSubmit={this.onSubmit}
+      <Form>
+        <div
+          style={{ maxWidth: "32rem", margin: "auto", padding: "5rem 2rem" }}
         >
-          <Header as="h2" color="teal" textAlign="center">
-            Register
-          </Header>
-
-          <Form.Field
-            id="form-input-control-user-name"
-            control={Input}
-            {...nameInputProps}
-          />
-          <Form.Field
-            id="form-input-control-success-email"
-            control={Input}
-            {...emailInputProps}
-          />
-          <Form.Field
-            id="form-input-control-user-password"
-            control={Input}
-            {...passwordInputProps}
-          />
-          <Form.Field
-            id="form-input-control-user-confirmPassword"
-            control={Input}
-            {...confirmPasswordInputProps}
-          />
-          {departments && roles && (
-            <Fragment>
-              <Form.Field
-                control={Select}
-                options={departments.map((el, index) => ({
-                  key: index,
-                  text: el.department,
-                  value: el.department
-                }))}
-                {...departmentsDropdownProps}
-                search
-                searchInput={{ id: "form-select-control-department" }}
-              />
-              <Form.Field
-                control={Select}
-                options={roles.map((el, index) => ({
-                  key: index,
-                  text: el.role,
-                  value: el.role
-                }))}
-                {...rolesDropdownProps}
-                search
-                searchInput={{ id: "form-select-control-roles" }}
-              />
-            </Fragment>
+          {connectionError && (
+            <Message negative>
+              <Message.Header>
+                Sorry the connection to the server was interrupted
+              </Message.Header>
+              <p>{connectionError}</p>
+              <p>Refreshing automatically in {countDownTimer} seconds</p>
+            </Message>
           )}
+          {apiErrors.length > 0 && (
+            <Message negative>
+              <Message.Header>
+                There were some errors with your submission
+              </Message.Header>
+              <Message.List items={apiErrors} />
+            </Message>
+          )}
+          <Form
+            name="registrationForm"
+            style={{
+              border: "1px solid black",
+              padding: "1.5rem",
+              borderRadius: "1rem"
+            }}
+            onSubmit={this.onSubmit}
+          >
+            <Header as="h2" color="teal" textAlign="center">
+              Register
+            </Header>
 
-          <Form.Button {...submitButtonProps} fluid size="large">
-            Submit
-          </Form.Button>
-          <Message>
-            Already Registered?{" "}
-            <Link href="/login">
-              <a>Login</a>
-            </Link>
-          </Message>
-        </Form>
-      </div>
+            <Form.Field
+              id="form-input-control-user-name"
+              control={Input}
+              {...nameInputProps}
+            />
+            <Form.Field
+              id="form-input-control-success-email"
+              control={Input}
+              {...emailInputProps}
+            />
+            <Form.Field
+              id="form-input-control-user-password"
+              control={Input}
+              {...passwordInputProps}
+            />
+            <Form.Field
+              id="form-input-control-user-confirmPassword"
+              control={Input}
+              {...confirmPasswordInputProps}
+            />
+            {departments && roles && (
+              <Fragment>
+                <Form.Field
+                  control={Select}
+                  options={departments.map((el, index) => ({
+                    key: index,
+                    text: el.department,
+                    value: el.department
+                  }))}
+                  {...departmentsDropdownProps}
+                  search
+                  searchInput={{ id: "form-select-control-department" }}
+                />
+                <Form.Field
+                  control={Select}
+                  options={roles.map((el, index) => ({
+                    key: index,
+                    text: el.role,
+                    value: el.role
+                  }))}
+                  {...rolesDropdownProps}
+                  search
+                  searchInput={{ id: "form-select-control-roles" }}
+                />
+              </Fragment>
+            )}
+
+            <Form.Button {...submitButtonProps} fluid size="large">
+              Submit
+            </Form.Button>
+            <Message>
+              Already Registered?{" "}
+              <Link href="/login">
+                <a>Login</a>
+              </Link>
+            </Message>
+          </Form>
+        </div>
+      </Form>
     );
   }
 }
