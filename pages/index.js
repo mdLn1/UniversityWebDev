@@ -14,20 +14,45 @@ class Dashboard extends Component {
       ideas: this.props.ideas || [],
       selectedPage: 1,
       numberOfPages: this.props.numberOfPages || 1,
-      connectionError: this.props.connectionError
+      connectionError: this.props.connectionError,
+      loginSuccess: false,
+      registrationSuccess: false
     };
   }
   static async getInitialProps({ query }) {
     try {
       const res = await axios.get("api/ideas?itemsCount=5&pageNo=1");
-
       const { ideas, totalIdeas } = res.data;
       return { query, ideas, numberOfPages: Math.ceil(totalIdeas / 5) };
     } catch (err) {
-      return { query, connectionError: err };
+      return { query, connectionError: "Failed to fetch data" };
     }
   }
-
+  componentDidMount() {
+    const { query } = this.props;
+    if (query && query.loginSuccess) {
+      this.setState({ loginSuccess: true });
+      setTimeout(() => this.setState({ loginSuccess: false }), 3000);
+    }
+    if (query && query.registrationSuccess) {
+      this.setState({ registrationSuccess: true });
+      setTimeout(() => this.setState({ registrationSuccess: false }), 3000);
+    }
+    if (this.props.connectionError) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 10000);
+      setInterval(
+        () =>
+          this.setState((prevState, props) => ({
+            ...prevState,
+            countDownTimer:
+              prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
+          })),
+        1000
+      );
+    }
+  }
   async updateListOfIdeas(activePage) {
     try {
       const res = await axios.get(
@@ -51,7 +76,13 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { selectedPage, numberOfPages, connectionError } = this.state;
+    const {
+      selectedPage,
+      numberOfPages,
+      connectionError,
+      loginSuccess,
+      registrationSuccess
+    } = this.state;
     const sortOptions = [
       { key: 1, text: "Date (new to old)", value: 1 },
       { key: 2, text: "Date (old to new", value: 2 },
@@ -65,6 +96,15 @@ class Dashboard extends Component {
 
     return (
       <Layout>
+        {connectionError && (
+          <Message negative>
+            <Message.Header>
+              Sorry the connection to the server was interrupted
+            </Message.Header>
+            <p>{connectionError}</p>
+            <p>Refreshing automatically in {countDownTimer} seconds</p>
+          </Message>
+        )}
         <div>
           <Header as="h2" color="teal" textAlign="center">
             Ideas Portal Dashboard
@@ -74,7 +114,7 @@ class Dashboard extends Component {
               <Dropdown text="Sort by" options={sortOptions} simple item />
             </Menu>
           </div>
-          {this.props.query.registrationSuccess && name && (
+          {registrationSuccess && name && (
             <Message
               success
               header="Registration successful"
@@ -88,7 +128,7 @@ class Dashboard extends Component {
               content="Please refresh the page in few seconds"
             />
           )}
-          {this.props.query.loginSuccess && name && (
+          {loginSuccess && name && (
             <Message
               success
               header="Login Successful"

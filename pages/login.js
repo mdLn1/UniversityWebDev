@@ -1,17 +1,11 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Form,
-  Grid,
-  Header,
-  Message,
-  Segment
-} from "semantic-ui-react";
+import { Button, Form, Header, Message, Container } from "semantic-ui-react";
 import { Cookies } from "react-cookie";
 import Layout from "../components/Layout";
 import axios from "axios";
 import Router from "next/router";
 import Link from "next/link";
+import Layout from "../components/Layout";
 
 const cookies = new Cookies();
 
@@ -54,7 +48,7 @@ class LoginForm extends Component {
         localStorage.setItem("username", res.data.user.name);
         localStorage.setItem("email", email);
         localStorage.setItem("token", res.data.token);
-        Router.replace({ pathname: "/", query: { loginSuccess: true } });
+        Router.replace({ pathname: "/", query: { loginSuccess: true } }, "/");
       } catch (err) {
         this.setState({
           apiErrors: err.response.data.errors

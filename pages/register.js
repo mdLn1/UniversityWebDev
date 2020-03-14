@@ -114,7 +114,7 @@ export default class Register extends Component {
         localStorage.setItem("username", name);
         localStorage.setItem("email", email);
         localStorage.setItem("token", res.data.token);
-        Router.replace({ pathname: "/", query: { registrationSuccess: true } });
+        Router.replace({ pathname: "/", query: { registrationSuccess: true } }, "/");
       } catch (err) {
         this.setState({
           apiErrors: err.response.data.errors
