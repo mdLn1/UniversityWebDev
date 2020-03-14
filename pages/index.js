@@ -1,6 +1,14 @@
 import React, { Component } from "react";
 import Layout from "../components/Layout";
-import { Card, Icon, Button, Header, Menu, Dropdown } from "semantic-ui-react";
+import {
+  Card,
+  Icon,
+  Button,
+  Header,
+  Menu,
+  Dropdown,
+  Message
+} from "semantic-ui-react";
 import { Link } from "../routes";
 import axios from "axios";
 import { Pagination } from "semantic-ui-react";
@@ -11,6 +19,9 @@ class ElectionIndex extends Component {
     numberOfPages: "",
     listOfIdeas: []
   };
+  static getInitialProps({ query }) {
+    return { query };
+  }
 
   async componentDidMount() {
     this.setState({ selectedPage: 1 });
@@ -121,6 +132,11 @@ class ElectionIndex extends Component {
       { key: 3, text: "Most Liked", value: 3 },
       { keu: 4, text: "Most Viewed", value: 4 }
     ];
+    let name = null;
+    if (typeof Storage !== "undefined") {
+      name = localStorage.getItem("username");
+    }
+
     return (
       <Layout>
         <div>
@@ -132,6 +148,20 @@ class ElectionIndex extends Component {
               <Dropdown text="Sort by" options={sortOptions} simple item />
             </Menu>
           </div>
+          {this.props.query.registrationSuccess && name && (
+            <Message
+              success
+              header="Registration successful"
+              content={"You are now logged in as " + name}
+            />
+          )}
+          {this.props.query.loginSuccess && name && (
+            <Message
+              success
+              header="Login Successful"
+              content={"You are now logged in as " + name}
+            />
+          )}
           <br></br>
           {this.renderIdeas()}
           <br></br>

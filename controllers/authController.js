@@ -11,6 +11,7 @@ const {
 } = require("../db/queries/users");
 
 const { isRoleSelectableQuery } = require("../db/queries/roles");
+const { isDepartmentSelectableQuery } = require("../db/queries/departments");
 const isEmailValid = require("../utils/isEmailValid");
 const isPasswordValid = require("../utils/isPasswordValid");
 
@@ -21,7 +22,7 @@ const registerUserReq = async (req, res) => {
 
   if (!isPasswordValid(password)) {
     throw new CustomError(
-      "Password must contain at least one uppercase letter, one lowercase letter and a digit", 400
+      "Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 digit", 400
     );
   }
 
@@ -33,6 +34,7 @@ const registerUserReq = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
   await isRoleSelectableQuery(role);
+  await isDepartmentSelectableQuery(department);
   // perform user registration
   await regUserQuery(name, hashedPassword, email, role, department);
 

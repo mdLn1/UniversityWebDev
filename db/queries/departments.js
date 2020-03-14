@@ -59,14 +59,13 @@ function getAllDepartmentsQuery() {
   return new Promise((resolve, reject) =>
     pool.query(
       {
-        sql: "select department, isSelectable, description from Departments",
+        sql: "select * from Departments",
         timeout: 40000 // 40s
       },
       function(error, result) {
         if (error) return reject(error);
         return resolve(
-          result.map(({ ID, description, isSelectable, department }) => ({
-            id: ID,
+          result.map(({ description, isSelectable, department }) => ({
             description,
             isSelectable,
             department
@@ -75,6 +74,25 @@ function getAllDepartmentsQuery() {
       }
     )
   );
+}
+
+function isDepartmentSelectableQuery(role) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "select isSelectable from Roles where role = ?",
+        timeout: 40000,
+        values: [role]
+      },
+      (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        if (result.length > 0) if (result[0].isSelectable) return resolve();
+        reject(new CustomError("You cannot select this department", 400));
+      }
+    );
+  });
 }
 
 function getUserDepartmentIdQuery(userId) {
@@ -115,5 +133,6 @@ module.exports = {
   updateDepartmentQuery,
   deleteDepartmentQuery,
   getUserDepartmentIdQuery,
-  getDepartmentCoordinatorQuery
+  getDepartmentCoordinatorQuery,
+  isDepartmentSelectableQuery
 };
