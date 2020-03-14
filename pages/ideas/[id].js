@@ -6,7 +6,8 @@ import {
   Header,
   Segment,
   Form,
-  Checkbox
+  Checkbox,
+  Message
 } from "semantic-ui-react";
 import axios from "axios";
 import { Cookies } from "react-cookie";
@@ -18,7 +19,8 @@ const cookies = new Cookies();
 export default class displayIdea extends Component {
   state = {
     comment: "",
-    anonComment: false
+    anonComment: false,
+    apiErrors: []
   };
 
   static async getInitialProps(props) {
@@ -29,6 +31,7 @@ export default class displayIdea extends Component {
       const res = await axios.get("/api/ideas/" + ID);
       idea = res.data[0];
       const cmtsRes = await axios.get(`/api/ideas/${ID}/comments`);
+      await axios.get(`/api/ideas/${ID}/increase-views`);
       comments = cmtsRes.data;
     } catch (err) {
       console.log(err);
@@ -43,15 +46,12 @@ export default class displayIdea extends Component {
   anonCommentCheckboxChangeHandler = e => {
     const value = !this.state.anonComment;
     this.setState({ anonComment: value });
-    console.log(value);
   };
 
   submitComment = async e => {
     e.preventDefault();
     const form = document.forms[0];
     try {
-      console.log(this.state.comment);
-      console.log(this.state.anonComment);
       const config = {
         headers: {
           "x-auth-token": cookies.get("token")
@@ -71,7 +71,7 @@ export default class displayIdea extends Component {
       );
       window.location.reload();
     } catch (err) {
-      //this.setState({ apiErrors: err.response.data.errors });
+      this.setState({ apiErrors: err.response.data.errors });
       console.log(err);
     }
   };
@@ -83,7 +83,11 @@ export default class displayIdea extends Component {
         <IdeaDisplay idea={this.props.idea} />
         <Segment color="teal" textAlign="left">
           <Form onSubmit={this.submitComment} id="form">
-            <Form.Input name="comment" onChange={this.handleInputChange}>
+            <Form.Input
+              name="comment"
+              onChange={this.handleInputChange}
+              required
+            >
               <input placeholder="Add Comment" />
             </Form.Input>
             <Form.Field name="anonComment">
@@ -99,6 +103,14 @@ export default class displayIdea extends Component {
               primary
             />
           </Form>
+          {this.state.apiErrors.length > 0 && (
+            <Message negative>
+              <Message.Header>
+                There were some errors with your submission
+              </Message.Header>
+              <Message.List items={this.state.apiErrors} />
+            </Message>
+          )}
         </Segment>
         <Segment placeholder>
           <CommentsList comments={this.props.comments} />
