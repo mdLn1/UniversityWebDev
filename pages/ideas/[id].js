@@ -10,6 +10,7 @@ import {
   Form,
   Checkbox
 } from "semantic-ui-react";
+import { Router } from "../../routes";
 import axios from "axios";
 import { Link } from "../../routes";
 import { Cookies } from "react-cookie";
@@ -42,7 +43,7 @@ export default class displayIdea extends Component {
   }
 
   renderComments() {
-    const comments = this.props.comments.map((cmt, index) => {
+    const comments = this.props.comments.reverse().map((cmt, index) => {
       const date =
         cmt.commentTime.slice(0, 10) + " at " + cmt.commentTime.slice(11, 16);
       const meta = (
@@ -99,7 +100,7 @@ export default class displayIdea extends Component {
         obj,
         config
       );
-      this.renderComments();
+      window.location.reload();
     } catch (err) {
       //this.setState({ apiErrors: err.response.data.errors });
       console.log(err);
