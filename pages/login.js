@@ -8,6 +8,7 @@ import {
   Segment
 } from "semantic-ui-react";
 import { Cookies } from "react-cookie";
+import Layout from "../components/Layout";
 import axios from "axios";
 import Router from "next/router";
 import Link from "next/link";
@@ -96,40 +97,44 @@ class LoginForm extends Component {
         pointing: "below"
       };
     return (
-      <div style={{ maxWidth: "32rem", margin: "auto", padding: "5rem 2rem" }}>
-        <Form
-          name="loginForm"
-          style={{
-            border: "1px solid black",
-            padding: "1.5rem",
-            borderRadius: "1rem"
-          }}
-          onSubmit={this.loginHandler}
+      <Layout>
+        <div
+          style={{ maxWidth: "32rem", margin: "auto", padding: "5rem 2rem" }}
         >
-          <Header as="h2" color="teal" textAlign="center">
-            Account login
-          </Header>
-          {apiErrors.length > 0 && (
-            <Message negative>
-              <Message.Header>
-                There were some errors with your submission
-              </Message.Header>
-              <Message.List items={apiErrors} />
-            </Message>
-          )}
-          <Form.Input fluid {...emailInputProps} />
-          <Form.Input fluid {...passwordInputProps} />
-          <Button color="teal" fluid size="large">
-            Login
-          </Button>
-        </Form>
-        <Message>
-          New to us?{" "}
-          <Link href="/register">
-            <a>Sign Up</a>
-          </Link>
-        </Message>
-      </div>
+          <Form
+            name="loginForm"
+            style={{
+              border: "1px solid black",
+              padding: "1.5rem",
+              borderRadius: "1rem"
+            }}
+            onSubmit={this.loginHandler}
+          >
+            <Header as="h2" color="teal" textAlign="center">
+              Account login
+            </Header>
+            {apiErrors.length > 0 && (
+              <Message negative>
+                <Message.Header>
+                  There were some errors with your submission
+                </Message.Header>
+                <Message.List items={apiErrors} />
+              </Message>
+            )}
+            <Form.Input fluid {...emailInputProps} />
+            <Form.Input fluid {...passwordInputProps} />
+            <Button color="teal" fluid size="large">
+              Login
+            </Button>
+          </Form>
+          <Message>
+            New to us?{" "}
+            <Link href="/register">
+              <a>Sign Up</a>
+            </Link>
+          </Message>
+        </div>
+      </Layout>
     );
   }
 }

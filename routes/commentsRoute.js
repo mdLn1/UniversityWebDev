@@ -22,8 +22,7 @@ router.get(
     check("ideaId", "Id param must be an integer value")
       .exists()
       .isInt(),
-    errorChecker,
-    authMiddleware
+    errorChecker
   ],
   exceptionHandler(getAllCommentsReq)
 );

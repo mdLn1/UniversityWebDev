@@ -7,28 +7,25 @@ import IdeasList from "../components/IdeasList";
 
 class Dashboard extends Component {
   constructor(props) {
-    super(props)
-  
+    super(props);
+
     this.state = {
       selectedPage: 1,
-       ideas: this.props.ideas || [],
-       selectedPage: 1,
-       numberOfPages: this.props.numberOfPages || 1,
-       connectionError: this.props.connectionError
-    }
+      ideas: this.props.ideas || [],
+      selectedPage: 1,
+      numberOfPages: this.props.numberOfPages || 1,
+      connectionError: this.props.connectionError
+    };
   }
   static async getInitialProps({ query }) {
     try {
-      const res = await axios.get(
-        "api/ideas?itemsCount=5&pageNo=1"
-      );
-      
-      const {ideas, totalIdeas} = res.data;
+      const res = await axios.get("api/ideas?itemsCount=5&pageNo=1");
+
+      const { ideas, totalIdeas } = res.data;
       return { query, ideas, numberOfPages: Math.ceil(totalIdeas / 5) };
     } catch (err) {
-      return {query, connectionError: err}
+      return { query, connectionError: err };
     }
-    
   }
 
   async updateListOfIdeas(activePage) {
@@ -36,10 +33,15 @@ class Dashboard extends Component {
       const res = await axios.get(
         `/api/ideas?itemsCount=5&pageNo=${activePage}`
       );
-      const {ideas, totalIdeas} = res.data;
-      this.setState(prevState => ({...prevState, ideas,numberOfPages: Math.ceil(totalIdeas / 5), connectionError:false  }));
+      const { ideas, totalIdeas } = res.data;
+      this.setState(prevState => ({
+        ...prevState,
+        ideas,
+        numberOfPages: Math.ceil(totalIdeas / 5),
+        connectionError: false
+      }));
     } catch (err) {
-      this.setState({connectionError: err})
+      this.setState({ connectionError: err });
     }
   }
 
