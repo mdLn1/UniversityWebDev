@@ -19,6 +19,7 @@ const cookies = new Cookies();
 export default class displayIdea extends Component {
   state = {
     comment: "",
+    comments: this.props.comments || [],
     anonComment: false,
     apiErrors: []
   };
@@ -50,7 +51,6 @@ export default class displayIdea extends Component {
 
   submitComment = async e => {
     e.preventDefault();
-    const form = document.forms[0];
     try {
       const config = {
         headers: {
@@ -63,13 +63,16 @@ export default class displayIdea extends Component {
         isAnonymous: this.state.anonComment,
         ideaId: this.props.ID
       };
-
+      
       const res = await axios.post(
         `/api/ideas/${this.props.ID}/comments/`,
         obj,
         config
       );
-      window.location.reload();
+      const comment = res.data;
+      this.setState(prevState => ({
+        comments: [comment, ...prevState.comments]
+      }));
     } catch (err) {
       this.setState({ apiErrors: err.response.data.errors });
       console.log(err);
@@ -113,7 +116,7 @@ export default class displayIdea extends Component {
           )}
         </Segment>
         <Segment placeholder>
-          <CommentsList comments={this.props.comments} />
+          <CommentsList comments={this.state.comments} />
         </Segment>
       </Layout>
     );

@@ -16,7 +16,7 @@ function createCommentQuery(comment, isAnonymous, userId, ideaId) {
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve(result);
+        return resolve({ insertId: result.insertId, commentTime: date });
       }
     )
   );

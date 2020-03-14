@@ -50,7 +50,7 @@ function getAllIdeasQuery(pageNo, itemsCount, userId) {
 
 // increase the number of views
 function increaseIdeaViewsQuery(ideaId) {
-return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     pool.query(
       {
         sql: "update Ideas set views = views + 1 where ID = ?",
@@ -82,12 +82,12 @@ function updateIdeaQuery(title, description, ideaId) {
   });
 }
 
-
 function reportIdeaQuery(ideaId, userReportingId, reason) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: "insert into ReportedIdeas (problem, idea_id, user_id) values (?, ?, ?)",
+        sql:
+          "insert into ReportedIdeas (problem, idea_id, user_id) values (?, ?, ?)",
         timeout: 40000, // 40s
         values: [reason, ideaId, userReportingId]
       },
@@ -119,7 +119,7 @@ function deleteIdeaQuery(ideaId) {
 
 // @desc Returns an idea based of its ID, along with its associated values for
 //  that idea such as its upload url, name, description, numb of votes, positive and negative votes
-function getIdeaByIdQuery(ideaId,userId=-1) {
+function getIdeaByIdQuery(ideaId, userId = -1) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
@@ -147,7 +147,7 @@ function getIdeaAuthorQuery(ideaId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: `SELECT u.email, u.ID
+        sql: `SELECT u.email, u.ID, u.name
         FROM Ideas AS i
         LEFT JOIN Users AS u
         ON i.user_id = u.ID
@@ -157,18 +157,21 @@ function getIdeaAuthorQuery(ideaId) {
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve({ userId: result[0].ID, email: result[0].email });
+        return resolve({
+          userId: result[0].ID,
+          name: result[0].name,
+          email: result[0].email
+        });
       }
     );
   });
 }
 
-
 function getIdeasCountQuery() {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql:"select COUNT(ID) FROM Ideas where hidden=0",
+        sql: "select COUNT(ID) FROM Ideas where hidden=0",
         timeout: 40000, // 40s
         values: []
       },
@@ -184,7 +187,7 @@ function hideShowAllUserIdeasQuery(userId, hidden) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql:"update Ideas set hidden = ? where user_id=?",
+        sql: "update Ideas set hidden = ? where user_id=?",
         timeout: 40000, // 40s
         values: [hidden, userId]
       },

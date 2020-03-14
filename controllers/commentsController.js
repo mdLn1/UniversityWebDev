@@ -21,7 +21,8 @@ const createCommentReq = async (req, res) => {
   const { comment, isAnonymous } = req.body;
   const { ideaId } = req.params;
   const userId = req.user.id;
-  const { insertId } = await createCommentQuery(
+
+  const { insertId, commentTime } = await createCommentQuery(
     comment,
     isAnonymous,
     userId,
@@ -34,7 +35,9 @@ const createCommentReq = async (req, res) => {
   //   subject: 'New comment added',
   //   html: `Please follow this link to check it out <a href="${config.get("server_route")}ideas/${ideaId}">click here</a>`
   // });
-  res.status(201).json({ ID: insertId, comment, isAnonymous });
+  res
+    .status(201)
+    .json({ ID: insertId, comment, isAnonymous, email, commentTime });
 };
 
 const updateCommentForIdeaReq = async (req, res) => {
