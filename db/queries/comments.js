@@ -29,7 +29,7 @@ function getAllCommentsForIdeaQuery(ideaId) {
       {
         sql: `SELECT Comments.ID, Comments.comment, Comments.commentTime, Comments.isAnonymous, Users.email, Users.name, Users.hideActivities
         FROM Comments left join Users ON Comments.user_id = Users.ID WHERE idea_id = ?
-        ORDER BY commentTime`,
+        ORDER BY commentTime DESC`,
         timeout: 40000,
         values: [ideaId]
       },

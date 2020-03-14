@@ -5,7 +5,6 @@ import Layout from "../components/Layout";
 import axios from "axios";
 import Router from "next/router";
 import Link from "next/link";
-import Layout from "../components/Layout";
 
 const cookies = new Cookies();
 
