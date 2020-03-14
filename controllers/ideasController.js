@@ -118,7 +118,7 @@ const createIdeaReq = async (req, res) => {
   //   html: `Please follow this link to check it out <a href="${config.get("server_route")}ideas/${insertId}">click here</a>`
   // });
 
-  res.status(201).json({ success: "Successfully created idea" });
+  res.status(201).json({ success: "Successfully created idea", ideaId: insertId });
 };
 
 const increaseIdeaViewsReq = async (req, res) => {
