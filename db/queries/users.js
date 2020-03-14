@@ -54,13 +54,21 @@ function userLoginQuery(email, password) {
           return reject(
             new CustomError("User not found, please register", 400)
           );
-        const matches = bcrypt.compare(password, result[0].password);
-
-        if (!matches) return reject(new CustomError("Invalid password", 400));
-        result[0].id = result[0].ID;
-        delete result[0].ID;
-        delete result[0].password;
-        return resolve(result[0]);
+        bcrypt
+          .compare(password, result[0].password)
+          .then(res => {
+            if (res) {
+              result[0].id = result[0].ID;
+              delete result[0].ID;
+              delete result[0].password;
+              return resolve(result[0]);
+            } else {
+              return reject(new CustomError("Invalid password", 400));
+            }
+          })
+          .catch(err => {
+            return reject(err);
+          });
       }
     )
   );
@@ -72,18 +80,18 @@ function userLastLoginQuery(email) {
     .slice(0, 19)
     .replace("T", " ");
   return new Promise((resolve, reject) =>
-  pool.query(
-    {
-      sql: "update Users set lastLogin = ? where email = ?",
-      timeout: 40000,
-      values: [date, email]
-    },
-    (error, result) => {
-      if (error) return reject(error);
-      return resolve();
-    }
-  )
-);
+    pool.query(
+      {
+        sql: "update Users set lastLogin = ? where email = ?",
+        timeout: 40000,
+        values: [date, email]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    )
+  );
 }
 
 // Use this function to check if user exists
@@ -191,7 +199,7 @@ function adminUpdateUserDetailsQuery(
   });
 }
 
-function isAccountDisabledQuery(id){
+function isAccountDisabledQuery(id) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
@@ -223,7 +231,6 @@ function adminEnableDisableUserAccountQuery(id, disabled) {
   });
 }
 
-
 function hideShowUserActivityQuery(id, hide) {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -239,7 +246,6 @@ function hideShowUserActivityQuery(id, hide) {
     );
   });
 }
-
 
 function updateUserPasswordQuery(password, id) {
   return new Promise((resolve, reject) => {

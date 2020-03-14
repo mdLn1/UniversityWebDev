@@ -1,111 +1,46 @@
 import React, { Component } from "react";
 import Layout from "../components/Layout";
-import { Card, Icon, Button, Header, Menu, Dropdown } from "semantic-ui-react";
-import { Link } from "../routes";
+import { Header, Menu, Dropdown, Message } from "semantic-ui-react";
 import axios from "axios";
 import { Pagination } from "semantic-ui-react";
+import IdeasList from "../components/IdeasList";
 
-class ElectionIndex extends Component {
-  state = {
-    selectedPage: "",
-    numberOfPages: "",
-    listOfIdeas: []
-  };
-
-  async componentDidMount() {
-    this.setState({ selectedPage: 1 });
+class Dashboard extends Component {
+  constructor(props) {
+    super(props)
+  
+    this.state = {
+      selectedPage: 1,
+       ideas: this.props.ideas || [],
+       selectedPage: 1,
+       numberOfPages: this.props.numberOfPages || 1,
+       connectionError: this.props.connectionError
+    }
+  }
+  static async getInitialProps({ query }) {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/ideas?itemsCount=5&pageNo=${this.state.selectedPage}`
+        "api/ideas?itemsCount=5&pageNo=1"
       );
-      this.setState({ listOfIdeas: res.data.ideas });
-      this.setState({ numberOfPages: Math.ceil(res.data["totalIdeas"] / 5) });
+      
+      const {ideas, totalIdeas} = res.data;
+      return { query, ideas, numberOfPages: Math.ceil(totalIdeas / 5) };
     } catch (err) {
-      console.log(err);
+      return {query, connectionError: err}
     }
+    
   }
 
   async updateListOfIdeas(activePage) {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/ideas?itemsCount=5&pageNo=${activePage}`
+        `/api/ideas?itemsCount=5&pageNo=${activePage}`
       );
-      this.setState({ listOfIdeas: res.data.ideas });
-      this.setState({ numberOfPages: Math.ceil(res.data["totalIdeas"] / 5) });
+      const {ideas, totalIdeas} = res.data;
+      this.setState(prevState => ({...prevState, ideas,numberOfPages: Math.ceil(totalIdeas / 5), connectionError:false  }));
     } catch (err) {
-      console.log(err);
+      this.setState({connectionError: err})
     }
-  }
-
-  renderIdeas() {
-    const items = this.state.listOfIdeas.map((idea, index) => {
-      const rightStyle = {
-        float: "right",
-        textDecoration: "underline"
-      };
-
-      const leftStyle = {
-        float: "left",
-        textDecoration: "underline"
-      };
-
-      let header = (
-        <div>
-          <div style={leftStyle}>
-            <Link route={`/ideas/${idea.ID}`}>
-              <a>
-                <h2 style={{ color: "teal" }}>{idea.Title}</h2>
-              </a>
-            </Link>
-          </div>
-          <div style={rightStyle}>
-            <Button color="red" size="mini">
-              Report
-            </Button>
-          </div>
-        </div>
-      );
-
-      let extra = (
-        <div>
-          <div style={rightStyle}>
-            <p>
-              Posted by: <strong>{idea.author}</strong>
-            </p>
-            <p>
-              Date: <strong>{idea.posted_time.slice(0, 10)}</strong>
-            </p>
-          </div>
-          <div style={leftStyle}>
-            <p>
-              <Link route={`/`}>
-                <a>
-                  <Icon name="thumbs up outline"></Icon>
-                </a>
-              </Link>
-              <span>{idea.positiveVotes}</span>
-              <span style={{ marginRight: "2rem" }} />
-              <Link route={`/`}>
-                <a>
-                  <Icon name="thumbs down outline"></Icon>
-                </a>
-              </Link>
-              <span>{idea.negativeVotes}</span>
-            </p>
-            <Button size="tiny">Comments ({idea.commentsCount})</Button>
-            <Button size="tiny">Attachments ({idea.uploadsCount})</Button>
-          </div>
-        </div>
-      );
-      return {
-        key: index,
-        header: header,
-        description: idea.description,
-        fluid: true,
-        extra: extra
-      };
-    });
-    return <Card.Group items={items} />;
   }
 
   setPageNum = async (event, { activePage }) => {
@@ -114,13 +49,18 @@ class ElectionIndex extends Component {
   };
 
   render() {
-    const { selectedPage, numberOfPages } = this.state;
+    const { selectedPage, numberOfPages, connectionError } = this.state;
     const sortOptions = [
       { key: 1, text: "Date (new to old)", value: 1 },
       { key: 2, text: "Date (old to new", value: 2 },
       { key: 3, text: "Most Liked", value: 3 },
       { keu: 4, text: "Most Viewed", value: 4 }
     ];
+    let name = null;
+    if (typeof Storage !== "undefined") {
+      name = localStorage.getItem("username");
+    }
+
     return (
       <Layout>
         <div>
@@ -132,19 +72,44 @@ class ElectionIndex extends Component {
               <Dropdown text="Sort by" options={sortOptions} simple item />
             </Menu>
           </div>
+          {this.props.query.registrationSuccess && name && (
+            <Message
+              success
+              header="Registration successful"
+              content={"You are now logged in as " + name}
+            />
+          )}
+          {this.state.connectionError && name && (
+            <Message
+              negative
+              header="Request failed, connection lost"
+              content="Please refresh the page in few seconds"
+            />
+          )}
+          {this.props.query.loginSuccess && name && (
+            <Message
+              success
+              header="Login Successful"
+              content={"You are now logged in as " + name}
+            />
+          )}
+
           <br></br>
-          {this.renderIdeas()}
+          <IdeasList ideas={this.state.ideas} />
+
           <br></br>
-          <Pagination
-            activePage={selectedPage}
-            totalPages={numberOfPages}
-            siblingRange={1}
-            onPageChange={this.setPageNum}
-          />
+          <div style={{ margin: "2rem auto", textAlign: "center" }}>
+            <Pagination
+              activePage={selectedPage}
+              totalPages={numberOfPages}
+              siblingRange={1}
+              onPageChange={this.setPageNum}
+            />
+          </div>
         </div>
       </Layout>
     );
   }
 }
 
-export default ElectionIndex;
+export default Dashboard;

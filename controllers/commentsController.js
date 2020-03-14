@@ -12,7 +12,7 @@ const config = require("config");
 const sendMail = require("../utils/emailSender");
 
 const getAllCommentsReq = async (req, res) => {
-  const {ideaId} = req.params;
+  const { ideaId } = req.params;
   const comments = await getAllCommentsForIdeaQuery(ideaId);
   res.status(200).json(comments);
 };
@@ -41,9 +41,9 @@ const updateCommentForIdeaReq = async (req, res) => {
   const { content } = req.body;
   const { ideaId, commentId } = req.params;
   const author = await getCommentAuthorQuery(commentId);
-  if (author !== req.user.id)
+  if (author !== req.user.id || req.user.role !== config.get("roles")["admin"])
     throw new CustomError(
-      "You are not the author of this comment, you cannot make changes",
+      "You are not the author of this comment nor an admin,therefore you cannot make changes",
       400
     );
 
@@ -54,9 +54,11 @@ const updateCommentForIdeaReq = async (req, res) => {
 const deleteCommentReq = async (req, res) => {
   const { ideaId, commentId } = req.params;
   const author = await getCommentAuthorQuery(commentId);
-  if (author !== req.user.id)
+  if (
+    !(author !== req.user.id || req.user.role !== config.get("roles")["admin"])
+  )
     throw new CustomError(
-      "You are not the author of this comment, you cannot make changes",
+      "You are not the author of this comment nor an admin,therefore you cannot make changes",
       400
     );
   await deleteCommentQuery(commentId);

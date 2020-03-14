@@ -8,7 +8,7 @@ Also, add the following _"proxy": "http://localhost:5000"_ at the end of the fil
 
 Register = "/api/auth/register/" (request type = POST )
 
-    request body expects { name, email, password, roleId, departmentId }
+    request body expects { name, email, password, role, department }
 
     => On success { user = Object, token = String } Status 200
 

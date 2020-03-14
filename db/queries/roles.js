@@ -6,15 +6,14 @@ function getAllRolesQuery() {
   return new Promise((resolve, reject) =>
     pool.query(
       {
-        sql: "select role, isSelectable, description from Roles",
+        sql: "select * from Roles",
         timeout: 40000 // 40s
       },
       (error, result) => {
         if (error) return reject(error);
 
         return resolve(
-          result.map(({ ID, role, isSelectable, description }) => ({
-            id: ID,
+          result.map(({ role, isSelectable, description }) => ({
             role,
             isSelectable,
             description

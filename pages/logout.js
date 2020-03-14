@@ -7,6 +7,7 @@ import Layout from "../components/Layout";
 export default class logout extends Component {
   componentDidMount() {
     cookies.remove("token");
+    if (typeof Storage !== "undefined") localStorage.clear();
   }
 
   render() {

@@ -8,7 +8,6 @@ import {
   Form,
   Grid,
   Header,
-  Message,
   Segment,
   Checkbox
 } from "semantic-ui-react";

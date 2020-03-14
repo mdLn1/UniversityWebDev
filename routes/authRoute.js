@@ -20,9 +20,9 @@ router.post(
     check("password", "Password needs to be at least 6 characters long")
       .trim()
       .isLength({ min: 8 }),
-    check("role", "Role Id must be provided")
+    check("role", "Role must be provided")
       .exists(),
-    check("department", "Department Id must be provided")
+    check("department", "Department must be provided")
       .exists(),
     errorChecker
   ],

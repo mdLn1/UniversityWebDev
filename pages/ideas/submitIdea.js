@@ -2,16 +2,7 @@ import React, { Component } from "react";
 import Layout from "../../components/Layout";
 import Head from "next/head";
 import { Router } from "../../routes";
-import {
-  Button,
-  Form,
-  Grid,
-  Header,
-  Checkbox,
-  Message,
-  TextArea,
-  Segment
-} from "semantic-ui-react";
+import { Button, Form, Grid, Header, Segment } from "semantic-ui-react";
 import axios from "axios";
 import { handleAuthSSR } from "../../utilsNext/authSSR";
 import { Cookies } from "react-cookie";
@@ -19,30 +10,27 @@ import { Cookies } from "react-cookie";
 const cookies = new Cookies();
 
 class submitIdea extends Component {
-  state = {
-    description: "",
-    ideaTitle: "",
-    categoryTitle: "-1",
-    isAnonymous: false,
-    termsAgreed: false,
-    categories: []
-  };
+  constructor(props) {
+    super(props);
 
-  static async getInitialProps(props) {
-    await handleAuthSSR(props);
-    return {};
+    this.state = {
+      description: "",
+      ideaTitle: "",
+      categoryTitle: "-1",
+      isAnonymous: false,
+      termsAgreed: false,
+      categories: this.props.categories || [],
+      connectionError: this.props.connectionError
+    };
   }
 
-  // madalin changed to willMount not sure why? gives error
-  // async componentWillMount() {
-  async componentDidMount() {
+  static async getInitialProps() {
     try {
-      const categoriesRes = await axios.get(
-        "http://localhost:5000/api/categories"
-      );
-      this.setState({ categories: categoriesRes.data.categories });
+      const res = await axios.get("/api/categories");
+      const { categories } = res.data;
+      return { categories, connectionError: false };
     } catch (error) {
-      console.error(error);
+      return { connectionError: error };
     }
   }
 
@@ -60,7 +48,6 @@ class submitIdea extends Component {
     try {
       const config = {
         headers: {
-          "Content-Type": "application/json",
           "x-auth-token": cookies.get("token")
         }
       };
@@ -73,17 +60,11 @@ class submitIdea extends Component {
         termsAgreed: !!form[2].checked
       };
 
-      const res = await axios.post(
-        "http://localhost:5000/api/ideas/",
-        obj,
-        config
-      );
+      const res = await axios.post("/api/ideas/", obj, config);
 
-      alert("Your idea was submited successfully");
-      Router.push("/");
+      Router.push("/ideas/[id]", `/ideas/${res.data.ideaId}`);
     } catch (err) {
-      console.log(err.response.data);
-      //  alert("error" + err.response.data);
+      this.setState({ apiErrors: err.response.data.errors });
     }
   };
 
@@ -97,12 +78,6 @@ class submitIdea extends Component {
     }));
     return (
       <Layout>
-        <Head>
-          <link
-            rel="stylesheet"
-            href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
-          />
-        </Head>
         <Grid
           textAlign="center"
           style={{ height: "100vh" }}

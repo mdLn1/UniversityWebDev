@@ -66,13 +66,13 @@ return new Promise((resolve, reject) => {
 }
 
 // update just description for now
-function updateIdeaQuery(description, ideaId) {
+function updateIdeaQuery(title, description, ideaId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: "update Ideas set description = ? where ID = ?",
+        sql: "update Ideas set title =?, description = ? where ID = ?",
         timeout: 40000, // 40s
-        values: [description, ideaId]
+        values: [title, description, ideaId]
       },
       (error, result) => {
         if (error) return reject(error);
@@ -147,17 +147,17 @@ function getIdeaAuthorQuery(ideaId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: `SELECT u.email \
-        FROM Ideas AS i \
-        INNER JOIN Users AS u \
-        ON i.user_id = u.ID \
-        WHERE i.user_id= ?`,
+        sql: `SELECT u.email, u.ID
+        FROM Ideas AS i
+        LEFT JOIN Users AS u
+        ON i.user_id = u.ID
+        WHERE i.ID = ?`,
         timeout: 40000, // 40s
         values: [ideaId]
       },
       (error, result) => {
         if (error) return reject(error);
-        return resolve({ userId: result[0].user_id, email: result[0].email });
+        return resolve({ userId: result[0].ID, email: result[0].email });
       }
     );
   });
