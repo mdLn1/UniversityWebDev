@@ -38,12 +38,17 @@ class LoginForm extends Component {
       try {
         const res = await axios.post("api/auth/login/", { email, password });
         cookies.set("token", res.data.token);
-        alert(
-          "Your last login was on the " +
-            res.data.user.lastLogin.slice(0, 10) +
-            " at " +
-            res.data.user.lastLogin.slice(11, 19)
-        );
+        if (res.data.user.lastLogin != null) {
+          alert(
+            "Your last login was on the " +
+              res.data.user.lastLogin.slice(0, 10) +
+              " at " +
+              res.data.user.lastLogin.slice(11, 19)
+          );
+        } else {
+          alert("Welcome! This is your first login!");
+        }
+
         localStorage.setItem("username", res.data.user.name);
         localStorage.setItem("email", email);
         localStorage.setItem("token", res.data.token);

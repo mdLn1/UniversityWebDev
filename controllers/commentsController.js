@@ -21,6 +21,7 @@ const createCommentReq = async (req, res) => {
   const { comment, isAnonymous } = req.body;
   const { ideaId } = req.params;
   const userId = req.user.id;
+  const name = req.user.name;
 
   const { insertId, commentTime } = await createCommentQuery(
     comment,
@@ -37,7 +38,7 @@ const createCommentReq = async (req, res) => {
   // });
   res
     .status(201)
-    .json({ ID: insertId, comment, isAnonymous, email, commentTime });
+    .json({ ID: insertId, comment, isAnonymous, email, name, commentTime });
 };
 
 const updateCommentForIdeaReq = async (req, res) => {
