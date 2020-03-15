@@ -72,7 +72,7 @@ router.post(
     authMiddleware,
     userDisabledMiddleware,
     cloudinaryConfig,
-    uploadFilesMiddleware
+    exceptionHandler(uploadFilesMiddleware)
   ],
   exceptionHandler(createIdeaReq)
 );

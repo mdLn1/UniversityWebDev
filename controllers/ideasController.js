@@ -101,10 +101,15 @@ const createIdeaReq = async (req, res) => {
   );
   if (req.uploadedFiles) {
     await Promise.all(
-      req.uploadedFiles.forEach(
-        async ({ name, description, upload_id, url }) => {
-          await createUploadQuery(name, description, url, upload_id, insertId);
-        }
+      req.uploadedFiles.map(
+        async ({ name, description, upload_id, url }) =>
+          await createUploadQuery(
+            name,
+            description + insertId,
+            url,
+            upload_id,
+            insertId
+          )
       )
     );
   }

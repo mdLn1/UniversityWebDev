@@ -6,8 +6,7 @@ const uploadPreset = config.get("unsigned_upload_preset");
 const Datauri = require("datauri");
 
 const uploadFiles = async (req, res, next) => {
-  if(!req.files)
-    return next();
+  if (!req.files) return next();
 
   const nrFiles = req.files.length;
   req.uploads = [];
@@ -23,7 +22,7 @@ const uploadFiles = async (req, res, next) => {
       //element contains mimetype and fieldname
       // path.extname(element.originalname).toString() get the extension of the file
       const newBuffer = dUri.format(
-        element.originalname,
+        path.extname(element.originalname).toString(),
         element.buffer
       );
       // once finished, new object data uri needs to be created
@@ -44,7 +43,7 @@ const uploadFiles = async (req, res, next) => {
       // field resource_type comes back as "raw"
       return {
         name: element.originalname,
-        description: "File linked to idea " + req.params.id,
+        description: "File linked to idea ",
         url: uploadFile.secure_url,
         upload_id: uploadFile.public_id
       };

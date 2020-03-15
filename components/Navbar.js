@@ -78,7 +78,7 @@ class Navbar extends Component {
                 <Link href="/ideas/submitIdea">
                   <a className="item">New idea</a>
                 </Link>
-                <Link href="/ideas">
+                <Link href="/ideas/submitIdea">
                   <a className="item">My ideas</a>
                 </Link>
                 <span
