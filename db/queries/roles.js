@@ -13,7 +13,8 @@ function getAllRolesQuery() {
         if (error) return reject(error);
 
         return resolve(
-          result.map(({ role, isSelectable, description }) => ({
+          result.map(({ ID, role, isSelectable, description }) => ({
+            id: ID,
             role,
             isSelectable,
             description
@@ -107,10 +108,29 @@ function isRoleSelectableQuery(role) {
   });
 }
 
+function isRoleUsedQuery(roleId) {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: "select COUNT(*) from Users where role_id = ?",
+        timeout: 40000, // 40s
+        values: [roleId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        if (result[0]["COUNT(*)"] > 0)
+          return reject(new CustomError("Role in use, cannot be deleted", 400));
+        resolve();
+      }
+    )
+  );
+}
+
 module.exports = {
   createRoleQuery,
   getAllRolesQuery,
   updateRoleQuery,
   deleteRoleQuery,
-  isRoleSelectableQuery
+  isRoleSelectableQuery,
+  isRoleUsedQuery
 };

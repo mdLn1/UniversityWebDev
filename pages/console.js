@@ -1,0 +1,214 @@
+import React, { Component } from "react";
+import Layout from "../components/Layout";
+import {
+  Grid,
+  Segment,
+  Header,
+  Form,
+  Select,
+  Message
+} from "semantic-ui-react";
+import axios from "axios";
+import AdminControl from "../components/AdminControl";
+
+export async function getStaticProps() {
+  try {
+    let res = await axios.get("/api/departments");
+    const { departments } = res.data || [];
+    res = await axios.get("/api/roles");
+    const { roles } = res.data || [];
+    res = await axios.get("/api/categories");
+    const { categories } = res.data || [];
+    return {
+      props: {
+        departments,
+        roles,
+        categories
+      }
+    };
+  } catch (err) {
+    return {
+      props: {
+        departments: [],
+        roles: [],
+        categories: [],
+        connectionError: "Could not connect to server"
+      }
+    };
+  }
+}
+
+export default class console extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      departments: this.props.departments || [],
+      roles: this.props.roles || [],
+      categories: this.props.categories || [],
+      connectionError: this.props.connectionError || false,
+      roleError: false,
+      categoryError: false,
+      departmentError: false,
+      countDownTimer: 5
+    };
+  }
+  componentDidMount() {
+    if (this.props.connectionError) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
+      setInterval(
+        () =>
+          this.setState((prevState, props) => ({
+            ...prevState,
+            countDownTimer:
+              prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
+          })),
+        1000
+      );
+    }
+  }
+  updateValues = (type, values) => {
+    this.setState({ [type]: values });
+  };
+
+  render() {
+    const {
+      categories,
+      departments,
+      roles,
+      connectionError,
+      countDownTimer
+    } = this.state;
+
+    const categoryFields = [
+      { type: "text", value: "", name: "tag", label: "Tag", required: true },
+      {
+        type: "text",
+        value: "",
+        name: "description",
+        label: "Description",
+        required: true
+      },
+      {
+        type: "bool",
+        value: true,
+        name: "isSelectable",
+        label: "Selectable",
+        required: false
+      }
+    ];
+    const roleFields = [
+      { type: "text", value: "", name: "role", label: "Role", required: true },
+      {
+        type: "text",
+        value: "",
+        name: "description",
+        label: "Description",
+        required: true
+      },
+      {
+        type: "bool",
+        value: true,
+        name: "isSelectable",
+        label: "Selectable",
+        required: false
+      }
+    ];
+    const departmentFields = [
+      {
+        type: "text",
+        value: "",
+        name: "department",
+        label: "Department",
+        required: true
+      },
+      {
+        type: "text",
+        value: "",
+        name: "description",
+        label: "Description",
+        required: true
+      },
+      {
+        type: "bool",
+        value: true,
+        name: "isSelectable",
+        label: "Selectable",
+        required: false
+      }
+    ];
+    return (
+      <Layout>
+        {connectionError && (
+          <Message negative>
+            <Message.Header>
+              Sorry the connection to the server was interrupted
+            </Message.Header>
+            <p>{connectionError}</p>
+            <p>Refreshing automatically in {countDownTimer} seconds</p>
+          </Message>
+        )}
+        <Grid stackable columns={3}>
+          <Grid.Column>
+            <Segment>
+              <AdminControl
+                title="categories"
+                itemName="categorySelected"
+                objName="category"
+                listOptions={categories.map((el, index) => ({
+                  key: index,
+                  text: el.tag,
+                  value: el.id
+                }))}
+                fields={categoryFields}
+                listItems={categories}
+                dropDownProp="tag"
+                updateValues={this.updateValues}
+                link="/api/categories/"
+              />
+            </Segment>
+          </Grid.Column>
+          <Grid.Column>
+            <Segment>
+              <AdminControl
+                title="departments"
+                itemName="departmentSelected"
+                objName="department"
+                listOptions={departments.map((el, index) => ({
+                  key: index,
+                  text: el.department,
+                  value: el.id
+                }))}
+                fields={departmentFields}
+                dropDownProp="department"
+                updateValues={this.updateValues}
+                listItems={departments}
+                link="/api/departments/"
+              />
+            </Segment>
+          </Grid.Column>
+          <Grid.Column>
+            <Segment>
+              <AdminControl
+                title="roles"
+                itemName="roleSelected"
+                dropDownProp="role"
+                objName="role"
+                listOptions={roles.map((el, index) => ({
+                  key: index,
+                  text: el.role,
+                  value: el.id
+                }))}
+                listItems={roles}
+                updateValues={this.updateValues}
+                fields={roleFields}
+                link="/api/roles/"
+              />
+            </Segment>
+          </Grid.Column>
+        </Grid>
+      </Layout>
+    );
+  }
+}

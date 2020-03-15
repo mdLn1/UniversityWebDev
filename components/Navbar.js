@@ -71,6 +71,9 @@ class Navbar extends Component {
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
+                <Link href="/console">
+                  <a className="item">Admin Console</a>
+                </Link>
               </Fragment>
             )}
             {this.state.role && (

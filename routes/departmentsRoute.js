@@ -53,13 +53,13 @@ router.post(
     check("id", "Id param must be an integer value")
       .exists()
       .isInt(),
-    check("newDepartment", "New Department must be provided")
+    check("department", "New Department must be provided")
       .exists()
       .trim()
       .not()
       .isEmpty(),
     check(
-      "newDescription",
+      "description",
       "New Description must be at least 5 characters long"
     )
       .exists()

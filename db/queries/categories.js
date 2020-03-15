@@ -87,7 +87,7 @@ function isCategoryUsedQuery(categoryId) {
       },
       (error, result) => {
         if (error) return reject(error);
-        if (result.length > 0)
+        if (result[0]["COUNT(*)"] > 0)
           return reject(
             new CustomError("Category in use, cannot be deleted", 400)
           );

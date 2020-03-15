@@ -68,12 +68,12 @@ router.delete(
 router.post(
   "/:id",
   [
-    check("newTag", "New Tag must be provided")
+    check("tag", "New Tag must be provided")
       .exists()
       .trim()
       .not()
       .isEmpty(),
-    check("newDescription", "New Description must be provided")
+    check("description", "New Description must be provided")
       .exists()
       .trim()
       .not()

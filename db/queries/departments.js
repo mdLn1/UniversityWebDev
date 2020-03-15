@@ -1,4 +1,5 @@
 const pool = require("../dbconn");
+const CustomError = require("../../utils/CustomError");
 
 // Use this function to add a department to the portal
 function createDepartmentQuery(department, description, selectable) {
@@ -10,9 +11,9 @@ function createDepartmentQuery(department, description, selectable) {
         timeout: 40000, // 40s
         values: [department, description, selectable]
       },
-      error => {
+      (error, result) => {
         if (error) return reject(error);
-        resolve();
+        resolve(result);
       }
     )
   );
@@ -42,9 +43,9 @@ function deleteDepartmentQuery(id) {
     pool.query(
       {
         sql:
-          "insert into Departments (department, description, isSelectable) values (?, ?, ?)",
+          "delete from Departments where ID = ?",
         timeout: 40000, // 40s
-        values: [newDepartment, newDescription, selectable]
+        values: [id]
       },
       error => {
         if (error) return reject(error);
@@ -65,7 +66,8 @@ function getAllDepartmentsQuery() {
       function(error, result) {
         if (error) return reject(error);
         return resolve(
-          result.map(({ description, isSelectable, department }) => ({
+          result.map(({ ID, description, isSelectable, department }) => ({
+            id: ID,
             description,
             isSelectable,
             department
@@ -127,6 +129,26 @@ function getDepartmentCoordinatorQuery(departmentId) {
   );
 }
 
+function isDepartmentUsedQuery(departmentId) {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: "select COUNT(*) from Users where department_id = ?",
+        timeout: 40000, // 40s
+        values: [departmentId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        if (result[0]["COUNT(*)"] > 0)
+          return reject(
+            new CustomError("Department has users, cannot be deleted", 400)
+          );
+        resolve();
+      }
+    )
+  );
+}
+
 module.exports = {
   createDepartmentQuery,
   getAllDepartmentsQuery,
@@ -134,5 +156,6 @@ module.exports = {
   deleteDepartmentQuery,
   getUserDepartmentIdQuery,
   getDepartmentCoordinatorQuery,
-  isDepartmentSelectableQuery
+  isDepartmentSelectableQuery,
+  isDepartmentUsedQuery
 };

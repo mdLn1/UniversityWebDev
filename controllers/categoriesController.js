@@ -8,8 +8,12 @@ const {
 
 const createCategoryReq = async (req, res) => {
   const { tag, description, isSelectable } = req.body;
-  await createCategoryQuery(tag, description, isSelectable);
-  res.status(200).json({ tag, description, isSelectable });
+  const { insertId } = await createCategoryQuery(
+    tag,
+    description,
+    isSelectable
+  );
+  res.status(200).json({ tag, description, isSelectable, ID: insertId });
 };
 
 const deleteCategoryByIdReq = async (req, res) => {
@@ -20,13 +24,8 @@ const deleteCategoryByIdReq = async (req, res) => {
 };
 
 const updateCategoryByIdReq = async (req, res) => {
-  const { newTag, newDescription, isSelectable } = req.body;
-  await updateCategoryByIdQuery(
-    newTag,
-    newDescription,
-    isSelectable,
-    req.params.id
-  );
+  const { tag, description, isSelectable } = req.body;
+  await updateCategoryByIdQuery(tag, description, isSelectable, req.params.id);
   res.status(202).json({ success: "Successfully updated" });
 };
 
