@@ -1,35 +1,28 @@
 import React, { Component } from "react";
 import Layout from "../../components/Layout";
-import {
-  Icon,
-  Button,
-  Header,
-  Segment,
-  Form,
-  Checkbox,
-  Message
-} from "semantic-ui-react";
+import { Header } from "semantic-ui-react";
 import axios from "axios";
-import { Cookies } from "react-cookie";
-import CommentsList from "../../components/CommentsList";
 import IdeaDisplay from "../../components/IdeaDisplay";
-
-const cookies = new Cookies();
+import CommentsArea from "../../components/CommentsArea";
+import cookies from "next-cookies";
 
 export default class displayIdea extends Component {
   state = {
-    comment: "",
-    comments: this.props.comments || [],
-    anonComment: false,
-    apiErrors: []
+    comments: this.props.comments || []
   };
 
   static async getInitialProps(props) {
     const ID = props.query.id;
     let idea;
     let comments;
+    const { token } = cookies(props);
     try {
-      const res = await axios.get("/api/ideas/" + ID);
+      const config = {
+        headers: {
+          "x-auth-token": token
+        }
+      };
+      const res = await axios.get(`/api/ideas/${ID}`, config);
       idea = res.data[0];
       const cmtsRes = await axios.get(`/api/ideas/${ID}/comments`);
       await axios.get(`/api/ideas/${ID}/increase-views`);
@@ -44,80 +37,15 @@ export default class displayIdea extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  anonCommentCheckboxChangeHandler = e => {
-    const value = !this.state.anonComment;
-    this.setState({ anonComment: value });
-  };
-
-  submitComment = async e => {
-    e.preventDefault();
-    try {
-      const config = {
-        headers: {
-          "x-auth-token": cookies.get("token")
-        }
-      };
-
-      const obj = {
-        comment: this.state.comment,
-        isAnonymous: this.state.anonComment,
-        ideaId: this.props.ID
-      };
-      
-      const res = await axios.post(
-        `/api/ideas/${this.props.ID}/comments/`,
-        obj,
-        config
-      );
-      const comment = res.data;
-      this.setState(prevState => ({
-        comments: [comment, ...prevState.comments]
-      }));
-    } catch (err) {
-      this.setState({ apiErrors: err.response.data.errors });
-      console.log(err);
-    }
-  };
-
   render() {
     return (
       <Layout>
         <Header as="h2" color="teal" textAlign="center"></Header>
         <IdeaDisplay idea={this.props.idea} />
-        <Segment color="teal" textAlign="left">
-          <Form onSubmit={this.submitComment} id="form">
-            <Form.Input
-              name="comment"
-              onChange={this.handleInputChange}
-              required
-            >
-              <input placeholder="Add Comment" />
-            </Form.Input>
-            <Form.Field name="anonComment">
-              <Checkbox
-                label="Anonymous"
-                onClick={this.anonCommentCheckboxChangeHandler}
-              />
-            </Form.Field>
-            <Button
-              content="Add Comment"
-              labelPosition="left"
-              icon="edit"
-              primary
-            />
-          </Form>
-          {this.state.apiErrors.length > 0 && (
-            <Message negative>
-              <Message.Header>
-                There were some errors with your submission
-              </Message.Header>
-              <Message.List items={this.state.apiErrors} />
-            </Message>
-          )}
-        </Segment>
-        <Segment placeholder>
-          <CommentsList comments={this.state.comments} />
-        </Segment>
+        <CommentsArea
+          ID={this.props.ID}
+          comments={this.props.comments}
+        ></CommentsArea>
       </Layout>
     );
   }

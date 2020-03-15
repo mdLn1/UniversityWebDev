@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Feed, Icon } from "semantic-ui-react";
+import { Feed, Icon, Header } from "semantic-ui-react";
 import { Link } from "../routes";
 
 export default class CommentsList extends Component {
@@ -9,6 +9,14 @@ export default class CommentsList extends Component {
 
   render() {
     const { comments } = this.props;
+    if (comments.length == 0) {
+      return (
+        <Header icon>
+          <Icon name="comment" />
+          No comments for this idea yet.
+        </Header>
+      );
+    }
     return (
       <Feed
         events={comments.map((cmt, index) => {

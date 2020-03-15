@@ -1,30 +1,34 @@
 import React, { Component, Fragment } from "react";
-import Link from "next/link";
-import { Button, Icon } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
+import LikeDislikeArea from "./LikeDislikeIdea";
 
 export default class IdeaFooter extends Component {
   constructor(props) {
     super(props);
   }
+
   render() {
     const {
-      author,
-      posted_time,
+      ID,
       positiveVotes,
       negativeVotes,
+      author,
+      posted_time,
       commentsCount,
       uploadsCount,
       category,
       views,
       isAnonymous,
       showComments,
-      ideasListStyle
+      ideasListStyle,
+      page,
+      voted
     } = this.props;
-    let style1, style2;
 
+    let style1, style2;
     if (ideasListStyle) {
       style1 = { float: "right", textDecoration: "underline" };
-      style2 = { float: "left", textDecoration: "underline" };
+      style2 = { float: "left" };
     } else {
       style1 = { float: "right", fontSize: "12px", textAlign: "left" };
       style2 = { float: "left", fontSize: "14px", textAlign: "left" };
@@ -47,21 +51,13 @@ export default class IdeaFooter extends Component {
           </p>
         </div>
         <div style={style2}>
-          <p>
-            <Link href={`/`}>
-              <a>
-                <Icon name="thumbs up outline"></Icon>
-              </a>
-            </Link>
-            <span>{positiveVotes}</span>
-            <span style={{ marginRight: "2rem" }} />
-            <Link href={`/`}>
-              <a>
-                <Icon name="thumbs down outline"></Icon>
-              </a>
-            </Link>
-            <span>{negativeVotes}</span>
-          </p>
+          <LikeDislikeArea
+            ID={ID}
+            positiveVotes={positiveVotes}
+            negativeVotes={negativeVotes}
+            page={page}
+            voted={voted}
+          />
           {showComments && (
             <Button size="tiny">Comments ({commentsCount})</Button>
           )}

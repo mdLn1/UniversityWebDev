@@ -41,6 +41,7 @@ class submitIdea extends Component {
   static async getInitialProps(ctx) {
     try {
       const { token } = cookies(ctx);
+      console.log(token);
       const resp = await axios.get("/api/categories");
       const { categories } = resp.data;
       return { categories, token, connectionError: false };

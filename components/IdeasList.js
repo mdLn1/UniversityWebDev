@@ -14,7 +14,12 @@ export default class IdeasList extends Component {
       <Card.Group
         items={ideas.map((el, index) => {
           const footer = (
-            <IdeaFooter {...el} showComments={true} ideasListStyle={true} />
+            <IdeaFooter
+              {...el}
+              showComments={true}
+              ideasListStyle={true}
+              page="index"
+            />
           );
           const header = (
             <IdeaHeader
