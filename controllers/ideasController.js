@@ -7,7 +7,9 @@ const {
   getIdeaByIdQuery,
   getIdeaAuthorQuery,
   getIdeasCountQuery,
-  reportIdeaQuery
+  reportIdeaQuery,
+  getAllReportedIdeasQuery,
+  getReportedProblemsByIdeaIdQuery
 } = require("../db/queries/ideas");
 const {
   createUploadQuery,
@@ -56,6 +58,17 @@ const getAllIdeasReq = async (req, res) => {
   }
   const ideas = await getAllIdeasQuery(pageNo, itemsCount, userId);
   res.status(200).json({ ideas, totalIdeas });
+};
+
+const getAllReportedIdeasReq = async (req, res) => {
+  const reportedIdeas = await getAllReportedIdeasQuery();
+  res.status(200).json({ reportedIdeas });
+};
+
+const getReportedProblemsByIdeaIdReq = async (req, res) => {
+  const { id } = req.params;
+  const reportedProblems = await getReportedProblemsByIdeaIdQuery(id);
+  res.status(200).json({ reportedProblems });
 };
 
 const deleteIdeaReq = async (req, res) => {
@@ -182,7 +195,6 @@ const getIdeaByIdReq = async (req, res) => {
   } else {
     idea = await getIdeaByIdQuery(req.params.id);
   }
-
   res.status(200).json(idea);
 };
 
@@ -194,5 +206,7 @@ module.exports = {
   createIdeaReq,
   getIdeaByIdReq,
   reportIdeaReq,
-  rateIdeaReq
+  rateIdeaReq,
+  getReportedProblemsByIdeaIdReq,
+  getAllReportedIdeasReq
 };
