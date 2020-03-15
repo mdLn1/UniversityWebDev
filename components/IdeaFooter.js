@@ -28,7 +28,7 @@ export default class IdeaFooter extends Component {
     let style1, style2;
     if (ideasListStyle) {
       style1 = { float: "right", textDecoration: "underline" };
-      style2 = { float: "left", textDecoration: "underline" };
+      style2 = { float: "left" };
     } else {
       style1 = { float: "right", fontSize: "12px", textAlign: "left" };
       style2 = { float: "left", fontSize: "14px", textAlign: "left" };

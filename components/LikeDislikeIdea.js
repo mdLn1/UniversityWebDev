@@ -93,7 +93,6 @@ export default class LikeDislikeArea extends Component {
         </div>
       );
     }
-    console.log(voted);
     return (
       <div>
         {voted == null ? noVote : voted === 0 ? negVote : posVote}
