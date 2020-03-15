@@ -21,10 +21,11 @@ export default class IdeaFooter extends Component {
       isAnonymous,
       showComments,
       ideasListStyle,
-      page
+      page,
+      voted
     } = this.props;
-    let style1, style2;
 
+    let style1, style2;
     if (ideasListStyle) {
       style1 = { float: "right", textDecoration: "underline" };
       style2 = { float: "left", textDecoration: "underline" };
@@ -55,6 +56,7 @@ export default class IdeaFooter extends Component {
             positiveVotes={positiveVotes}
             negativeVotes={negativeVotes}
             page={page}
+            voted={voted}
           />
           {showComments && (
             <Button size="tiny">Comments ({commentsCount})</Button>

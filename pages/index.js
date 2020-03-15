@@ -3,7 +3,10 @@ import Layout from "../components/Layout";
 import { Header, Menu, Dropdown, Message } from "semantic-ui-react";
 import axios from "axios";
 import { Pagination } from "semantic-ui-react";
+import { Cookies } from "react-cookie";
 import IdeasList from "../components/IdeasList";
+
+const cookies = new Cookies();
 
 class Dashboard extends Component {
   constructor(props) {
@@ -20,6 +23,7 @@ class Dashboard extends Component {
       countDownTimer: 5
     };
   }
+
   static async getInitialProps({ query }) {
     try {
       const res = await axios.get("api/ideas?itemsCount=5&pageNo=1");
@@ -29,6 +33,7 @@ class Dashboard extends Component {
       return { query, connectionError: "Failed to fetch data" };
     }
   }
+
   componentDidMount() {
     const { query } = this.props;
     if (query && query.loginSuccess) {
@@ -54,6 +59,7 @@ class Dashboard extends Component {
       );
     }
   }
+
   async updateListOfIdeas(activePage) {
     try {
       const res = await axios.get(
