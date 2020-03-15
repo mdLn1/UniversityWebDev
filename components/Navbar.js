@@ -71,9 +71,21 @@ class Navbar extends Component {
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-                <Link href="/console">
-                  <a className="item">Admin Console</a>
-                </Link>
+
+                <Dropdown item text="Admin console">
+                  <Dropdown.Menu>
+                    <Dropdown.Item>
+                      <Link href="/portal-data">
+                        <a>Portal data</a>
+                      </Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item>
+                      <Link href="/content-issues">
+                        <a>Content issues</a>
+                      </Link>
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </Fragment>
             )}
             {this.state.role && (

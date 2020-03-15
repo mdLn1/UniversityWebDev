@@ -15,6 +15,16 @@ const {
   adminDeleteIdeaReq
 } = require("../controllers/managementController");
 
+const {
+  getReportedProblemsByIdeaIdReq,
+  getAllReportedIdeasReq
+} = require("../controllers/ideasController");
+
+const {
+  getReportedProblemsByCommentIdReq,
+  getAllReportedCommentsReq
+} = require("../controllers/commentsController");
+
 // const rolesRouter = require("./rolesRoute");
 // const categoriesRouter = require("./categoriesRoute");
 // const departmentsRouter = require("./departmentsRoute");
@@ -69,4 +79,26 @@ router.delete(
   exceptionHandler(adminDeleteIdeaReq)
 );
 
+router.get(
+  "/reported-ideas",
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(getAllReportedIdeasReq)
+);
+
+router.get(
+  "/reported-ideas/:id",
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(getReportedProblemsByIdeaIdReq)
+);
+router.get(
+  "/reported-comments",
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(getAllReportedCommentsReq)
+);
+
+router.get(
+  "/reported-comments/:id",
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(getReportedProblemsByCommentIdReq)
+);
 module.exports = router;

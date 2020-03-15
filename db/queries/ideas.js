@@ -86,10 +86,9 @@ function reportIdeaQuery(ideaId, userReportingId, reason) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql:
-          "insert into ReportedIdeas (problem, idea_id, user_id) values (?, ?, ?)",
+        sql: `insert into ReportedIdeas (problem, idea_id, user_id) values (?, ?, ?);`,
         timeout: 40000, // 40s
-        values: [reason, ideaId, userReportingId]
+        values: [reason, ideaId, userReportingId, ideaId]
       },
       (error, result) => {
         if (error) return reject(error);
@@ -112,6 +111,55 @@ function deleteIdeaQuery(ideaId) {
       (error, result) => {
         if (error) return reject(error);
         return resolve();
+      }
+    );
+  });
+}
+
+function getReportedProblemsByIdeaIdQuery(ideaId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: `SELECT i.ID, i.problem, i.acknowledged, U.ID, U.name, U.disabled
+        FROM ReportedIdeas as i
+        LEFT JOIN Users U on i.user_id = U.ID
+        where i.idea_id = ?
+        ORDER BY i.ID DESC`,
+        timeout: 40000, // 40s
+        values: [ideaId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result);
+      }
+    );
+  });
+}
+
+function getAllReportedIdeasQuery() {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: 
+        `SELECT DISTINCT reportedIdea.idea_id,
+                author.name,
+                author.email,
+                author.ID,
+                reportedIdea.acknowledged,
+                idea.posted_time,
+                idea.Title,
+                idea.description,
+                (SELECT COUNT(*) From Ideas where reportedIdea.idea_id = Ideas.ID) as reports
+FROM ReportedIdeas as reportedIdea
+         LEFT JOIN Ideas idea on reportedIdea.idea_id = idea.ID
+         LEFT JOIN Users author on idea.user_id = author.ID
+ORDER BY reportedIdea.ID DESC`,
+        timeout: 40000, // 40s
+        values: []
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result);
       }
     );
   });
@@ -209,5 +257,7 @@ module.exports = {
   getIdeaAuthorQuery,
   getIdeasCountQuery,
   reportIdeaQuery,
-  hideShowAllUserIdeasQuery
+  hideShowAllUserIdeasQuery,
+  getReportedProblemsByIdeaIdQuery,
+  getAllReportedIdeasQuery
 };

@@ -105,11 +105,60 @@ function reportCommentQuery(commentId, userReportingId, problem) {
   });
 }
 
+function getReportedProblemsByCommentIdQuery(commentId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: `SELECT comment.ID, comment.problem, comment.acknowledged, ReportingUser.ID, ReportingUser.name, ReportingUser.disabled
+        FROM ReportedComments as comment
+        LEFT JOIN Users ReportingUser on comment.user_id = ReportingUser.ID
+        where comment.comment_id = ?
+        ORDER BY comment.ID DESC`,
+        timeout: 40000, // 40s
+        values: [commentId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result);
+      }
+    );
+  });
+}
+
+function getAllReportedCommentsQuery() {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+          sql: `SELECT DISTINCT c.comment_id,
+          comment.comment,
+          author.name,
+          author.email,
+          author.ID,
+          c.acknowledged,
+          comment.commentTime,
+          (SELECT COUNT(*) From Comments where c.comment_id = Comments.ID) as reports
+  FROM ReportedComments as c
+  LEFT JOIN Comments comment on c.comment_id = comment.ID
+  LEFT JOIN Users author on comment.user_id = author.ID
+  ORDER BY c.ID DESC`,
+        timeout: 40000, // 40s
+        values: []
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result);
+      }
+    );
+  });
+}
+
 module.exports = {
   createCommentQuery,
   getAllCommentsForIdeaQuery,
   deleteCommentQuery,
   updateCommentForIdeaQuery,
   getCommentAuthorQuery,
-  reportCommentQuery
+  reportCommentQuery,
+  getAllReportedCommentsQuery,
+  getReportedProblemsByCommentIdQuery
 };

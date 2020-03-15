@@ -38,7 +38,7 @@ export async function getStaticProps() {
   }
 }
 
-export default class console extends Component {
+export default class PortalData extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -149,6 +149,9 @@ export default class console extends Component {
             <p>Refreshing automatically in {countDownTimer} seconds</p>
           </Message>
         )}
+        <Header size="large" style={{ textAlign: "center" }}>
+          Portal Data Management
+        </Header>
         <Grid stackable columns={3}>
           <Grid.Column>
             <Segment>
