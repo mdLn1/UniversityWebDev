@@ -73,6 +73,22 @@ function deleteCommentQuery(commentId) {
   });
 }
 
+function deleteReportedCommentByCommentIDQuery(commentId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: `delete from ReportedComments where comment_id = ?`,
+        timeout: 40000,
+        values: [commentId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    );
+  });
+}
+
 function getCommentAuthorQuery(commentId) {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -134,6 +150,7 @@ function getAllReportedCommentsQuery() {
           author.name,
           author.email,
           author.ID,
+          comment.idea_id,
           c.acknowledged,
           comment.commentTime,
           (SELECT COUNT(*) From Comments where c.comment_id = Comments.ID) as reports
@@ -160,5 +177,6 @@ module.exports = {
   getCommentAuthorQuery,
   reportCommentQuery,
   getAllReportedCommentsQuery,
-  getReportedProblemsByCommentIdQuery
+  getReportedProblemsByCommentIdQuery,
+  deleteReportedCommentByCommentIDQuery
 };

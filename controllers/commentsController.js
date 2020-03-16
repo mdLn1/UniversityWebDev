@@ -6,8 +6,10 @@ const {
   getCommentAuthorQuery,
   reportCommentQuery,
   getAllReportedCommentsQuery,
-  getReportedProblemsByCommentIdQuery
+  getReportedProblemsByCommentIdQuery,
+  deleteReportedCommentByCommentIDQuery
 } = require("../db/queries/comments");
+const CustomError = require("../utils/CustomError");
 
 const { getIdeaAuthorQuery } = require("../db/queries/ideas");
 const config = require("config");
@@ -61,12 +63,13 @@ const deleteCommentReq = async (req, res) => {
   const { ideaId, commentId } = req.params;
   const author = await getCommentAuthorQuery(commentId);
   if (
-    !(author !== req.user.id || req.user.role !== config.get("roles")["admin"])
+    !(author === req.user.id || req.user.role === config.get("roles")["admin"])
   )
     throw new CustomError(
       "You are not the author of this comment nor an admin,therefore you cannot make changes",
       400
     );
+  await deleteReportedCommentByCommentIDQuery(commentId);
   await deleteCommentQuery(commentId);
   res.status(200).json({ success: "Successfully deleted" });
 };

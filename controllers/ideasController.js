@@ -75,7 +75,7 @@ const deleteIdeaReq = async (req, res) => {
   const { id } = req.params;
   const { userId, email } = await getIdeaAuthorQuery(id);
   if (
-    !(userId !== req.user.id || req.user.role !== config.get("roles")["admin"])
+    !(author === req.user.id || req.user.role === config.get("roles")["admin"]) 
   )
     throw new CustomError(
       "You are not the author of this idea nor an admin,therefore you cannot make changes",

@@ -57,33 +57,18 @@ class Navbar extends Component {
           <Menu.Menu position="right">
             {this.state.role === "QA Manager" && (
               <Fragment>
-                <Dropdown item text="Categories">
-                  <Dropdown.Menu>
-                    <Dropdown.Item>
-                      <Link href="/categories/addCategory">
-                        <a>Add Category</a>
-                      </Link>
-                    </Dropdown.Item>
-                    <Dropdown.Item>
-                      <Link href="/">
-                        <a>Delete Categories</a>
-                      </Link>
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-
                 <Dropdown item text="Admin console">
                   <Dropdown.Menu>
-                    <Dropdown.Item>
-                      <Link href="/portal-data">
+                    <Link href="/portal-data">
+                      <Dropdown.Item>
                         <a>Portal data</a>
-                      </Link>
-                    </Dropdown.Item>
-                    <Dropdown.Item>
-                      <Link href="/content-issues">
+                      </Dropdown.Item>
+                    </Link>
+                    <Link href="/content-issues">
+                      <Dropdown.Item>
                         <a>Content issues</a>
-                      </Link>
-                    </Dropdown.Item>
+                      </Dropdown.Item>
+                    </Link>
                   </Dropdown.Menu>
                 </Dropdown>
               </Fragment>

@@ -20,25 +20,41 @@ class Dashboard extends Component {
       connectionError: this.props.connectionError,
       loginSuccess: false,
       registrationSuccess: false,
+      currentDeadline: null,
       countDownTimer: 5
     };
   }
 
   static async getInitialProps({ query }) {
     try {
-      const res = await axios.get("api/ideas?itemsCount=5&pageNo=1");
+      let res = await axios.get("api/ideas?itemsCount=5&pageNo=1");
       const { ideas, totalIdeas } = res.data;
-      return { query, ideas, numberOfPages: Math.ceil(totalIdeas / 5) };
+      res = await axios.get("/api/management/deadlines");
+      const { deadlines } = res.data;
+      return {
+        query,
+        ideas,
+        deadlines,
+        numberOfPages: Math.ceil(totalIdeas / 5)
+      };
     } catch (err) {
       return { query, connectionError: "Failed to fetch data" };
     }
   }
 
   componentDidMount() {
-    const { query } = this.props;
+    const { query, deadlines } = this.props;
     if (query && query.loginSuccess) {
       this.setState({ loginSuccess: true });
       setTimeout(() => this.setState({ loginSuccess: false }), 3000);
+    }
+    if (deadlines && deadlines.length > 0) {
+      const currDeadline = deadlines.find(
+        x => new Date(x.CommentsSubmissionEnd.split("T")[0]) > new Date()
+      );
+      if (currDeadline) {
+        this.setState({ currentDeadline: currDeadline });
+      }
     }
     if (query && query.registrationSuccess) {
       this.setState({ registrationSuccess: true });
@@ -89,7 +105,8 @@ class Dashboard extends Component {
       connectionError,
       loginSuccess,
       registrationSuccess,
-      countDownTimer
+      countDownTimer,
+      currentDeadline
     } = this.state;
     const sortOptions = [
       { key: 1, text: "Date (new to old)", value: 1 },
@@ -111,6 +128,26 @@ class Dashboard extends Component {
             </Message.Header>
             <p>{connectionError}</p>
             <p>Refreshing automatically in {countDownTimer} seconds</p>
+          </Message>
+        )}
+        {currentDeadline && (
+          <Message warning>
+            <Message.Header>The current deadlines are</Message.Header>
+            <p>
+              For ideas submission:{" "}
+              {new Date(currentDeadline.IdeasSubmissionEnd).toUTCString()}
+            </p>
+            <p>
+              For comments submission:{" "}
+              {new Date(currentDeadline.CommentsSubmissionEnd).toUTCString()}
+            </p>
+          </Message>
+        )}
+        {!currentDeadline && !connectionError && (
+          <Message success>
+            <Message.Header>
+              There is no deadline available, you can submit anything
+            </Message.Header>
           </Message>
         )}
         <div>

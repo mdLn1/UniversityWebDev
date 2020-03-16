@@ -1,18 +1,11 @@
 import React, { Component, Fragment } from "react";
-import {
-  Card,
-  Button,
-  Icon,
-  Segment,
-  Checkbox,
-  Message
-} from "semantic-ui-react";
+import { Card, Button, Icon, Segment, Message } from "semantic-ui-react";
 import Link from "next/link";
 import { Cookies } from "react-cookie";
 import axios from "axios";
 const cookies = new Cookies();
 
-export default class ReportedIdea extends Component {
+export default class ReportedComment extends Component {
   constructor(props) {
     super(props);
 
@@ -20,25 +13,30 @@ export default class ReportedIdea extends Component {
       isRevealed: false,
       reportedProblems: [],
       apiErrors: [],
-      isReadMore: false,
-      failedBlockUser: false,
-      failedHideUserActivity: false
+      failedDelete: false
     };
   }
-  onReadMore = () => {
-    this.setState({ isReadMore: true });
+  onDeleteComment = async () => {
+    this.setState({ failedDelete: false });
+    const result = await this.props.deleteComment(
+      this.props.passedComment.comment_id
+    );
+    if (!result) {
+      this.setState({ failedDelete: true });
+    }
   };
   onReveal = async () => {
     if (this.state.reportedProblems.length === 0) {
       try {
         axios.defaults.headers.common["x-auth-token"] = cookies.get("token");
         const res = await axios.get(
-          "/api/management/reported-ideas/" + this.props.idea.idea_id
+          "/api/management/reported-comments/" +
+            this.props.passedComment.comment_id
         );
         const { reportedProblems } = res.data;
         this.setState({ reportedProblems: reportedProblems });
       } catch (err) {
-        if (err.response.data) {
+        if (err.response) {
           this.setState({ apiErrors: err.response.data.errors });
         }
       }
@@ -47,107 +45,39 @@ export default class ReportedIdea extends Component {
       isRevealed: !prevState.isRevealed
     }));
   };
-
-  onBlockUser = async () => {
-    this.setState({ failedBlockUser: false });
-    const res = await this.props.blockUserAction(
-      this.props.idea.ID,
-      this.props.idea.disabled
-    );
-    if (!res) {
-      this.setState({ failedBlockUser: true });
-    }
-  };
-
-  onHideUserActivity = async () => {
-    this.setState({ failedHideUserActivity: false });
-    const res = await this.props.hideUserActivityAction(
-      this.props.idea.ID,
-      this.props.idea.hideActivities
-    );
-    if (!res) {
-      this.setState({ failedHideUserActivity: true });
-    }
-  };
   render() {
-    const { idea } = this.props;
+    const { passedComment } = this.props;
     const {
       idea_id,
+      comment_id,
+      comment,
       name,
       email,
-      posted_time,
-      Title,
-      description,
+      commentTime,
       reports
-    } = idea;
-    const {
-      isRevealed,
-      reportedProblems,
-      apiErrors,
-      isReadMore,
-      failedBlockUser,
-      failedHideUserActivity
-    } = this.state;
+    } = passedComment;
+    const { isRevealed, reportedProblems, failedDelete } = this.state;
     let cardHeader = (
       <Fragment>
-        {failedBlockUser && (
+        {failedDelete && (
           <Message negative>
-            <Message.Header>User has not beed disabled</Message.Header>
+            <Message.Header>Comment has not been deleted</Message.Header>
             <p>Please try again</p>
           </Message>
         )}
-        {failedHideUserActivity && (
-          <Message negative>
-            <Message.Header>
-              User activities have not been hidden
-            </Message.Header>
-            <p>Please try again</p>
-          </Message>
-        )}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: "1rem"
-          }}
-        >
+        <div style={{ float: "left" }}>
           <Link href="/ideas/[id]" as={`/ideas/${idea_id}`}>
             <a style={{ color: "teal" }}>
-              <h2 style={{ textDecoration: "underline" }}>{Title}</h2>
+              <h2 style={{ textDecoration: "underline" }}>
+                Visit comment idea
+              </h2>
             </a>
           </Link>
         </div>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          {this.props.idea.hideActivities === 0 || this.props.idea.hideActivities === false ? (
-            <Button
-              content="Hide Author Activity"
-              color="red"
-              onClick={this.onHideUserActivity}
-              style={{ margin: "0 .5rem" }}
-            />
-          ) : (
-            <Button
-              content="Show Author Activity"
-              color="green"
-              onClick={this.onHideUserActivity}
-              style={{ margin: "0 .5rem" }}
-            />
-          )}
-          {this.props.idea.disabled === 1 || this.props.idea.disabled === true ? (
-            <Button
-              content="Disable Author Account"
-              color="red"
-              onClick={this.onBlockUser}
-              style={{ margin: "0 .5rem" }}
-            />
-          ) : (
-            <Button
-              content="Enable Author Account"
-              color="green"
-              onClick={this.onBlockUser}
-              style={{ margin: "0 .5rem" }}
-            />
-          )}
+        <div style={{ float: "right" }}>
+          <Button color="red" size="mini" onClick={this.onDeleteComment}>
+            Delete comment
+          </Button>
         </div>
       </Fragment>
     );
@@ -155,19 +85,7 @@ export default class ReportedIdea extends Component {
     let cardDescription = (
       <div style={{ position: "relative" }}>
         <div style={{ color: "black", fontSize: "1rem" }}>
-          {description.length > 100 && !isReadMore ? (
-            <p>
-              {description.slice(0, 100) + "..."}{" "}
-              <span
-                style={{ cursor: "pointer", color: "blue" }}
-                onClick={this.onReadMore}
-              >
-                Read more
-              </span>
-            </p>
-          ) : (
-            <p>{description}</p>
-          )}
+          <p>{comment}</p>
         </div>
       </div>
     );
@@ -190,7 +108,7 @@ export default class ReportedIdea extends Component {
               Author Email: <span>{email}</span>
             </p>
             <p>
-              Date: <strong>{new Date(posted_time).toUTCString()}</strong>
+              Date: <strong>{new Date(commentTime).toUTCString()}</strong>
             </p>
           </div>
           <div style={{ cursor: "pointer", ...style2 }}>

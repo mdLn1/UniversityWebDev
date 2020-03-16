@@ -1,15 +1,22 @@
 import React, { Component } from "react";
-import { Grid, Message, Segment, Header, Card } from "semantic-ui-react";
+import { Grid, Message, Segment, Header, Card, Icon } from "semantic-ui-react";
 import axios from "axios";
 import cookies from "next-cookies";
+import { Cookies } from "react-cookie";
 import Layout from "../components/Layout";
+import ReportedIdea from "../components/ReportedIdea";
+import ReportedComment from "../components/ReportedComment";
+const reactCookies = new Cookies();
 
 export default class ContentIssues extends Component {
   constructor(props) {
     super(props);
     this.state = {
       connectionError: this.props.connectionError || false,
-      countDownTimer: 5
+      reportedComments: this.props.reportedComments,
+      reportedIdeas: this.props.reportedIdeas,
+      countDownTimer: 5,
+      apiErrors: []
     };
   }
   static async getInitialProps(ctx) {
@@ -21,14 +28,16 @@ export default class ContentIssues extends Component {
       resp = await axios.get("/api/management/reported-comments");
       const { reportedComments } = resp.data;
       return {
-        reportedIdeas,
-        reportedComments,
+        reportedIdeas: reportedIdeas || [],
+        token,
+        reportedComments: reportedComments || [],
         connectionError: false
       };
     } catch (error) {
       return {
         reportedIdeas: [],
         reportedComments: [],
+        token,
         connectionError: "Failed to connect to the server"
       };
     }
@@ -49,10 +58,87 @@ export default class ContentIssues extends Component {
       );
     }
   }
+
+  deleteCommentAction = async commentId => {
+    try {
+      axios.defaults.headers.common["x-auth-token"] = reactCookies.get("token");
+      const res = await axios.delete(
+        "/api/management/delete-comment/" + commentId
+      );
+      this.setState(prevState => ({
+        ...prevState,
+        reportedComments: prevState.reportedComments.filter(
+          x => x.comment_id !== commentId
+        )
+      }));
+      return true;
+    } catch (err) {
+      if (err.response) {
+        this.setState({ apiErrors: err.response.data.errors });
+      }
+    }
+    return false;
+  };
+
+  blockUserAction = async (userId, isEnabled) => {
+    try {
+      const linkRest = isEnabled ? "disable-user" : "enable-user";
+      axios.defaults.headers.common["x-auth-token"] = reactCookies.get("token");
+      const res = await axios.get(`/api/management/${linkRest}/` + userId);
+      this.setState(prevState => ({
+        ...prevState,
+        reportedIdeas: prevState.reportedIdeas.map(x => {
+          if (x.ID === userId) {
+            return {
+              ...x,
+              disabled: !isEnabled
+            };
+          } else return x;
+        })
+      }));
+      return true;
+    } catch (err) {
+      if (err.response) {
+        this.setState({ apiErrors: err.response.data.errors });
+      }
+    }
+    return false;
+  };
+
+  hideUserActivityAction = async (userId, isActivityHidden) => {
+    console.log(isActivityHidden);
+    try {
+      axios.defaults.headers.common["x-auth-token"] = reactCookies.get("token");
+      const linkRest = isActivityHidden
+        ? "show-user-activity"
+        : "hide-user-activity";
+      const res = await axios.get(`/api/management/${linkRest}/` + userId);
+      this.setState(prevState => ({
+        ...prevState,
+        reportedIdeas: prevState.reportedIdeas.map(x => {
+          if (x.ID === userId) {
+            return {
+              ...x,
+              hideActivities: !isActivityHidden
+            };
+          } else return x;
+        })
+      }));
+      return true;
+    } catch (err) {
+      if (err.response) {
+        this.setState({ apiErrors: err.response.data.errors });
+      }
+    }
+    return false;
+  };
   render() {
-    const { connectionError } = this.props;
-    const { countDownTimer } = this.state;
-    const { reportedComments, reportedIdeas } = this.props;
+    const {
+      countDownTimer,
+      reportedComments,
+      reportedIdeas,
+      connectionError
+    } = this.state;
     return (
       <Layout>
         {connectionError && (
@@ -73,34 +159,45 @@ export default class ContentIssues extends Component {
               Reported Ideas
             </Header>
 
-            <Card.Group>
-              {reportedIdeas.length > 0 &&
-                reportedIdeas.map((el, index) => (
-                  <Card key={index} fluid>
-                    <Card.Content>
-                      <Card.Header>{el.Title}</Card.Header>
-                      <Card.Meta>Co-Worker</Card.Meta>
-                      <Card.Description>{el.description}</Card.Description>
-                    </Card.Content>
-                  </Card>
+            {reportedIdeas.length > 0 ? (
+              <Card.Group>
+                {reportedIdeas.map((el, index) => (
+                  <ReportedIdea
+                    key={index}
+                    idea={el}
+                    blockUserAction={this.blockUserAction}
+                    hideUserActivityAction={this.hideUserActivityAction}
+                  />
                 ))}
-            </Card.Group>
+              </Card.Group>
+            ) : (
+              <div style={{ textAlign: "center", marginTop: "2rem" }}>
+                <Icon name="idea" size="huge"></Icon>
+                <Header size="small"> No ideas reported</Header>
+              </div>
+            )}
           </Grid.Column>
           <Grid.Column>
-            <Header size="medium" style={{ textAlign: "center" }}>Reported Comments</Header>
+            <Header size="medium" style={{ textAlign: "center" }}>
+              Reported Comments
+            </Header>
 
-            <Card.Group>
-              {reportedComments.length > 0 &&
-                reportedComments.map((el, index) => (
-                  <Card key={index} fluid>
-                    <Card.Content>
-                      <Card.Header>{el.comment_id}</Card.Header>
-                      <Card.Meta>Co-Worker</Card.Meta>
-                      <Card.Description>{el.comment}</Card.Description>
-                    </Card.Content>
-                  </Card>
+            {reportedComments.length > 0 ? (
+              <Card.Group>
+                {reportedComments.map((el, index) => (
+                  <ReportedComment
+                    key={index}
+                    passedComment={el}
+                    deleteComment={this.deleteCommentAction}
+                  />
                 ))}
-            </Card.Group>
+              </Card.Group>
+            ) : (
+              <div style={{ textAlign: "center", marginTop: "2rem" }}>
+                <Icon name="comments" size="huge"></Icon>
+                <Header size="small"> No comments reported</Header>
+              </div>
+            )}
           </Grid.Column>
         </Grid>
       </Layout>

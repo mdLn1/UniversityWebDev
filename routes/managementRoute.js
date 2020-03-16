@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const IsInRole = require("../middleware/authorizeMiddleware");
+const { check } = require("express-validator");
+const errorChecker = require("../middleware/errorCheckerMiddleware");
 const authMiddleware = require("../middleware/authMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
 const config = require("config");
@@ -10,20 +12,26 @@ const {
   adminDisableUserAccountReq,
   adminEnableUserAccountReq,
   adminHideUserActivityReq,
-  adminShowUserActivityReq,
-  adminDeleteCommentReq,
-  adminDeleteIdeaReq
+  adminShowUserActivityReq
 } = require("../controllers/managementController");
 
 const {
   getReportedProblemsByIdeaIdReq,
-  getAllReportedIdeasReq
+  getAllReportedIdeasReq,
+  deleteIdeaReq
 } = require("../controllers/ideasController");
 
 const {
   getReportedProblemsByCommentIdReq,
-  getAllReportedCommentsReq
+  getAllReportedCommentsReq,
+  deleteCommentReq
 } = require("../controllers/commentsController");
+
+const {
+  createDeadlineReq,
+  getAllDeadlinesReq,
+  updateDeadlineReq
+} = require("../controllers/deadlinesController");
 
 // const rolesRouter = require("./rolesRoute");
 // const categoriesRouter = require("./categoriesRoute");
@@ -49,6 +57,38 @@ router.get(
   exceptionHandler(adminDisableUserAccountReq)
 );
 
+router.post(
+  "/deadlines",
+  check(
+    "ideasSubmissionEnd",
+    "You must provide a submission deadline for ideas"
+  ).exists(),
+  check(
+    "commentsSubmissionEnd",
+    "You must provide a submission deadline for comments"
+  ).exists(),
+  errorChecker,
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(createDeadlineReq)
+);
+
+router.post(
+  "/deadlines/:id",
+  check(
+    "ideasSubmissionEnd",
+    "You must provide a submission deadline for ideas"
+  ).exists(),
+  check(
+    "commentsSubmissionEnd",
+    "You must provide a submission deadline for comments"
+  ).exists(),
+  errorChecker,
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(updateDeadlineReq)
+);
+
+router.get("/deadlines", exceptionHandler(getAllDeadlinesReq));
+
 router.get(
   "/enable-user/:userId",
   [authMiddleware, IsInRole(admin)],
@@ -70,13 +110,13 @@ router.get(
 router.delete(
   "/delete-comment/:commentId",
   [authMiddleware, IsInRole(admin)],
-  exceptionHandler(adminDeleteCommentReq)
+  exceptionHandler(deleteCommentReq)
 );
 
 router.delete(
   "/delete-idea/:ideaId",
   [authMiddleware, IsInRole(admin)],
-  exceptionHandler(adminDeleteIdeaReq)
+  exceptionHandler(deleteIdeaReq)
 );
 
 router.get(
