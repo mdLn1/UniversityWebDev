@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from "react";
 import Link from "next/link";
-import { Button } from "semantic-ui-react";
+import ReportModal from "./ReportModal";
 
 export default class IdeaHeader extends Component {
   constructor(props) {
     super(props);
   }
+
   render() {
     const { ideaId, ideaTitle, ideasListStyle } = this.props;
 
@@ -25,9 +26,7 @@ export default class IdeaHeader extends Component {
           </div>
         )}
         <div style={{ float: "right" }}>
-          <Button color="red" size="mini">
-            Report
-          </Button>
+          <ReportModal ideaId={ideaId} />
         </div>
       </Fragment>
     );

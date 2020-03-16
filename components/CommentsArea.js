@@ -28,7 +28,6 @@ export default class CommentsArea extends Component {
 
   submitComment = async e => {
     e.preventDefault();
-    console.log(this.state.props);
     try {
       const config = {
         headers: {
