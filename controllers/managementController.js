@@ -6,7 +6,7 @@ const {
   adminEnableDisableUserAccountQuery,
   hideShowUserActivityQuery
 } = require("../db/queries/users");
-const { deleteCommentQuery } = require("../db/queries/comments");
+const { deleteCommentQuery,  hideShowAllUserCommentsQuery} = require("../db/queries/comments");
 const { deleteIdeaQuery } = require("../db/queries/ideas");
 const {hideShowAllUserIdeasQuery} = require("../db/queries/ideas")
 const isEmailValid = require("../utils/isEmailValid");
@@ -43,6 +43,7 @@ const adminHideUserActivityReq = async (req, res) => {
   const { userId } = req.params;
   await hideShowUserActivityQuery(userId, 1);
   await hideShowAllUserIdeasQuery(userId, 1);
+  await hideShowAllUserCommentsQuery(userId, 1);
   res.status(200).json({ success: "User activity hidden" });
 };
 
@@ -50,6 +51,7 @@ const adminShowUserActivityReq = async (req, res) => {
   const { userId } = req.params;
   await hideShowUserActivityQuery(userId, 0);
   await hideShowAllUserIdeasQuery(userId, 0);
+  await hideShowAllUserCommentsQuery(userId, 0);
   res.status(200).json({ success: "User activity shown" });
 };
 

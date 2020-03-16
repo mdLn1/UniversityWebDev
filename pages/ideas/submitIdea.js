@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import Layout from "../../components/Layout";
 import { Router } from "../../routes";
 import {
@@ -33,6 +33,7 @@ class submitIdea extends Component {
       connectionError: this.props.connectionError,
       countDownTimer: 11,
       loadingForm: false,
+      ideaSubmissionAllowed: false,
       selectedFile: [],
       fileUploadsErrors: []
     };
@@ -41,19 +42,38 @@ class submitIdea extends Component {
   static async getInitialProps(ctx) {
     try {
       const { token } = cookies(ctx);
-      const resp = await axios.get("/api/categories");
+      let resp = await axios.get("/api/categories");
       const { categories } = resp.data;
-      return { categories, token, connectionError: false };
+      resp = await axios.get("api/management/deadlines");
+      const { deadlines } = resp.data;
+      return { categories, deadlines, token, connectionError: false };
     } catch (error) {
       return { connectionError: "Failed to connect to the server" };
     }
   }
 
   componentDidMount() {
+    const { deadlines } = this.props;
+    if (deadlines && deadlines.length > 0) {
+      const currDeadline = deadlines.find(
+        x => new Date(x.CommentsSubmissionEnd.split("T")[0]) > new Date()
+      );
+      if (currDeadline) {
+        if (new Date(currDeadline.IdeasSubmissionEnd) > new Date()) {
+          this.setState({
+            currentDeadline: currDeadline,
+            ideaSubmissionAllowed: true
+          });
+        } else {
+          this.setState({ currentDeadline: currDeadline });
+        }
+      }
+    }
     if (this.props.connectionError) {
       setTimeout(() => {
         window.location.reload();
       }, 10000);
+
       setInterval(
         () =>
           this.setState((prevState, props) => ({
@@ -196,7 +216,9 @@ class submitIdea extends Component {
       apiErrors,
       countDownTimer,
       fileUploadsErrors,
-      loadingForm
+      loadingForm,
+      ideaSubmissionAllowed,
+      currentDeadline
     } = this.state;
     const formProps = {
       name: "createIdeaForm",
@@ -210,6 +232,9 @@ class submitIdea extends Component {
       formProps.loading = true;
     } else {
       formProps.loading = false;
+    }
+    if (ideaSubmissionAllowed) {
+      formProps.onSubmit = this.onSubmit;
     }
     const titleInputProps = {
       required: true,
@@ -283,15 +308,31 @@ class submitIdea extends Component {
               <p>Refreshing automatically in {countDownTimer} seconds</p>
             </Message>
           )}
-          <Message warning>
-            <Message.Header>
-              Once idea submitted you cannot make changes anymore
-            </Message.Header>
-            <p>
-              Please make sure your grammar is right and you did not forget
-              anything
-            </p>
-          </Message>
+          {!currentDeadline && !connectionError && (
+            <Message success>
+              <Message.Header>
+                There is no deadline available, you can submit anything
+              </Message.Header>
+            </Message>
+          )}
+          {!ideaSubmissionAllowed && (
+            <Message negative>
+              <Message.Header>
+                You can no longer submit ideas, the deadline has passed
+              </Message.Header>
+            </Message>
+          )}
+          {ideaSubmissionAllowed && (
+            <Message warning>
+              <Message.Header>
+                Once idea submitted you cannot make changes anymore
+              </Message.Header>
+              <p>
+                Please make sure your grammar is right and you did not forget
+                anything
+              </p>
+            </Message>
+          )}
           {apiErrors.length > 0 && (
             <Message negative>
               <Message.Header>
@@ -301,7 +342,7 @@ class submitIdea extends Component {
             </Message>
           )}
 
-          <Form onSubmit={this.onSubmit} id="form" {...formProps}>
+          <Form id="form" {...formProps}>
             <Header as="h2" color="teal" textAlign="center">
               Create an Idea
             </Header>
@@ -333,15 +374,23 @@ class submitIdea extends Component {
                 ))}
               </ul>
             )}
-            <Form.Input
-              type="file"
-              multiple
-              onChange={this.onFileUploadHandler}
-            />
             <br></br>
-            <Button color="teal" type="submit" fluid size="large">
-              Submit
-            </Button>
+            {ideaSubmissionAllowed ? (
+              <Fragment>
+                <Form.Input
+                  type="file"
+                  multiple
+                  onChange={this.onFileUploadHandler}
+                />
+                <Button color="teal" type="submit" fluid size="large">
+                  Submit
+                </Button>
+              </Fragment>
+            ) : (
+              <Button color="red" fluid size="large">
+                No idea can be submitted
+              </Button>
+            )}
           </Form>
         </div>
       </Layout>

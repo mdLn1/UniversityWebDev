@@ -11,6 +11,8 @@ const {
 } = require("../db/queries/comments");
 const CustomError = require("../utils/CustomError");
 
+const { isAccountDisabledQuery } = require("../db/queries/users");
+
 const { getIdeaAuthorQuery } = require("../db/queries/ideas");
 const config = require("config");
 const sendMail = require("../utils/emailSender");
@@ -26,7 +28,11 @@ const createCommentReq = async (req, res) => {
   const { ideaId } = req.params;
   const userId = req.user.id;
   const name = req.user.name;
-
+  if (await isAccountDisabledQuery(userId)) {
+    throw new CustomError(
+      "You can not create/edit content, your account has been disabled"
+    );
+  }
   const { insertId, commentTime } = await createCommentQuery(
     comment,
     isAnonymous,
@@ -54,7 +60,11 @@ const updateCommentForIdeaReq = async (req, res) => {
       "You are not the author of this comment nor an admin,therefore you cannot make changes",
       400
     );
-
+  if (await isAccountDisabledQuery(userId)) {
+    throw new CustomError(
+      "You can not create/edit content, your account has been disabled"
+    );
+  }
   await updateCommentForIdeaQuery(commentId, content);
   res.status(200).json({ success: "Successfully updated" });
 };

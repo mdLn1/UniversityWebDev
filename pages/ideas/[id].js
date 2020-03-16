@@ -1,20 +1,26 @@
 import React, { Component } from "react";
 import Layout from "../../components/Layout";
-import { Header } from "semantic-ui-react";
+import { Header, Message } from "semantic-ui-react";
 import axios from "axios";
 import IdeaDisplay from "../../components/IdeaDisplay";
 import CommentsArea from "../../components/CommentsArea";
 import cookies from "next-cookies";
 
 export default class displayIdea extends Component {
-  state = {
-    comments: this.props.comments || []
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      comments: this.props.comments || [],
+      isCommentSubmissionAllowed: false
+    };
+  }
 
   static async getInitialProps(props) {
     const ID = props.query.id;
     let idea;
-    let comments;
+    let comments, deadlines;
+
     const { token } = cookies(props);
     try {
       const config = {
@@ -22,15 +28,32 @@ export default class displayIdea extends Component {
           "x-auth-token": token
         }
       };
-      const res = await axios.get(`/api/ideas/${ID}`, config);
+      let res = await axios.get(`/api/ideas/${ID}`, config);
       idea = res.data[0];
       const cmtsRes = await axios.get(`/api/ideas/${ID}/comments`);
-      await axios.get(`/api/ideas/${ID}/increase-views`);
       comments = cmtsRes.data;
+      res = await axios.get("/api/management/deadlines");
+      const { deadlines } = res.data;
+      await axios.get(`/api/ideas/${ID}/increase-views`);
+      return { ID, idea, comments, deadlines };
     } catch (err) {
-      console.log(err);
+      return { connectionError: "connection failed" };
     }
-    return { ID, idea, comments };
+  }
+
+  componentDidMount() {
+    const { deadlines } = this.props;
+    if (deadlines && deadlines.length > 0) {
+      const currDeadline = deadlines.find(
+        x => new Date(x.CommentsSubmissionEnd) > new Date()
+      );
+      if (currDeadline) {
+        this.setState({
+          currentDeadline: currDeadline,
+          isCommentSubmissionAllowed: true
+        });
+      }
+    }
   }
 
   handleInputChange = e => {
@@ -38,6 +61,18 @@ export default class displayIdea extends Component {
   };
 
   render() {
+    const { connectionError } = this.props;
+    if (connectionError)
+      return (
+        <Layout>
+          <Message negative>
+            <Message.Header>
+              Sorry the connection to the server was interrupted
+            </Message.Header>
+            <p>{connectionError}</p>
+          </Message>
+        </Layout>
+      );
     return (
       <Layout>
         <Header as="h2" color="teal" textAlign="center"></Header>
@@ -45,6 +80,7 @@ export default class displayIdea extends Component {
         <CommentsArea
           ID={this.props.ID}
           comments={this.props.comments}
+          canSubmit={this.state.isCommentSubmissionAllowed}
         ></CommentsArea>
       </Layout>
     );

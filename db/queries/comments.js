@@ -21,14 +21,28 @@ function createCommentQuery(comment, isAnonymous, userId, ideaId) {
     )
   );
 }
-
+function hideShowAllUserCommentsQuery(userId, hidden) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "update Comments set hidden = ? where user_id=?",
+        timeout: 40000, // 40s
+        values: [hidden, userId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve();
+      }
+    );
+  });
+}
 // Returns comments of a specific idea by the latest comments first.
 function getAllCommentsForIdeaQuery(ideaId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
         sql: `SELECT Comments.ID, Comments.comment, Comments.commentTime, Comments.isAnonymous, Users.email, Users.name, Users.hideActivities
-        FROM Comments left join Users ON Comments.user_id = Users.ID WHERE idea_id = ?
+        FROM Comments left join Users ON Comments.user_id = Users.ID WHERE idea_id = ? and hidden=0
         ORDER BY commentTime DESC`,
         timeout: 40000,
         values: [ideaId]
@@ -145,7 +159,7 @@ function getAllReportedCommentsQuery() {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-          sql: `SELECT DISTINCT c.comment_id,
+        sql: `SELECT DISTINCT c.comment_id,
           comment.comment,
           author.name,
           author.email,
@@ -178,5 +192,6 @@ module.exports = {
   reportCommentQuery,
   getAllReportedCommentsQuery,
   getReportedProblemsByCommentIdQuery,
-  deleteReportedCommentByCommentIDQuery
+  deleteReportedCommentByCommentIDQuery,
+  hideShowAllUserCommentsQuery
 };

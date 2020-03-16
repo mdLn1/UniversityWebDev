@@ -27,6 +27,7 @@ const {
   updateRatingQuery,
   userRatedAlreadyQuery
 } = require("../db/queries/ratings");
+const { isAccountDisabledQuery } = require("../db/queries/users");
 
 const CustomError = require("../utils/CustomError");
 const cloudinary = require("cloudinary");
@@ -75,7 +76,7 @@ const deleteIdeaReq = async (req, res) => {
   const { id } = req.params;
   const { userId, email } = await getIdeaAuthorQuery(id);
   if (
-    !(author === req.user.id || req.user.role === config.get("roles")["admin"]) 
+    !(author === req.user.id || req.user.role === config.get("roles")["admin"])
   )
     throw new CustomError(
       "You are not the author of this idea nor an admin,therefore you cannot make changes",
@@ -104,7 +105,11 @@ const createIdeaReq = async (req, res) => {
     );
   }
   const categoryId = await isExistingCategory(category);
-
+  if (await isAccountDisabledQuery(userId)) {
+    throw new CustomError(
+      "You can not create/edit content, your account has been disabled"
+    );
+  }
   const { insertId } = await createIdeaQuery(
     title,
     description,
@@ -177,6 +182,11 @@ const updateIdeaReq = async (req, res) => {
       "You are not the author of this idea nor an admin,therefore you cannot make changes",
       400
     );
+  if (await isAccountDisabledQuery(userId)) {
+    throw new CustomError(
+      "You can not create/edit content, your account has been disabled"
+    );
+  }
   await updateIdeaQuery(title, description, id);
   res.status(200).json({ title, description });
 };

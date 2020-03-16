@@ -60,27 +60,35 @@ export default class CommentsArea extends Component {
     return (
       <div>
         <Segment color="teal" textAlign="left">
-          <Form onSubmit={this.submitComment} id="form">
-            <Form.Input
-              name="comment"
-              onChange={this.handleInputChange}
-              required
-            >
-              <input placeholder="Add Comment" />
-            </Form.Input>
-            <Form.Field name="anonComment">
-              <Checkbox
-                label="Anonymous"
-                onClick={this.anonCommentCheckboxChangeHandler}
+          {this.props.canSubmit ? (
+            <Form onSubmit={this.submitComment} id="form">
+              <Form.Input
+                name="comment"
+                onChange={this.handleInputChange}
+                required
+              >
+                <input placeholder="Add Comment" />
+              </Form.Input>
+              <Form.Field name="anonComment">
+                <Checkbox
+                  label="Anonymous"
+                  onClick={this.anonCommentCheckboxChangeHandler}
+                />
+              </Form.Field>
+              <Button
+                content="Add Comment"
+                labelPosition="left"
+                icon="edit"
+                primary
               />
-            </Form.Field>
-            <Button
-              content="Add Comment"
-              labelPosition="left"
-              icon="edit"
-              primary
-            />
-          </Form>
+            </Form>
+          ) : (
+            <Message negative>
+              <Message.Header>
+                Comments can no longer be submitted
+              </Message.Header>
+            </Message>
+          )}
           {this.state.apiErrors.length > 0 && (
             <Message negative>
               <Message.Header>
