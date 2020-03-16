@@ -8,6 +8,7 @@ import {
   Select,
   Message
 } from "semantic-ui-react";
+import Deadlines from "../components/Deadlines";
 import axios from "axios";
 import AdminControl from "../components/AdminControl";
 
@@ -19,9 +20,12 @@ export async function getStaticProps() {
     const { roles } = res.data || [];
     res = await axios.get("/api/categories");
     const { categories } = res.data || [];
+    res = await axios.get("/api/management/deadlines");
+    const { deadlines } = res.data || [];
     return {
       props: {
         departments,
+        deadlines,
         roles,
         categories
       }
@@ -49,10 +53,20 @@ export default class PortalData extends Component {
       roleError: false,
       categoryError: false,
       departmentError: false,
-      countDownTimer: 5
+      countDownTimer: 5,
+      currentDeadline: null
     };
   }
   componentDidMount() {
+    const { deadlines } = this.props;
+    if (deadlines && deadlines.length > 0) {
+      const currDeadline = deadlines.find(
+        x => new Date(x.CommentsSubmissionEnd.split("T")[0]) > new Date()
+      );
+      if (currDeadline) {
+        this.setState({ currentDeadline: currDeadline });
+      }
+    }
     if (this.props.connectionError) {
       setTimeout(() => {
         window.location.reload();
@@ -78,8 +92,10 @@ export default class PortalData extends Component {
       departments,
       roles,
       connectionError,
-      countDownTimer
+      countDownTimer,
+      currentDeadline
     } = this.state;
+    const { deadlines } = this.props;
 
     const categoryFields = [
       { type: "text", value: "", name: "tag", label: "Tag", required: true },
@@ -210,6 +226,20 @@ export default class PortalData extends Component {
               />
             </Segment>
           </Grid.Column>
+          {currentDeadline && (
+            <Grid.Column>
+              <Segment>
+                <Deadlines currDeadline={{ ...currentDeadline }} />
+              </Segment>
+            </Grid.Column>
+          )}
+          {!currentDeadline && deadlines && deadlines.length > 0 && (
+            <Grid.Column>
+              <Segment>
+                <Deadlines currDeadline={{ ...deadlines[0] }} />
+              </Segment>
+            </Grid.Column>
+          )}
         </Grid>
       </Layout>
     );

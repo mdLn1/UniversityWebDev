@@ -43,7 +43,7 @@ function updateDeadlineQuery(
     pool.query(
       {
         sql:
-          "update Deadlines set (IdeasSubmissionEnd =?, CommentsSubmissionEnd=?) where ID = ?",
+          "update Deadlines set IdeasSubmissionEnd =?, CommentsSubmissionEnd=? where ID = ?",
         timeout: 40000, // 40s
         values: [ideasSubmissionEnd, commentsSubmissionEnd, deadlineId]
       },
