@@ -108,7 +108,7 @@ export default class Register extends Component {
           email,
           password,
           role: roleSelected,
-          department: roleSelected,
+          department: departmentSelected,
           name
         });
         localStorage.setItem("username", name);

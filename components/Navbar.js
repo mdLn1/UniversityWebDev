@@ -31,12 +31,12 @@ class Navbar extends Component {
     loggedOut: false
   };
 
-  async componentDidMount() {
+ componentDidMount() {
     try {
       let decoded = jwt_decode(cookies.get("token"));
       this.setState({ role: decoded.user.role });
     } catch (err) {
-      // is token cookie does not exist will catch this error..
+      alert("no token")
     }
   }
 
