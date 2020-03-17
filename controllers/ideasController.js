@@ -93,7 +93,13 @@ const deleteIdeaReq = async (req, res) => {
 };
 
 const createIdeaReq = async (req, res) => {
-  const { description, isAnonymous, title, category, termsAgreed } = req.body;
+  const { description, title, category, termsAgreed } = req.body;
+  let { isAnonymous } = req.body;
+  if (isAnonymous && isAnonymous === 1 || isAnonymous === true) {
+    isAnonymous = 1;
+  } else {
+    isAnonymous = 0;
+  }
   const userId = req.user.id;
   if (!termsAgreed) {
     throw new CustomError(
@@ -110,9 +116,9 @@ const createIdeaReq = async (req, res) => {
   const { insertId } = await createIdeaQuery(
     title,
     description,
-    isAnonymous ? 1 : 0,
     categoryId,
-    userId
+    userId,
+    isAnonymous
   );
   if (req.uploadedFiles) {
     await Promise.all(
@@ -130,14 +136,14 @@ const createIdeaReq = async (req, res) => {
   }
   const userDepartmentId = await getUserDepartmentIdQuery(userId);
   const coordinator = await getDepartmentCoordinatorQuery(userDepartmentId);
-  // email needs to be configured to show this
-  sendMail({
-    receiver: coordinator.email,
-    subject: "New idea created",
-    html: `Please follow this link to check it out <a href="${config.get(
-      "server_route"
-    )}ideas/${insertId}">click here</a>`
-  });
+  if (coordinator)
+    sendMail({
+      receiver: coordinator.email,
+      subject: "New idea created",
+      html: `Please follow this link to check it out <a href="${config.get(
+        "server_route"
+      )}ideas/${insertId}">click here</a>`
+    });
 
   res
     .status(201)

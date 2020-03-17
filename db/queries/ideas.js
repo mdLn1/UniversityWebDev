@@ -1,7 +1,7 @@
 const pool = require("../dbconn");
 
 // add new Idea
-function createIdeaQuery(title, description, isAnonymous, categoryId, userId) {
+function createIdeaQuery(title, description, categoryId, userId, isAnonymous = 0) {
   const date = new Date()
     .toISOString()
     .slice(0, 19)

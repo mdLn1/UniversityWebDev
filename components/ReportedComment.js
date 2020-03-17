@@ -56,7 +56,12 @@ export default class ReportedComment extends Component {
       commentTime,
       reports
     } = passedComment;
-    const { isRevealed, reportedProblems, failedDelete } = this.state;
+    const {
+      isRevealed,
+      reportedProblems,
+      failedDelete,
+      apiErrors
+    } = this.state;
     let cardHeader = (
       <Fragment>
         {failedDelete && (

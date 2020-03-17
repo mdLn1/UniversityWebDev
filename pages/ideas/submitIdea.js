@@ -282,6 +282,12 @@ class submitIdea extends Component {
       };
     }
 
+    const isAnonymousCheckboxProps = {
+      onChange: this.onCheckboxChange,
+      label: "Anonymous idea",
+      name: "isAnonymous"
+    };
+
     const termsAgreedCheckboxProps = {
       required: true,
       label: "Terms and Conditions",
@@ -360,13 +366,7 @@ class submitIdea extends Component {
               toggle
               {...termsAgreedCheckboxProps}
             />
-            <Form.Field
-              control={Checkbox}
-              label="Anonymous idea"
-              name="isAnonymous"
-              toggle
-              onChange={this.onCheckboxChange}
-            />
+            <Form.Field control={Checkbox} toggle {...isAnonymousCheckboxProps}/>
             {fileUploadsErrors.length > 0 && (
               <ul>
                 {fileUploadsErrors.map((el, index) => (
