@@ -1,42 +1,23 @@
 import React, { Component, Fragment } from "react";
 import { Menu, Dropdown, Message } from "semantic-ui-react";
 import Link from "next/link";
-import { Cookies } from "react-cookie";
 import jwt_decode from "jwt-decode";
+import { Router } from "../routes";
+import { Cookies } from "react-cookie";
 const cookies = new Cookies();
 
-// old ideas dropdown
-// <Dropdown item text="Ideas">
-//                 <Dropdown.Menu>
-//                   <Dropdown.Item>
-//                     <Link href="/ideas/submitIdea">
-//                       <a>New Idea</a>
-//                     </Link>
-//                   </Dropdown.Item>
-//                   <Dropdown.Item>
-//                     <Link href="/">
-//                       <a>Edit Ideas</a>
-//                     </Link>
-//                   </Dropdown.Item>
-//                   <Dropdown.Item>
-//                     <Link href="/">
-//                       <a>Delete Ideas</a>
-//                     </Link>
-//                   </Dropdown.Item>
-//                 </Dropdown.Menu>
-//               </Dropdown>
 class Navbar extends Component {
   state = {
     role: "",
     loggedOut: false
   };
 
- componentDidMount() {
+  componentDidMount() {
     try {
       let decoded = jwt_decode(cookies.get("token"));
       this.setState({ role: decoded.user.role });
     } catch (err) {
-      alert("no token")
+      console.log("no token");
     }
   }
 
@@ -45,6 +26,7 @@ class Navbar extends Component {
     this.setState({ role: "", loggedOut: true });
     if (typeof Storage !== "undefined") localStorage.clear();
     setTimeout(() => this.setState({ loggedOut: false }), 3000);
+    Router.push("/");
   };
 
   render() {
