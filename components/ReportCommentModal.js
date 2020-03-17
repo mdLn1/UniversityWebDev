@@ -4,7 +4,7 @@ import axios from "axios";
 import { Cookies } from "react-cookie";
 const cookies = new Cookies();
 
-export default class ReportModal extends Component {
+export default class ReportCommentModal extends Component {
   constructor(props) {
     super(props);
   }
@@ -41,7 +41,7 @@ export default class ReportModal extends Component {
         problem: this.state.problem
       };
       const res = await axios.post(
-        `/api/ideas/${this.props.ideaId}/report`,
+        `/api/ideas/${this.props.ideaID}/comments/${this.props.commentID}/report`,
         obj,
         config
       );
@@ -56,16 +56,16 @@ export default class ReportModal extends Component {
     return (
       <Modal
         trigger={
-          <Button color="red" size="mini" onClick={this.handleOpen}>
-            Report
-          </Button>
+          <a onClick={this.handleOpen}>
+            <Icon name="warning circle"></Icon>Report
+          </a>
         }
         open={this.state.modalOpen}
         onClose={this.handleClose}
         basic
         size="small"
       >
-        <Header icon="warning circle" content="Report an idea to the admin" />
+        <Header icon="warning circle" content="Report a comment to the admin" />
         <Modal.Content>
           <p>Please type the problem you experienced below</p>
           <Form id="form" onSubmit={this.reportIdeaHandler}>
