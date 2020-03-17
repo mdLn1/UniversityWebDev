@@ -99,7 +99,7 @@ export default class CommentsArea extends Component {
           )}
         </Segment>
         <Segment placeholder>
-          <CommentsList comments={this.state.comments} />
+          <CommentsList ideaID={this.props.ID} comments={this.state.comments} />
         </Segment>
       </div>
     );

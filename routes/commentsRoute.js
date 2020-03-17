@@ -73,7 +73,7 @@ router.post(
   exceptionHandler(updateCommentForIdeaReq)
 );
 
-// @route POST /api/ideas/:ideaId/comments/:commentId
+// @route POST /api/ideas/:ideaId/comments/:commentId/report
 // @desc Update a comment for an idea
 // @access Private
 router.post(

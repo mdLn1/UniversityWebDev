@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { Feed, Icon, Header } from "semantic-ui-react";
 import { Link } from "../routes";
-
+import ReportCommentModal from "../components/ReportCommentModal";
 export default class CommentsList extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    const { comments } = this.props;
+    const { ideaID, comments } = this.props;
     if (comments.length == 0) {
       return (
         <Header icon>
@@ -26,11 +26,7 @@ export default class CommentsList extends Component {
             cmt.commentTime.slice(11, 16);
           const meta = (
             <div style={{ textDecoration: "underline" }}>
-              <Link route="/">
-                <a>
-                  <Icon name="warning circle"></Icon>Report
-                </a>
-              </Link>
+              <ReportCommentModal ideaID={ideaID} commentID={cmt.ID} />
             </div>
           );
           return {
