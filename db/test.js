@@ -1,5 +1,5 @@
 // const {getDepartmentCoordinatorQuery, getUserDepartmentIdQuery} = require("./queries/departments")
-const { regUserQuery } = require("./queries/users");
+const { getAllIdeasUserQuery } = require("./queries/ideas");
 //const handeasync = require("../utils/exceptionHandler");
 
 test = async () => {
@@ -8,7 +8,7 @@ test = async () => {
   //await addCategory("library", "library", true);
   // const result = await getRatingsQuery(1);
   try {
-    await regUserQuery("Mikili", "Test123!", "test33@gmail.com", "Lecturer", "CIS");
+    await getAllIdeasUserQuery(16);
     console.log("Ok");
   } catch (err) {
     console.error(err);

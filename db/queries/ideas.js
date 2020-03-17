@@ -48,6 +48,30 @@ function getAllIdeasQuery(pageNo, itemsCount, userId) {
   });
 }
 
+// Returns All ideas created by a specific user
+function getAllIdeasUserQuery(userId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: `SELECT i.ID, i.description, i.views, i.posted_time, i.Title, i.isAnonymous,
+        (SELECT COUNT(*) FROM Comments WHERE i.ID = Comments.idea_id ) AS commentsCount,
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=1 and i.ID=idea_id) AS positiveVotes,
+        (SELECT COUNT(vote) FROM Ratings WHERE vote=0 and i.ID=idea_id) AS negativeVotes,
+        (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
+        (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS uploadsCount
+        FROM Ideas AS i where hidden=0 and i.user_id=?
+        ORDER BY i.posted_time DESC`,
+        timeout: 40000, // 40s
+        values: [userId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result);
+      }
+    );
+  });
+}
+
 // increase the number of views
 function increaseIdeaViewsQuery(ideaId) {
   return new Promise((resolve, reject) => {
@@ -140,8 +164,7 @@ function getAllReportedIdeasQuery() {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: 
-        `SELECT DISTINCT reportedIdea.idea_id,
+        sql: `SELECT DISTINCT reportedIdea.idea_id,
                 author.name,
                 author.email,
                 author.ID,
@@ -260,5 +283,6 @@ module.exports = {
   reportIdeaQuery,
   hideShowAllUserIdeasQuery,
   getReportedProblemsByIdeaIdQuery,
-  getAllReportedIdeasQuery
+  getAllReportedIdeasQuery,
+  getAllIdeasUserQuery
 };
