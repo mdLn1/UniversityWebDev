@@ -4,6 +4,7 @@ const { check } = require("express-validator");
 const userDisabledMiddleware = require("../middleware/userDisabledMiddleware");
 const errorChecker = require("../middleware/errorCheckerMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
+const middlewareExceptionHandler = require("../utils/middlewareExceptionHandler");
 const authMiddleware = require("../middleware/authMiddleware");
 const cloudinaryConfig = require("../utils/cloudinaryConfig");
 const multerUploads = require("../middleware/multerMiddleware");
@@ -21,6 +22,7 @@ const {
   reportIdeaReq,
   rateIdeaReq
 } = require("../controllers/ideasController");
+const paginationMiddleware = require("../utils/paginationMiddleware");
 
 router.use("/:ideaId/uploads", uploadRoute);
 router.use("/:ideaId/comments", commentRoute);
@@ -28,7 +30,12 @@ router.use("/:ideaId/comments", commentRoute);
 // @route GET /api/ideas
 // @desc Returns all ideas
 // @access Public
-router.get("/", checkIfLoggedInMiddleware, exceptionHandler(getAllIdeasReq));
+router.get(
+  "/",
+  checkIfLoggedInMiddleware,
+  paginationMiddleware,
+  exceptionHandler(getAllIdeasReq)
+);
 
 // @route GET /api/ideas/:id
 // @desc Returns a specific idea based on passed ID
@@ -72,7 +79,7 @@ router.post(
     authMiddleware,
     userDisabledMiddleware,
     cloudinaryConfig,
-    exceptionHandler(uploadFilesMiddleware)
+    middlewareExceptionHandler(uploadFilesMiddleware)
   ],
   exceptionHandler(createIdeaReq)
 );

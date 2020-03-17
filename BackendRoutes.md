@@ -314,7 +314,28 @@ GetHighestRatedIdeas = "/api/stats/HighestRatedIdeas" ( request type = GET  )
 
     no req params expected, no request body expected
 
-    => On success returns [ {Idea ID : Object} ] Status 200
+    => On success returns {ideas: array, totalIdeas: number} Status 200
+    => On failure { errors: Array } Status 500, 400
+
+MostViewedIdeas = "/api/stats/MostViewedIdeas" ( request type = GET  )
+
+    no req params expected, no request body expected
+
+    => On success returns {ideas: array, totalIdeas: number} Status 200
+    => On failure { errors: Array } Status 500, 400
+
+MostRecentIdeas = "/api/stats/MostRecentIdeas" ( request type = GET  )
+
+    no req params expected, no request body expected
+
+    => On success returns {ideas: array, totalIdeas: number} Status 200
+    => On failure { errors: Array } Status 500, 400
+
+OldestIdeas = "/api/stats/OldestIdeas" ( request type = GET  )
+
+    no req params expected, no request body expected
+
+    => On success returns {ideas: array, totalIdeas: number} Status 200
     => On failure { errors: Array } Status 500, 400
 
 MostRecentActiveUser = "/api/stats/MostRecentActiveUser" ( request type = GET  )
@@ -331,19 +352,9 @@ IdeasPerUser = "/api/stats/IdeasPerUser" ( request type = GET  )
     => On success returns [ {email : Object} ] Status 200
     => On failure { errors: Array } Status 500, 400
 
-MostViewedIdeas = "/api/stats/MostViewedIdeas" ( request type = GET  )
 
-    no req params expected, no request body expected
 
-    => On success returns [ {idea : Object} ] Status 200
-    => On failure { errors: Array } Status 500, 400
 
-MostRecentIdeas = "/api/stats/MostRecentIdeas" ( request type = GET  )
-
-    no req params expected, no request body expected
-
-    => On success returns [ {Idea ID : Object} ] Status 200
-    => On failure { errors: Array } Status 500, 400
 
 UserWithMostComments = "/api/stats/UserWithMostComments" ( request type = GET  )
 

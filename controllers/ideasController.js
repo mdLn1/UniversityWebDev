@@ -35,23 +35,11 @@ const config = require("config");
 const sendMail = require("../utils/emailSender");
 
 const getAllIdeasReq = async (req, res) => {
-  let { pageNo, itemsCount } = req.query;
+  const { itemsCount, pageNo } = req.query;
   let userId = -1;
   if (req.user) {
     userId = req.user.id;
   }
-  if (!itemsCount || itemsCount < 5) {
-    itemsCount = 5;
-  }
-  if (!pageNo || pageNo < 1) {
-    pageNo = 1;
-  }
-  if (isNaN(pageNo) || isNaN(itemsCount)) {
-    pageNo = 1;
-    itemsCount = 5;
-  }
-  pageNo = parseInt(pageNo);
-  itemsCount = parseInt(itemsCount);
   const totalIdeas = await getIdeasCountQuery();
   if (pageNo * itemsCount > totalIdeas + itemsCount) {
     pageNo = 1;
@@ -134,11 +122,13 @@ const createIdeaReq = async (req, res) => {
   const userDepartmentId = await getUserDepartmentIdQuery(userId);
   const coordinator = await getDepartmentCoordinatorQuery(userDepartmentId);
   // email needs to be configured to show this
-  // sendMail({
-  //   receiver: coordinator.email,
-  //   subject: 'New idea created',
-  //   html: `Please follow this link to check it out <a href="${config.get("server_route")}ideas/${insertId}">click here</a>`
-  // });
+  sendMail({
+    receiver: coordinator.email,
+    subject: "New idea created",
+    html: `Please follow this link to check it out <a href="${config.get(
+      "server_route"
+    )}ideas/${insertId}">click here</a>`
+  });
 
   res
     .status(201)

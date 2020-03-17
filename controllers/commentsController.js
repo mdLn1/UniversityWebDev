@@ -41,11 +41,12 @@ const createCommentReq = async (req, res) => {
   );
   const { email } = await getIdeaAuthorQuery(ideaId);
   // email needs to be configured to show this
-  // sendMail({
-  //   receiver: coordinator.email,
-  //   subject: 'New comment added',
-  //   html: `Please follow this link to check it out <a href="${config.get("server_route")}ideas/${ideaId}">click here</a>`
-  // });
+  sendMail({
+    receiver: email,
+    subject: 'New comment added to your idea',
+    html: `Please follow this link to check your idea <a href="${config.get("server_route")}ideas/${ideaId}">click here</a>.
+      Staff member said <strong>${comment}</strong>`
+  });
   res
     .status(201)
     .json({ ID: insertId, comment, isAnonymous, email, name, commentTime });
