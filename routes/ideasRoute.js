@@ -20,7 +20,8 @@ const {
   updateIdeaReq,
   getIdeaByIdReq,
   reportIdeaReq,
-  rateIdeaReq
+  rateIdeaReq,
+  getAllIdeasUser
 } = require("../controllers/ideasController");
 const paginationMiddleware = require("../utils/paginationMiddleware");
 
@@ -50,6 +51,21 @@ router.get(
     checkIfLoggedInMiddleware
   ],
   exceptionHandler(getIdeaByIdReq)
+);
+
+// @route GET /api/ideas/user/:id
+// @desc Returns a specific idea based on passed ID
+// @access Public
+router.get(
+  "/user/:id",
+  [
+    check("id", "Id param must be an integer value")
+      .exists()
+      .isInt(),
+    errorChecker,
+    authMiddleware
+  ],
+  exceptionHandler(getAllIdeasUser)
 );
 
 // @route GET /api/ideas/:id/increase-views

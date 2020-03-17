@@ -9,7 +9,8 @@ const {
   getIdeasCountQuery,
   reportIdeaQuery,
   getAllReportedIdeasQuery,
-  getReportedProblemsByIdeaIdQuery
+  getReportedProblemsByIdeaIdQuery,
+  getAllIdeasUserQuery
 } = require("../db/queries/ideas");
 const {
   createUploadQuery,
@@ -54,6 +55,12 @@ const getAllReportedIdeasReq = async (req, res) => {
   res.status(200).json({ reportedIdeas });
 };
 
+const getAllIdeasUser = async (req, res) => {
+  const { id } = req.params;
+  const userIdeas = await getAllIdeasUserQuery(id);
+  res.status(200).json({ userIdeas });
+};
+
 const getReportedProblemsByIdeaIdReq = async (req, res) => {
   const { id } = req.params;
   const reportedProblems = await getReportedProblemsByIdeaIdQuery(id);
@@ -63,13 +70,15 @@ const getReportedProblemsByIdeaIdReq = async (req, res) => {
 const deleteIdeaReq = async (req, res) => {
   const { id } = req.params;
   const { userId, email } = await getIdeaAuthorQuery(id);
+
   if (
-    !(author === req.user.id || req.user.role === config.get("roles")["admin"])
+    !(userId === req.user.id || req.user.role === config.get("roles")["admin"])
   )
     throw new CustomError(
       "You are not the author of this idea nor an admin,therefore you cannot make changes",
       400
     );
+
   const uploads = await getIdeaAllUploadsQuery(id);
   await Promise.all(
     uploads.map(
@@ -208,5 +217,6 @@ module.exports = {
   reportIdeaReq,
   rateIdeaReq,
   getReportedProblemsByIdeaIdReq,
-  getAllReportedIdeasReq
+  getAllReportedIdeasReq,
+  getAllIdeasUser
 };

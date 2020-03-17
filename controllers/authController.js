@@ -22,7 +22,8 @@ const registerUserReq = async (req, res) => {
 
   if (!isPasswordValid(password)) {
     throw new CustomError(
-      "Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 digit", 400
+      "Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 digit",
+      400
     );
   }
 
@@ -65,7 +66,12 @@ const userLoginReq = async (req, res) => {
 
   if (!token) throw new Error("Could not create token, please try again later");
   await userLastLoginQuery(email);
-  res.status(200).json({ user: { email, name: user.name, lastLogin: user.lastLogin }, token });
+  res
+    .status(200)
+    .json({
+      user: { email, name: user.name, lastLogin: user.lastLogin },
+      token
+    });
 };
 
 module.exports = {
