@@ -2,7 +2,8 @@ const {
   isEmailRegisteredAlreadyQuery,
   updateUserDetailsQuery,
   getUserDetailsQuery,
-  updateUserPasswordQuery
+  updateUserPasswordQuery,
+  getAllUsersQuery
 } = require("../db/queries/users");
 const isEmailValid = require("../utils/isEmailValid");
 const isPasswordValid = require("../utils/isPasswordValid");
@@ -53,6 +54,11 @@ const updateUserPasswordReq = async (req, res) => {
   res.status(200).json({ success: "Password updated successfully" });
 };
 
+const getAllUsersReq = async (req, res) => {
+  const users = await getAllUsersQuery();
+  res.status(200).json({ users });
+};
+
 const getUserDetailsReq = async (req, res) => {
   const user = await getUserDetailsQuery(req.user.id);
   delete user.password;
@@ -62,5 +68,6 @@ const getUserDetailsReq = async (req, res) => {
 module.exports = {
   updateUserDetailsReq,
   updateUserPasswordReq,
-  getUserDetailsReq
+  getUserDetailsReq,
+  getAllUsersReq
 };

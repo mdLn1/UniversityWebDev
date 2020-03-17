@@ -4,6 +4,7 @@ const IsInRole = require("../middleware/authorizeMiddleware");
 const { check } = require("express-validator");
 const errorChecker = require("../middleware/errorCheckerMiddleware");
 const authMiddleware = require("../middleware/authMiddleware");
+
 const exceptionHandler = require("../utils/exceptionHandler");
 const config = require("config");
 const { admin, coordinator } = config.get("roles");
@@ -33,6 +34,8 @@ const {
   updateDeadlineReq
 } = require("../controllers/deadlinesController");
 
+const { getAllUsersReq } = require("../controllers/userController");
+
 // const rolesRouter = require("./rolesRoute");
 // const categoriesRouter = require("./categoriesRoute");
 // const departmentsRouter = require("./departmentsRoute");
@@ -47,7 +50,22 @@ const {
 //@access Private and limited access
 router.post(
   "/update-user/:userId",
-  [authMiddleware, IsInRole([admin, coordinator])],
+  [
+    authMiddleware,
+    IsInRole([admin, coordinator]),
+    check("name", "Name must be at least 5 characters long")
+      .trim()
+      .isLength({ min: 5 }),
+    check("email", "Email must be at least 6 characters long")
+      .trim()
+      .isLength({ min: 6 }),
+    check("password", "Password must exist").exists(),
+    check("role", "Role must be provided").exists(),
+    check("department", "Department must be provided").exists(),
+    check("hideActivities", "hide activities must be provided").exists(),
+    check("disabled", "disabled must be provided").exists(),
+    errorChecker
+  ],
   exceptionHandler(adminUpdateUserDetailsReq)
 );
 
@@ -140,5 +158,11 @@ router.get(
   "/reported-comments/:id",
   [authMiddleware, IsInRole(admin)],
   exceptionHandler(getReportedProblemsByCommentIdReq)
+);
+
+router.get(
+  "/users",
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(getAllUsersReq)
 );
 module.exports = router;

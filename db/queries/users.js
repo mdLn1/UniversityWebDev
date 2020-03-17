@@ -179,17 +179,29 @@ function updateUserDetailsQuery(name, email, id) {
 function adminUpdateUserDetailsQuery(
   name,
   email,
-  roleId,
-  departmentId,
-  userId
+  password,
+  role,
+  department,
+  userId,
+  hideActivities,
+  disabled
 ) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql:
-          "update Users set name = ?, email = ?, role_id = ?, department_id = ? where id = ?",
+        sql: `update Users set name = ?, email = ?, password = ?, role_id = (select id from Roles where role=?), 
+          department_id = (select id from Departments where department=?), hideActivities = ?, disabled = ? where id = ?`,
         timeout: 40000,
-        values: [name, email, roleId, departmentId, userId]
+        values: [
+          name,
+          email,
+          password,
+          role,
+          department,
+          hideActivities,
+          disabled,
+          userId
+        ]
       },
       (err, result) => {
         if (err) return reject(err);
@@ -198,7 +210,6 @@ function adminUpdateUserDetailsQuery(
     );
   });
 }
-
 function isAccountDisabledQuery(id) {
   return new Promise((resolve, reject) => {
     pool.query(

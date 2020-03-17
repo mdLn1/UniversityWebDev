@@ -204,7 +204,7 @@ export default class Register extends Component {
       icon: "lock",
       iconPosition: "left",
       placeholder: "It must be identical to password",
-      type: "confirmPassword",
+      type: "password",
       onChange: this.onChangeInput,
       required: true
     };

@@ -11,36 +11,8 @@ import {
 import Deadlines from "../components/Deadlines";
 import axios from "axios";
 import AdminControl from "../components/AdminControl";
-
-export async function getStaticProps() {
-  try {
-    let res = await axios.get("/api/departments");
-    const { departments } = res.data || [];
-    res = await axios.get("/api/roles");
-    const { roles } = res.data || [];
-    res = await axios.get("/api/categories");
-    const { categories } = res.data || [];
-    res = await axios.get("/api/management/deadlines");
-    const { deadlines } = res.data || [];
-    return {
-      props: {
-        departments,
-        deadlines,
-        roles,
-        categories
-      }
-    };
-  } catch (err) {
-    return {
-      props: {
-        departments: [],
-        roles: [],
-        categories: [],
-        connectionError: "Could not connect to server"
-      }
-    };
-  }
-}
+import UserEditPanel from "../components/UserEditPanel";
+import cookies from "next-cookies";
 
 export default class PortalData extends Component {
   constructor(props) {
@@ -49,6 +21,7 @@ export default class PortalData extends Component {
       departments: this.props.departments || [],
       roles: this.props.roles || [],
       categories: this.props.categories || [],
+      users: this.props.users || [],
       connectionError: this.props.connectionError || false,
       roleError: false,
       categoryError: false,
@@ -57,6 +30,38 @@ export default class PortalData extends Component {
       currentDeadline: null
     };
   }
+
+  static async getInitialProps(ctx) {
+    const { token } = cookies(ctx);
+    try {
+      axios.defaults.headers.common["x-auth-token"] = token;
+      let res = await axios.get("/api/departments");
+      const { departments } = res.data || [];
+      res = await axios.get("/api/roles");
+      const { roles } = res.data || [];
+      res = await axios.get("/api/categories");
+      const { categories } = res.data || [];
+      res = await axios.get("/api/management/deadlines");
+      const { deadlines } = res.data || [];
+      res = await axios.get("/api/management/users");
+      const { users } = res.data || [];
+      return {
+        departments,
+        deadlines,
+        users,
+        roles,
+        categories
+      };
+    } catch (err) {
+      return {
+        departments: [],
+        roles: [],
+        categories: [],
+        connectionError: "Could not connect to server"
+      };
+    }
+  }
+
   componentDidMount() {
     const { deadlines } = this.props;
     if (deadlines && deadlines.length > 0) {
@@ -91,6 +96,7 @@ export default class PortalData extends Component {
       categories,
       departments,
       roles,
+      users,
       connectionError,
       countDownTimer,
       currentDeadline
@@ -238,6 +244,17 @@ export default class PortalData extends Component {
               <Segment>
                 <Deadlines currDeadline={{ ...deadlines[0] }} />
               </Segment>
+            </Grid.Column>
+          )}
+          {users.length > 0 && departments.length > 0 && roles.length > 0 && (
+            <Grid.Column>
+              <Segment>
+                <UserEditPanel
+                  users={users}
+                  departments={departments}
+                  roles={roles}
+                />
+              </Segment>{" "}
             </Grid.Column>
           )}
         </Grid>

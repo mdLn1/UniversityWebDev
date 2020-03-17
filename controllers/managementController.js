@@ -1,20 +1,29 @@
 const {
-  createUserQuery,
   getUserDetailsQuery,
   isEmailRegisteredAlreadyQuery,
   adminUpdateUserDetailsQuery,
   adminEnableDisableUserAccountQuery,
   hideShowUserActivityQuery
 } = require("../db/queries/users");
-const { deleteCommentQuery,  hideShowAllUserCommentsQuery} = require("../db/queries/comments");
+const {
+  deleteCommentQuery,
+  hideShowAllUserCommentsQuery
+} = require("../db/queries/comments");
 const { deleteIdeaQuery } = require("../db/queries/ideas");
-const {hideShowAllUserIdeasQuery} = require("../db/queries/ideas")
+const { hideShowAllUserIdeasQuery } = require("../db/queries/ideas");
+const {} = require("../db/queries/departments");
+const bcrypt = require("bcryptjs");
 const isEmailValid = require("../utils/isEmailValid");
+const isPasswordValid = require("../utils/isPasswordValid");
 
 const adminUpdateUserDetailsReq = async (req, res) => {
   const { userId } = req.params;
-  const { name, email, departmentId, roleId } = req.body;
-  if (!isEmailValid)
+  const { name, email, department, role, password } = req.body;
+  let { hideActivities, disabled } = req.body;
+  if (
+    !isEmailValid(email) ||
+    !(email.endsWith("@gre.ac.uk") || email.endsWith("@greenwich.ac.uk"))
+  )
     throw new CustomError("Invalid email address or wrong email domain", 400);
   const user = await getUserDetailsQuery(userId);
   if (user.email !== email)
@@ -23,7 +32,28 @@ const adminUpdateUserDetailsReq = async (req, res) => {
         "The new email address chosen is already in use",
         400
       );
-  await adminUpdateUserDetailsQuery(name, email, roleId, departmentId, userId);
+  let salt, hashedPassword;
+  if (password) {
+    if (!isPasswordValid(password)) {
+      throw new CustomError(
+        "Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 digit",
+        400
+      );
+    }
+    salt = await bcrypt.genSalt(10);
+    hashedPassword = await bcrypt.hash(password, salt);
+  }
+
+  await adminUpdateUserDetailsQuery(
+    name,
+    email,
+    password ? hashedPassword : user.password,
+    role,
+    department,
+    userId,
+    hideActivities,
+    disabled
+  );
   res.status(200).json({ success: "User details successfully updated" });
 };
 

@@ -36,7 +36,7 @@ class Navbar extends Component {
       let decoded = jwt_decode(cookies.get("token"));
       this.setState({ role: decoded.user.role });
     } catch (err) {
-      alert("no token")
+      // alert("no token")
     }
   }
 
