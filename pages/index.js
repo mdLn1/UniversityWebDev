@@ -21,13 +21,15 @@ class Dashboard extends Component {
       loginSuccess: false,
       registrationSuccess: false,
       currentDeadline: null,
+      queryLink: "MostRecentIdeas",
+      currentSort: 1,
       countDownTimer: 5
     };
   }
 
   static async getInitialProps({ query }) {
     try {
-      let res = await axios.get("api/ideas?itemsCount=5&pageNo=1");
+      let res = await axios.get("api/stats/MostRecentIdeas");
       const { ideas, totalIdeas } = res.data;
       res = await axios.get("/api/management/deadlines");
       const { deadlines } = res.data;
@@ -76,10 +78,46 @@ class Dashboard extends Component {
     }
   }
 
-  async updateListOfIdeas(activePage) {
+  onDropdownChange = async (e, data) => {
+    if (this.state.currentSort !== data.value) {
+      let newQuery;
+      switch (data.value) {
+        case 2:
+          newQuery = "OldestIdeas";
+          break;
+        case 3:
+          newQuery = "HighestRatedIdeas";
+          break;
+        case 4:
+          newQuery = "MostViewedIdeas";
+          break;
+        default:
+          newQuery = "MostRecentIdeas";
+      }
+      try {
+        const res = await axios.get(
+          `/api/stats/${newQuery}?itemsCount=5&pageNo=${1}`
+        );
+        const { ideas, totalIdeas } = res.data;
+        this.setState(prevState => ({
+          ...prevState,
+          ideas,
+          queryLink: newQuery,
+          selectedPage: 1,
+          currentSort: data.value,
+          numberOfPages: Math.ceil(totalIdeas / 5),
+          connectionError: false
+        }));
+      } catch (err) {
+        this.setState({ connectionError: err });
+      }
+    }
+  };
+
+  async updateListOfIdeas(activePage = 1) {
     try {
       const res = await axios.get(
-        `/api/ideas?itemsCount=5&pageNo=${activePage}`
+        `/api/stats/${this.state.queryLink}?itemsCount=5&pageNo=${activePage}`
       );
       const { ideas, totalIdeas } = res.data;
       this.setState(prevState => ({
@@ -106,11 +144,12 @@ class Dashboard extends Component {
       loginSuccess,
       registrationSuccess,
       countDownTimer,
-      currentDeadline
+      currentDeadline,
+      currentSort
     } = this.state;
     const sortOptions = [
       { key: 1, text: "Date (new to old)", value: 1 },
-      { key: 2, text: "Date (old to new", value: 2 },
+      { key: 2, text: "Date (old to new)", value: 2 },
       { key: 3, text: "Most Liked", value: 3 },
       { keu: 4, text: "Most Viewed", value: 4 }
     ];
@@ -156,7 +195,12 @@ class Dashboard extends Component {
           </Header>
           <div>
             <Menu compact>
-              <Dropdown text="Sort by" options={sortOptions} simple item />
+              <Dropdown
+                selection
+                onChange={this.onDropdownChange}
+                options={sortOptions}
+                value={currentSort}
+              />
             </Menu>
           </div>
           {registrationSuccess && name && (
