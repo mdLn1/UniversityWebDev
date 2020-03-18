@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { Button } from "semantic-ui-react";
 import LikeDislikeArea from "./LikeDislikeIdea";
+import CommentsModal from "./CommentsModal";
 
 export default class IdeaFooter extends Component {
   constructor(props) {
@@ -59,7 +60,7 @@ export default class IdeaFooter extends Component {
             voted={voted}
           />
           {showComments && (
-            <Button size="tiny">Comments ({commentsCount})</Button>
+            <CommentsModal ID={ID} commentsCount={commentsCount} />
           )}
           <Button size="tiny">Attachments ({uploadsCount})</Button>
         </div>
