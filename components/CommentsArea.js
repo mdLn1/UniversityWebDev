@@ -40,7 +40,6 @@ export default class CommentsArea extends Component {
         isAnonymous: this.state.anonComment,
         ideaId: this.props.ID
       };
-      console.log(obj);
       const res = await axios.post(
         `/api/ideas/${this.props.ID}/comments/`,
         obj,

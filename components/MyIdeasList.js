@@ -4,6 +4,8 @@ import Link from "next/link";
 import axios from "axios";
 import { Cookies } from "react-cookie";
 const cookies = new Cookies();
+import CommentsModal from "./CommentsModal";
+import AttachmentsModal from "./AttachmentsModal";
 
 export default class IdeasList extends Component {
   constructor(props) {
@@ -53,9 +55,13 @@ export default class IdeasList extends Component {
                 <Icon name="thumbs down"></Icon>
                 <span>{el.negativeVotes}</span>
                 <br />
-                <Button size="tiny">Comments ({el.commentsCount})</Button>
+                <CommentsModal ID={el.ID} commentsCount={el.commentsCount} />
 
-                <Button size="tiny">Attachments ({el.uploadsCount})</Button>
+                <AttachmentsModal
+                  ID={el.ID}
+                  uploadsCount={el.uploadsCount}
+                  size="tiny"
+                />
               </div>
             </div>
           );
