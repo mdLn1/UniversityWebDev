@@ -1,7 +1,13 @@
 const pool = require("../dbconn");
 
 // add new Idea
-function createIdeaQuery(title, description, categoryId, userId, isAnonymous = 0) {
+function createIdeaQuery(
+  title,
+  description,
+  categoryId,
+  userId,
+  isAnonymous = 0
+) {
   const date = new Date()
     .toISOString()
     .slice(0, 19)
@@ -74,7 +80,7 @@ function getAllIdeasUserQuery(pageNo, itemsCount, userId) {
         (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
         (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS uploadsCount
         FROM Ideas AS i where hidden=0 and i.user_id=?
-        ORDER BY i.posted_time DESC LIMIT ? OFFSET 0`,
+        ORDER BY i.posted_time DESC LIMIT ? OFFSET ?`,
         timeout: 40000, // 40s
         values: [userId, itemsCount, itemsCount * (pageNo - 1)]
       },
@@ -107,7 +113,6 @@ function getAllIdeasForCSVExportQuery() {
     );
   });
 }
-
 
 // increase the number of views
 function increaseIdeaViewsQuery(ideaId) {
@@ -312,7 +317,8 @@ function getAllIdeasWithUploadsQuery() {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: "select ID, (SELECT COUNT(*) from Uploads where idea_id=Ideas.ID) as uploads from Ideas",
+        sql:
+          "select ID, (SELECT COUNT(*) from Uploads where idea_id=Ideas.ID) as uploads from Ideas",
         timeout: 40000, // 40s
         values: []
       },
