@@ -80,7 +80,7 @@ function getAllIdeasUserQuery(pageNo, itemsCount, userId) {
         (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
         (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS uploadsCount
         FROM Ideas AS i where hidden=0 and i.user_id=?
-        ORDER BY i.posted_time DESC LIMIT ? OFFSET 0`,
+        ORDER BY i.posted_time DESC LIMIT ? OFFSET ?`,
         timeout: 40000, // 40s
         values: [userId, itemsCount, itemsCount * (pageNo - 1)]
       },

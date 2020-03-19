@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Header } from "semantic-ui-react";
+import { Header, Pagination } from "semantic-ui-react";
 import Layout from "../../components/Layout";
 import axios from "axios";
 import Router from "next/router";
@@ -10,38 +10,87 @@ import MyIdeasList from "../../components/MyIdeasList";
 
 class MyIdeas extends Component {
   state = {
-    userID: "",
-    ideas: [],
-    apiErrors: []
+    userID: this.props.userID || "",
+    ideas: this.props.ideas || [],
+    apiErrors: [],
+    selectedPage: 1,
+    numberOfPages: this.props.numberOfPages || 1,
+    token: this.props.token || ""
   };
 
   static async getInitialProps(props) {
     const { token } = await cookies(props);
     let decoded = await jwt_decode(token);
-
+    let userID = decoded.user.id;
     try {
       const config = {
         headers: {
           "x-auth-token": token
         }
       };
-      let res = await axios.get(`api/ideas/user/${decoded.user.id}`, config);
-      let ideas = res.data;
-
-      return { token, decoded, ideas };
+      let res = await axios.get(
+        `api/ideas/user/${userID}?itemsCount=5&pageNo=${1}`,
+        config
+      );
+      let ideas = res.data.userIdeas;
+      let totalIdeas = res.data.totalIdeas;
+      console.log(res.data);
+      return {
+        token,
+        userID,
+        ideas,
+        numberOfPages: Math.ceil(totalIdeas / 5)
+      };
     } catch (err) {
       return { connectionError: "connection failed" };
     }
   }
 
+  async updateListOfIdeas(activePage = 1) {
+    try {
+      const config = {
+        headers: {
+          "x-auth-token": this.state.token
+        }
+      };
+      const res = await axios.get(
+        `api/ideas/user/${this.state.userID}?itemsCount=5&pageNo=${activePage}`,
+        config
+      );
+      let ideas = res.data.userIdeas;
+      let totalIdeas = res.data.totalIdeas;
+      this.setState(prevState => ({
+        ...prevState,
+        ideas,
+        numberOfPages: Math.ceil(totalIdeas / 5),
+        connectionError: false
+      }));
+    } catch (err) {
+      this.setState({ connectionError: err });
+    }
+  }
+
+  setPageNum = async (event, { activePage }) => {
+    this.setState({ selectedPage: activePage });
+    await this.updateListOfIdeas(activePage);
+  };
+
   render() {
-    console.log(this.props.ideas);
+    const { selectedPage, numberOfPages } = this.state;
     return (
       <Layout>
         <Header as="h2" color="teal" textAlign="center">
           My Ideas
         </Header>
-        <MyIdeasList ideas={this.props.ideas.userIdeas} />
+        <MyIdeasList ideas={this.state.ideas} />
+        <div style={{ margin: "2rem auto", textAlign: "center" }}>
+          <Pagination
+            activePage={selectedPage}
+            totalPages={numberOfPages}
+            siblingRange={1}
+            onPageChange={this.setPageNum}
+          />
+        </div>
       </Layout>
     );
   }
