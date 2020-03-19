@@ -15,6 +15,7 @@ const {} = require("../db/queries/departments");
 const bcrypt = require("bcryptjs");
 const isEmailValid = require("../utils/isEmailValid");
 const isPasswordValid = require("../utils/isPasswordValid");
+const CustomError = require("../utils/CustomError");
 
 const adminUpdateUserDetailsReq = async (req, res) => {
   const { userId } = req.params;
