@@ -148,6 +148,11 @@ class submitIdea extends Component {
           "You cannot upload any file larger than 4 megabytes"
         );
         break;
+      } else if(selectedFile[x].size < 100) {
+        fileUploadsErrors.push(
+          "Please upload files larger than 100 bytes"
+        );
+        break;
       }
     }
     if (
@@ -163,7 +168,8 @@ class submitIdea extends Component {
         descriptionError,
         categoryError,
         termsAgreedError,
-        fileUploadsErrors
+        fileUploadsErrors,
+        loadingForm: false
       }));
     } else {
       try {
@@ -370,7 +376,7 @@ class submitIdea extends Component {
             {fileUploadsErrors.length > 0 && (
               <ul>
                 {fileUploadsErrors.map((el, index) => (
-                  <li key={index}>{el}</li>
+                  <li key={index} style={{color: "red"}}>{el}</li>
                 ))}
               </ul>
             )}

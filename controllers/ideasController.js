@@ -14,7 +14,8 @@ const {
 } = require("../db/queries/ideas");
 const {
   createUploadQuery,
-  getIdeaAllUploadsQuery
+  getIdeaAllUploadsQuery,
+  getUploadsCountQuery
 } = require("../db/queries/uploads");
 const {
   getUserDepartmentIdQuery,
@@ -24,15 +25,17 @@ const { isExistingCategory } = require("../db/queries/categories");
 const {
   createRatingQuery,
   deleteRatingQuery,
-  getRatingsQuery,
   updateRatingQuery,
   userRatedAlreadyQuery
 } = require("../db/queries/ratings");
 const { isAccountDisabledQuery } = require("../db/queries/users");
 
+const config = require("config");
+const path = require("path");
 const CustomError = require("../utils/CustomError");
 const cloudinary = require("cloudinary");
-const config = require("config");
+const uploadPreset = config.get("unsigned_upload_preset");
+const Datauri = require("datauri");
 const sendMail = require("../utils/emailSender");
 
 const getAllIdeasReq = async (req, res) => {
@@ -95,7 +98,7 @@ const deleteIdeaReq = async (req, res) => {
 const createIdeaReq = async (req, res) => {
   const { description, title, category, termsAgreed } = req.body;
   let { isAnonymous } = req.body;
-  if (isAnonymous && isAnonymous === 1 || isAnonymous === true) {
+  if ((isAnonymous && isAnonymous === 1) || isAnonymous === true) {
     isAnonymous = 1;
   } else {
     isAnonymous = 0;
@@ -120,9 +123,60 @@ const createIdeaReq = async (req, res) => {
     userId,
     isAnonymous
   );
-  if (req.uploadedFiles) {
+  let uploadedFiles;
+  if (req.files) {
+    
+    const nrFiles = req.files.length || 0;
+    let dUri = new Datauri();
+    // max 6 files at a time
+    if (nrFiles > 6) {
+      throw new CustomError("Too many files, maximum allowed is six");
+    } else if (nrFiles > 0) {
+      let uploadsCount = await getUploadsCountQuery();
+      uploadedFiles = await Promise.all(
+        req.files.map(async element => {
+          //element contains mimetype and fieldname
+          // path.extname(element.originalname).toString() get the extension of the file
+          const newBuffer = dUri.format(element.originalname, element.buffer);
+          // once finished, new object data uri needs to be created
+          dUri = new Datauri();
+
+          // upload the file to cloudinary
+          const uploadFile = await new Promise((resolve, reject) =>
+            cloudinary.v2.uploader.unsigned_upload(
+              newBuffer.content,
+              uploadPreset,
+              {
+                resource_type: "raw",
+                tags: `${insertId}`,
+                public_id: "idea" + insertId +
+                  element.originalname.substring(
+                    0,
+                    element.originalname.indexOf(".")
+                  ) +
+                  (uploadsCount++).toString() +
+                  path.extname(element.originalname)
+              },
+              (error, res) => {
+                if (error) reject(error);
+                resolve(res);
+              }
+            )
+          );
+          // field resource_type comes back as "raw"
+          return {
+            name: element.originalname,
+            description: "File linked to idea " + insertId,
+            url: uploadFile.secure_url,
+            upload_id: uploadFile.public_id
+          };
+        })
+      );
+    }
+  }
+  if (uploadedFiles) {
     await Promise.all(
-      req.uploadedFiles.map(
+      uploadedFiles.map(
         async ({ name, description, upload_id, url }) =>
           await createUploadQuery(
             name,

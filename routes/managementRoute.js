@@ -2,9 +2,12 @@ const express = require("express");
 const router = express.Router();
 const IsInRole = require("../middleware/authorizeMiddleware");
 const { check } = require("express-validator");
+const cloudinaryConfig = require("../utils/cloudinaryConfig");
 const errorChecker = require("../middleware/errorCheckerMiddleware");
 const authMiddleware = require("../middleware/authMiddleware");
-
+const {
+  downloadAllUploadsReq
+} = require("../controllers/fileUploadsController.js");
 const exceptionHandler = require("../utils/exceptionHandler");
 const config = require("config");
 const { admin, coordinator } = config.get("roles");
@@ -33,7 +36,6 @@ const {
   getAllDeadlinesReq,
   updateDeadlineReq
 } = require("../controllers/deadlinesController");
-
 const { getAllUsersReq } = require("../controllers/userController");
 
 // const rolesRouter = require("./rolesRoute");
@@ -67,6 +69,13 @@ router.post(
     errorChecker
   ],
   exceptionHandler(adminUpdateUserDetailsReq)
+);
+
+router.get(
+  "/download-all",
+  cloudinaryConfig,
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(downloadAllUploadsReq)
 );
 
 router.get(

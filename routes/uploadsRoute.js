@@ -55,4 +55,5 @@ router.get("/",cloudinaryConfig, exceptionHandler(getAllUploadsReq));
 // @access Public
 router.get("/download",cloudinaryConfig, exceptionHandler(downloadUploadsReq));
 
+
 module.exports = router;

@@ -271,6 +271,22 @@ function hideShowAllUserIdeasQuery(userId, hidden) {
   });
 }
 
+function getAllIdeasWithUploadsQuery() {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "select ID, (SELECT COUNT(*) from Uploads where idea_id=Ideas.ID) as uploads from Ideas",
+        timeout: 40000, // 40s
+        values: []
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result);
+      }
+    );
+  });
+}
+
 module.exports = {
   createIdeaQuery,
   updateIdeaQuery,
@@ -284,5 +300,6 @@ module.exports = {
   hideShowAllUserIdeasQuery,
   getReportedProblemsByIdeaIdQuery,
   getAllReportedIdeasQuery,
-  getAllIdeasUserQuery
+  getAllIdeasUserQuery,
+  getAllIdeasWithUploadsQuery
 };

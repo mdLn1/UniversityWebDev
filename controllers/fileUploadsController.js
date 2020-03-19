@@ -11,7 +11,10 @@ const {
   getUploadsCountQuery,
   getUploadQuery
 } = require("../db/queries/uploads");
-const { getIdeaAuthorQuery } = require("../db/queries/ideas");
+const {
+  getIdeaAuthorQuery,
+  getAllIdeasWithUploadsQuery
+} = require("../db/queries/ideas");
 
 const getAllUploadsReq = async (req, res) => {
   const { ideaId } = req.params;
@@ -22,7 +25,7 @@ const getAllUploadsReq = async (req, res) => {
 const uploadFilesReq = async (req, res) => {
   const { ideaId } = req.params;
   let uploadsCount = await getUploadsCountQuery();
-  const {userId: author} = await getIdeaAuthorQuery(ideaId);
+  const { userId: author } = await getIdeaAuthorQuery(ideaId);
   if (author !== req.user.id)
     throw new CustomError(
       "You are not the author of this idea, you cannot make changes",
@@ -87,7 +90,7 @@ const uploadFilesReq = async (req, res) => {
 
 const deleteUploadReq = async (req, res) => {
   const { ideaId, uploadId } = req.params;
-  const {userId: author} = await getIdeaAuthorQuery(ideaId);
+  const { userId: author } = await getIdeaAuthorQuery(ideaId);
   if (author !== req.user.id)
     throw new CustomError(
       "You are not the author of this idea, you cannot make changes",
@@ -102,15 +105,29 @@ const deleteUploadReq = async (req, res) => {
 };
 
 const downloadUploadsReq = async (req, res) => {
-  const uploadedFiles = await getIdeaAllUploadsQuery(req.params.ideaId);
-  const createZipLink = await cloudinary.v2.uploader.create_zip({
-    tags: [1],
-    public_ids: uploadedFiles.map(el => el.upload_id),
-    prefixes: "/",
+  // const uploadedFiles = await getIdeaAllUploadsQuery(req.params.ideaId);
+  const createZipLink = await cloudinary.v2.utils.download_zip_url({
+    tags: [req.params.ideaId],
     resource_type: "raw"
   });
 
   res.status(200).json(createZipLink);
 };
 
-module.exports = { uploadFilesReq, deleteUploadReq, downloadUploadsReq, getAllUploadsReq };
+const downloadAllUploadsReq = async (req, res) => {
+  const ideas = await getAllIdeasWithUploadsQuery();
+  const createZipLink = await cloudinary.v2.utils.download_zip_url({
+    tags: ideas.filter(x => x.uploads > 0).map(el => el.ID),
+    resource_type: "raw"
+  });
+
+  res.status(200).json(createZipLink);
+};
+
+module.exports = {
+  uploadFilesReq,
+  deleteUploadReq,
+  downloadUploadsReq,
+  getAllUploadsReq,
+  downloadAllUploadsReq
+};

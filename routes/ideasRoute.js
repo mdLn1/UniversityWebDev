@@ -94,8 +94,7 @@ router.post(
     errorChecker,
     authMiddleware,
     userDisabledMiddleware,
-    cloudinaryConfig,
-    middlewareExceptionHandler(uploadFilesMiddleware)
+    cloudinaryConfig
   ],
   exceptionHandler(createIdeaReq)
 );

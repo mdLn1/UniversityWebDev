@@ -151,7 +151,6 @@ function getUserDetailsQuery(id) {
         if (result.length < 1)
           return reject(new CustomError("User not found", 400));
         delete result[0].ID;
-        delete result[0].password;
         return resolve(result[0]);
       }
     );
