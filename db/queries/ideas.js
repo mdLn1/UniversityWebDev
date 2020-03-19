@@ -85,6 +85,29 @@ function getAllIdeasUserQuery(pageNo, itemsCount, userId) {
     );
   });
 }
+function getAllIdeasForCSVExportQuery() {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: `SELECT i.ID as IdeaIdentifier, i.description as Description, i.views as Views, i.posted_time as PostedTime,
+        i.Title as Title, i.hidden as Hidden, U.name as Author,
+         (SELECT COUNT(*) FROM Comments WHERE i.ID = Comments.idea_id ) AS NumberOfComments,
+         (SELECT COUNT(vote) FROM Ratings WHERE vote=1 and i.ID=idea_id) AS NumberOfLikes,
+         (SELECT COUNT(vote) FROM Ratings WHERE vote=0 and i.ID=idea_id) AS NumberOfDislikes,
+         (SELECT tag FROM Categories WHERE ID = i.category_id) AS Category,
+         (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS NumberOfUploads
+         FROM Ideas AS i LEFT JOIN Users U on i.user_id = U.ID`,
+        timeout: 40000, // 40s
+        values: []
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result);
+      }
+    );
+  });
+}
+
 
 // increase the number of views
 function increaseIdeaViewsQuery(ideaId) {
@@ -316,5 +339,6 @@ module.exports = {
   getAllReportedIdeasQuery,
   getAllIdeasUserQuery,
   getUserIdeasCountQuery,
-  getAllIdeasWithUploadsQuery
+  getAllIdeasWithUploadsQuery,
+  getAllIdeasForCSVExportQuery
 };

@@ -452,16 +452,17 @@ class UserEditPanel extends Component {
                   />
                 </Fragment>
               )}
-              <div style={{ textAlign: "center" }}>
-                <Button.Group>
-                  <Button negative onClick={this.onClearChanges}>
-                    Clear changes
-                  </Button>
-                  <Button.Or />
-                  <Button positive onClick={this.onSubmit}>
-                    Save changes
-                  </Button>
-                </Button.Group>
+              <div style={{ textAlign: "right" }}>
+                <Button
+                  content="Save changes"
+                  color="green"
+                  onClick={this.onSubmit}
+                />
+                <Button
+                  content="Clear changes"
+                  color="red"
+                  onClick={this.onClearChanges}
+                />
               </div>
             </Form>
           </Fragment>

@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/mdLn1/UniversityWebDev#readme",
   "dependencies": {
+    "FileSaver": "^0.10.0",
     "axios": "^0.19.2",
     "bcrypt": "^3.0.7",
     "bcryptjs": "^2.4.3",
@@ -41,6 +42,7 @@
     "http-proxy-middleware": "^1.0.1",
     "jquery": "^3.4.1",
     "js-cookie": "^2.2.1",
+    "json2csv": "^5.0.0",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^2.2.0",
     "mongoose": "^5.9.0",

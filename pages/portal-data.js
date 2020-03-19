@@ -1,17 +1,11 @@
 import React, { Component } from "react";
 import Layout from "../components/Layout";
-import {
-  Grid,
-  Segment,
-  Header,
-  Form,
-  Select,
-  Message
-} from "semantic-ui-react";
+import { Grid, Segment, Header, Message, GridColumn } from "semantic-ui-react";
 import Deadlines from "../components/Deadlines";
 import axios from "axios";
 import AdminControl from "../components/AdminControl";
 import UserEditPanel from "../components/UserEditPanel";
+import DownloadData from "../components/DownloadData";
 import cookies from "next-cookies";
 
 export default class PortalData extends Component {
@@ -256,6 +250,13 @@ export default class PortalData extends Component {
                 />
               </Segment>{" "}
             </Grid.Column>
+          )}
+          {!connectionError && (
+            <GridColumn>
+              <Segment>
+                <DownloadData />
+              </Segment>
+            </GridColumn>
           )}
         </Grid>
       </Layout>

@@ -22,7 +22,8 @@ const {
 const {
   getReportedProblemsByIdeaIdReq,
   getAllReportedIdeasReq,
-  deleteIdeaReq
+  deleteIdeaReq,
+  getAllIdeasForCSVExportReq
 } = require("../controllers/ideasController");
 
 const {
@@ -72,7 +73,13 @@ router.post(
 );
 
 router.get(
-  "/download-all",
+  "/download-csv-data",
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(getAllIdeasForCSVExportReq)
+);
+
+router.get(
+  "/download-all-files",
   cloudinaryConfig,
   [authMiddleware, IsInRole(admin)],
   exceptionHandler(downloadAllUploadsReq)

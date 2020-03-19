@@ -11,7 +11,8 @@ const {
   getAllReportedIdeasQuery,
   getReportedProblemsByIdeaIdQuery,
   getAllIdeasUserQuery,
-  getUserIdeasCountQuery
+  getUserIdeasCountQuery,
+  getAllIdeasForCSVExportQuery
 } = require("../db/queries/ideas");
 const {
   createUploadQuery,
@@ -38,6 +39,7 @@ const cloudinary = require("cloudinary");
 const uploadPreset = config.get("unsigned_upload_preset");
 const Datauri = require("datauri");
 const sendMail = require("../utils/emailSender");
+const { AsyncParser } = require("json2csv");
 
 const getAllIdeasReq = async (req, res) => {
   const { itemsCount, pageNo } = req.query;
@@ -276,6 +278,48 @@ const getIdeaByIdReq = async (req, res) => {
   res.status(200).json(idea);
 };
 
+const getAllIdeasForCSVExportReq = async (req, res) => {
+  const ideas = await getAllIdeasForCSVExportQuery();
+  const fields = [
+    "IdeaIdentifier",
+    "Description",
+    "Views",
+    "PostedTime",
+    "Title",
+    "Hidden",
+    "Author",
+    "NumberOfComments",
+    "NumberOfLikes",
+    "NumberOfDislikes",
+    "Category",
+    "NumberOfUploads"
+  ];
+  const opts = { fields };
+  const transformOpts = { highWaterMark: 8192 };
+  const asyncParser = new AsyncParser(opts, transformOpts);
+
+  let csv = "";
+  asyncParser.processor
+    .on("data", chunk => (csv += chunk.toString()))
+    .on("end", () => {
+      res.writeHead(200, {
+        "Content-Type": "text/csv",
+        "Content-Disposition": "attachment;filename=SystemData.csv",
+        "Content-Length": csv.length
+      });
+      res.write(csv);
+      res.end();
+    })
+    .on("error", err =>
+      res
+        .status(400)
+        .json({ errors: ["failed to export CSV file"] })
+        .end()
+    );
+  asyncParser.input.push(JSON.stringify(ideas));
+  asyncParser.input.push(null);
+};
+
 module.exports = {
   getAllIdeasReq,
   deleteIdeaReq,
@@ -287,5 +331,6 @@ module.exports = {
   rateIdeaReq,
   getReportedProblemsByIdeaIdReq,
   getAllReportedIdeasReq,
-  getAllIdeasUser
+  getAllIdeasUser,
+  getAllIdeasForCSVExportReq
 };
