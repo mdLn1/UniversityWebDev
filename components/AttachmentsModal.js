@@ -12,16 +12,22 @@ export default class AttachmentsModal extends Component {
   state = {
     modalOpen: false,
     apiErrors: [],
-    uploads: []
+    uploads: [],
+    downloadAll: ""
   };
 
   handleOpen = async () => {
     try {
       const cmtsRes = await axios.get(`/api/ideas/${this.props.ID}/uploads`);
       const { uploads } = cmtsRes.data;
+      const res = await axios.get(
+        `/api/ideas/${this.props.ID}/uploads/download`
+      );
+      const downloadAll = res.data;
       this.setState(prevState => ({
         ...prevState,
-        uploads
+        uploads,
+        downloadAll
       }));
     } catch (err) {
       console.log(err);
@@ -30,18 +36,6 @@ export default class AttachmentsModal extends Component {
   };
 
   handleClose = () => this.setState({ modalOpen: false });
-
-  routeToIdeaHandler(ID) {
-    Router.push(`/ideas/${ID}`);
-  }
-
-  async routeToDownloadHandler(ID) {
-    try {
-      await axios.get(`/api/ideas/${this.props.ID}/uploads/download`);
-    } catch (err) {
-      console.log(err);
-    }
-  }
 
   render() {
     return (
@@ -66,7 +60,14 @@ export default class AttachmentsModal extends Component {
               onClick={() => this.routeToDownloadHandler(this.props.ID)}
             >
               <Icon name="download" />
-              Download Zip
+              <a
+                download="idea"
+                target="_blank"
+                href={this.state.downloadAll}
+                style={{ color: "white" }}
+              >
+                Download Zip
+              </a>
             </Button>
           ) : null}
 
