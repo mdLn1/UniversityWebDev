@@ -10,7 +10,8 @@ const {
   reportIdeaQuery,
   getAllReportedIdeasQuery,
   getReportedProblemsByIdeaIdQuery,
-  getAllIdeasUserQuery
+  getAllIdeasUserQuery,
+  getUserIdeasCountQuery
 } = require("../db/queries/ideas");
 const {
   createUploadQuery,
@@ -59,9 +60,16 @@ const getAllReportedIdeasReq = async (req, res) => {
 };
 
 const getAllIdeasUser = async (req, res) => {
+  const { itemsCount, pageNo } = req.query;
   const { id } = req.params;
-  const userIdeas = await getAllIdeasUserQuery(id);
-  res.status(200).json({ userIdeas });
+  const totalIdeas = await getUserIdeasCountQuery(id);
+  if (pageNo * itemsCount > totalIdeas + itemsCount) {
+    pageNo = 1;
+    itemsCount = 5;
+  }
+  const userIdeas = await getAllIdeasUserQuery(pageNo, itemsCount, id);
+
+  res.status(200).json({ userIdeas, totalIdeas });
 };
 
 const getReportedProblemsByIdeaIdReq = async (req, res) => {
@@ -125,7 +133,6 @@ const createIdeaReq = async (req, res) => {
   );
   let uploadedFiles;
   if (req.files) {
-    
     const nrFiles = req.files.length || 0;
     let dUri = new Datauri();
     // max 6 files at a time
@@ -149,7 +156,9 @@ const createIdeaReq = async (req, res) => {
               {
                 resource_type: "raw",
                 tags: `${insertId}`,
-                public_id: "idea" + insertId +
+                public_id:
+                  "idea" +
+                  insertId +
                   element.originalname.substring(
                     0,
                     element.originalname.indexOf(".")

@@ -63,7 +63,8 @@ router.get(
       .exists()
       .isInt(),
     errorChecker,
-    authMiddleware
+    authMiddleware,
+    paginationMiddleware
   ],
   exceptionHandler(getAllIdeasUser)
 );

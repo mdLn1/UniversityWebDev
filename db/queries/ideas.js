@@ -47,9 +47,23 @@ function getAllIdeasQuery(pageNo, itemsCount, userId) {
     );
   });
 }
-
+function getUserIdeasCountQuery(userId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "select COUNT(ID) FROM Ideas where user_id=?",
+        timeout: 40000, // 40s
+        values: [userId]
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result[0]["COUNT(ID)"]);
+      }
+    );
+  });
+}
 // Returns All ideas created by a specific user
-function getAllIdeasUserQuery(userId) {
+function getAllIdeasUserQuery(pageNo, itemsCount, userId) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
@@ -60,9 +74,9 @@ function getAllIdeasUserQuery(userId) {
         (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
         (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS uploadsCount
         FROM Ideas AS i where hidden=0 and i.user_id=?
-        ORDER BY i.posted_time DESC`,
+        ORDER BY i.posted_time DESC LIMIT ? OFFSET 0`,
         timeout: 40000, // 40s
-        values: [userId]
+        values: [userId, itemsCount, itemsCount * (pageNo - 1)]
       },
       (error, result) => {
         if (error) return reject(error);
@@ -301,5 +315,6 @@ module.exports = {
   getReportedProblemsByIdeaIdQuery,
   getAllReportedIdeasQuery,
   getAllIdeasUserQuery,
+  getUserIdeasCountQuery,
   getAllIdeasWithUploadsQuery
 };

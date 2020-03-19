@@ -41,7 +41,7 @@ const registerUserReq = async (req, res) => {
 
   const payload = { user: { name, email } };
   const token = jwt.sign(payload, config.get("jwtSecret"), {
-    expiresIn: "7d"
+    expiresIn: 3600000
   });
 
   if (!token) throw new Error("Could not create token, please try again later");
