@@ -51,6 +51,11 @@ class Navbar extends Component {
                         <a>Content issues</a>
                       </Dropdown.Item>
                     </Link>
+                    <Link href="/stats">
+                      <Dropdown.Item>
+                        <a>Statistics</a>
+                      </Dropdown.Item>
+                    </Link>
                   </Dropdown.Menu>
                 </Dropdown>
               </Fragment>

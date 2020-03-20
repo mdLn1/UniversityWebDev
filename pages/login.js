@@ -5,6 +5,8 @@ import Layout from "../components/Layout";
 import axios from "axios";
 import Router from "next/router";
 import Link from "next/link";
+const { detect } = require("detect-browser");
+const localBrowser = detect();
 
 const cookies = new Cookies();
 
@@ -48,7 +50,12 @@ class LoginForm extends Component {
         } else {
           alert("Welcome! This is your first login!");
         }
-
+        if (localBrowser) {
+          console.log(localBrowser);
+          let browser = localBrowser.name;
+          let os = localBrowser.os;
+          await axios.post("api/userDevice/", { browser, os });
+        }
         localStorage.setItem("username", res.data.user.name);
         localStorage.setItem("email", email);
         localStorage.setItem("token", res.data.token);

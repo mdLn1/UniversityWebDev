@@ -34,7 +34,7 @@ class MyIdeas extends Component {
       );
       let ideas = res.data.userIdeas;
       let totalIdeas = res.data.totalIdeas;
-      console.log(res.data);
+      console.log(res);
       return {
         token,
         userID,

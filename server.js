@@ -65,6 +65,7 @@ nextApp.prepare().then(() => {
   app.use("/api/categories", require("./routes/categoriesRoute"));
   app.use("/api/management", require("./routes/managementRoute"));
   app.use("/api/stats", require("./routes/statsRoute"));
+  app.use("/api/userDevice", require("./routes/userDevice"));
 
   app.get("*", (req, res) => {
     return handle(req, res); // for all the react stuff
