@@ -6,7 +6,7 @@ const {
   createUserDevice,
   browserUsage,
   osUsage
-} = require("../controllers/userDevice");
+} = require("../controllers/userDeviceController");
 const auth = require("../middleware/authMiddleware");
 const authorize = require("../middleware/authorizeMiddleware");
 const config = require("config");
