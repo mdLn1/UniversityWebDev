@@ -7,6 +7,7 @@ import Link from "next/link";
 import cookies from "next-cookies";
 import jwt_decode from "jwt-decode";
 import MyIdeasList from "../../components/MyIdeasList";
+import { handleAuthSSR } from "../../utilsNext/authSSR";
 
 class MyIdeas extends Component {
   state = {
@@ -19,6 +20,7 @@ class MyIdeas extends Component {
   };
 
   static async getInitialProps(props) {
+    await handleAuthSSR(props);
     const { token } = await cookies(props);
     let decoded = await jwt_decode(token);
     let userID = decoded.user.id;
@@ -34,7 +36,6 @@ class MyIdeas extends Component {
       );
       let ideas = res.data.userIdeas;
       let totalIdeas = res.data.totalIdeas;
-      console.log(res);
       return {
         token,
         userID,

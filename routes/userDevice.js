@@ -7,8 +7,8 @@ const {
   browserUsage,
   osUsage
 } = require("../controllers/userDeviceController");
-const auth = require("../middleware/authMiddleware");
-const authorize = require("../middleware/authorizeMiddleware");
+const authMiddleware = require("../middleware/authMiddleware");
+const IsInRole = require("../middleware/authorizeMiddleware");
 const config = require("config");
 const { admin } = config.get("roles");
 
@@ -33,12 +33,16 @@ router.post(
 // @route Get /api/userDevice/
 // @desc Get all the browser usage stats
 // @access Public
-router.get("/browser", exceptionHandler(browserUsage));
+router.get(
+  "/browser",
+  [authMiddleware, IsInRole(admin)],
+  exceptionHandler(browserUsage)
+);
 
 // @route Get /api/userDevice/
 // @desc Get all the browser usage stats
 // @access Public
-router.get("/os", exceptionHandler(osUsage));
+router.get("/os", [authMiddleware, IsInRole(admin)], exceptionHandler(osUsage));
 
 // necessary line for every route
 module.exports = router;

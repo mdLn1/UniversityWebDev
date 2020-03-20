@@ -40,6 +40,7 @@ class submitIdea extends Component {
   }
 
   static async getInitialProps(ctx) {
+    await handleAuthSSR(ctx);
     try {
       const { token } = cookies(ctx);
       let resp = await axios.get("/api/categories");
@@ -148,10 +149,8 @@ class submitIdea extends Component {
           "You cannot upload any file larger than 4 megabytes"
         );
         break;
-      } else if(selectedFile[x].size < 100) {
-        fileUploadsErrors.push(
-          "Please upload files larger than 100 bytes"
-        );
+      } else if (selectedFile[x].size < 100) {
+        fileUploadsErrors.push("Please upload files larger than 100 bytes");
         break;
       }
     }
@@ -372,11 +371,17 @@ class submitIdea extends Component {
               toggle
               {...termsAgreedCheckboxProps}
             />
-            <Form.Field control={Checkbox} toggle {...isAnonymousCheckboxProps}/>
+            <Form.Field
+              control={Checkbox}
+              toggle
+              {...isAnonymousCheckboxProps}
+            />
             {fileUploadsErrors.length > 0 && (
               <ul>
                 {fileUploadsErrors.map((el, index) => (
-                  <li key={index} style={{color: "red"}}>{el}</li>
+                  <li key={index} style={{ color: "red" }}>
+                    {el}
+                  </li>
                 ))}
               </ul>
             )}
