@@ -206,19 +206,19 @@ function getAllReportedIdeasQuery() {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: `SELECT DISTINCT c.comment_id,
-        comment.comment,
-        author.name,
+        sql: `SELECT DISTINCT author.name,
         author.email,
         author.ID,
-        comment.idea_id,
-        c.acknowledged,
-        comment.commentTime,
-        (SELECT COUNT(*) From ReportedComments where ReportedComments.comment_id = c.comment_id) as reports
-FROM ReportedComments as c
-LEFT JOIN Comments comment on c.comment_id = comment.ID
-LEFT JOIN Users author on comment.user_id = author.ID
-ORDER BY c.ID DESC`,
+        author.disabled,
+        author.hideActivities,
+        idea.posted_time,
+        idea.Title,
+        idea.description,
+        (SELECT COUNT(*) From ReportedIdeas where ReportedIdeas.idea_id = reportedIdea.idea_id) as reports
+        FROM ReportedIdeas as reportedIdea
+        LEFT JOIN Ideas idea on reportedIdea.idea_id = idea.ID
+        LEFT JOIN Users author on idea.user_id = author.ID
+ORDER BY reportedIdea.ID DESC`,
         timeout: 40000, // 40s
         values: []
       },
