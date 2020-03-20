@@ -49,6 +49,7 @@ export default class CommentsArea extends Component {
       this.setState(prevState => ({
         comments: [comment, ...prevState.comments]
       }));
+      this.setState({ comment: "" });
     } catch (err) {
       this.setState({ apiErrors: err.response.data.errors });
       console.log(err);
@@ -63,6 +64,7 @@ export default class CommentsArea extends Component {
             <Form onSubmit={this.submitComment} id="form">
               <Form.Input
                 name="comment"
+                value={this.state.comment}
                 onChange={this.handleInputChange}
                 required
               >

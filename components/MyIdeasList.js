@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { Card, Button, Icon } from "semantic-ui-react";
+import { Card, Button, Icon, Header, Segment } from "semantic-ui-react";
 import Link from "next/link";
 import axios from "axios";
 import { Cookies } from "react-cookie";
@@ -30,6 +30,21 @@ export default class IdeasList extends Component {
 
   render() {
     const { ideas } = this.props;
+    if (ideas.length == 0) {
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <Segment color="teal" textAlign="left" flex>
+            <p>No ideas submitted yet.</p>
+          </Segment>
+        </div>
+      );
+    }
     return (
       <Card.Group
         items={ideas.map((el, index) => {
