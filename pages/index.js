@@ -29,9 +29,9 @@ class Dashboard extends Component {
 
   static async getInitialProps({ query }) {
     try {
-      let res = await axios.get("api/stats/MostRecentIdeas");
+      let res = await axios.get("http://localhost:3000/api/stats/MostRecentIdeas");
       const { ideas, totalIdeas } = res.data;
-      res = await axios.get("/api/management/deadlines");
+      res = await axios.get("http://localhost:3000/api/management/deadlines");
       const { deadlines } = res.data;
       return {
         query,
@@ -40,6 +40,7 @@ class Dashboard extends Component {
         numberOfPages: Math.ceil(totalIdeas / 5)
       };
     } catch (err) {
+      console.log(err);
       return { query, connectionError: "Failed to fetch data" };
     }
   }

@@ -8,9 +8,9 @@ import Router from "next/router";
 
 export async function getStaticProps() {
   try {
-    let res = await axios.get("/api/departments");
+    let res = await axios.get("http:/localhost:3000/api/departments");
     const { departments } = res.data || [];
-    res = await axios.get("/api/roles");
+    res = await axios.get("http:/localhost:3000/api/roles");
     const { roles } = res.data || [];
     return {
       props: {
@@ -43,7 +43,7 @@ export default class Register extends Component {
       nameError: false,
       passwordError: false,
       confirmPasswordError: false,
-      countDownTimer: 11,
+      countDownTimer: 5,
       apiErrors: []
     };
   }
@@ -51,7 +51,7 @@ export default class Register extends Component {
     if (this.props.connectionError) {
       setTimeout(() => {
         window.location.reload();
-      }, 10000);
+      }, 5000);
       setInterval(
         () =>
           this.setState((prevState, props) => ({

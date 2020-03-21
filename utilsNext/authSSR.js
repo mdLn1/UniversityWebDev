@@ -3,7 +3,7 @@ import Router from "next/router";
 import { Cookies } from "react-cookie";
 // set up cookies
 const cookies = new Cookies();
-const serverUrl = "http://localhost:5000";
+const serverUrl = "http://localhost:3000";
 
 export async function handleAuthSSR(ctx) {
   let token = null;
@@ -26,7 +26,7 @@ export async function handleAuthSSR(ctx) {
   }
 
   try {
-    const response = await axios.get(serverUrl + "/api/authenticated", {
+    const response = await axios.get("http://localhost:3000/api/authenticated", {
       headers: { "x-auth-token": token }
     });
     if (response.data.loginSucceeded !== true) {
@@ -34,7 +34,8 @@ export async function handleAuthSSR(ctx) {
     }
   } catch (err) {
     // in case of error
-    console.log(err.response.data.msg);
+    if (err.response)
+      console.log(err.response.data.msg);
     console.log("redirecting back to main page");
     // redirect to login
     if (ctx.res) {

@@ -33,10 +33,11 @@ export default class ReportedIdea extends Component {
       try {
         axios.defaults.headers.common["x-auth-token"] = cookies.get("token");
         const res = await axios.get(
-          "/api/management/reported-ideas/" + this.props.idea.idea_id
+          "/api/management/reported-ideas/" + this.props.idea.ideaId
         );
+        console.log(this.props.idea)
         const { reportedProblems } = res.data;
-        this.setState({ reportedProblems: reportedProblems });
+        this.setState({ reportedProblems });
       } catch (err) {
         if (err.response.data) {
           this.setState({ apiErrors: err.response.data.errors });
@@ -51,7 +52,7 @@ export default class ReportedIdea extends Component {
   onBlockUser = async () => {
     this.setState({ failedBlockUser: false });
     const res = await this.props.blockUserAction(
-      this.props.idea.ID,
+      this.props.idea.authorId,
       this.props.idea.disabled
     );
     if (!res) {
@@ -62,7 +63,7 @@ export default class ReportedIdea extends Component {
   onHideUserActivity = async () => {
     this.setState({ failedHideUserActivity: false });
     const res = await this.props.hideUserActivityAction(
-      this.props.idea.ID,
+      this.props.idea.authorId,
       this.props.idea.hideActivities
     );
     if (!res) {
@@ -72,7 +73,7 @@ export default class ReportedIdea extends Component {
   render() {
     const { idea } = this.props;
     const {
-      idea_id,
+      ideaId,
       name,
       email,
       posted_time,
@@ -111,7 +112,7 @@ export default class ReportedIdea extends Component {
             marginBottom: "1rem"
           }}
         >
-          <Link href="/ideas/[id]" as={`/ideas/${idea_id}`}>
+          <Link href="/ideas/[id]" as={`/ideas/${ideaId}`}>
             <a style={{ color: "teal" }}>
               <h2 style={{ textDecoration: "underline" }}>{Title}</h2>
             </a>
@@ -126,13 +127,13 @@ export default class ReportedIdea extends Component {
               style={{ margin: "0 .5rem" }}
             />
           ) : (
-            <Button
-              content="Show Author Activity"
-              color="green"
-              onClick={this.onHideUserActivity}
-              style={{ margin: "0 .5rem" }}
-            />
-          )}
+              <Button
+                content="Show Author Activity"
+                color="green"
+                onClick={this.onHideUserActivity}
+                style={{ margin: "0 .5rem" }}
+              />
+            )}
           {this.props.idea.disabled === 1 || this.props.idea.disabled === true ? (
             <Button
               content="Disable Author Account"
@@ -141,13 +142,13 @@ export default class ReportedIdea extends Component {
               style={{ margin: "0 .5rem" }}
             />
           ) : (
-            <Button
-              content="Enable Author Account"
-              color="green"
-              onClick={this.onBlockUser}
-              style={{ margin: "0 .5rem" }}
-            />
-          )}
+              <Button
+                content="Enable Author Account"
+                color="green"
+                onClick={this.onBlockUser}
+                style={{ margin: "0 .5rem" }}
+              />
+            )}
         </div>
       </Fragment>
     );
@@ -166,8 +167,8 @@ export default class ReportedIdea extends Component {
               </span>
             </p>
           ) : (
-            <p>{description}</p>
-          )}
+              <p>{description}</p>
+            )}
         </div>
       </div>
     );
@@ -220,25 +221,25 @@ export default class ReportedIdea extends Component {
                 list={apiErrors}
               />
             ) : (
-              <Segment.Group>
-                {reportedProblems.map((el, index) => (
-                  <Segment color="red" key={index}>
-                    <div>
-                      <p>
-                        <span style={{ fontSize: ".8rem" }}>
-                          User reporting:{" "}
-                        </span>
-                        {el.name}
-                      </p>
-                      <p>
-                        <span style={{ fontSize: ".8rem" }}>Complaint: </span>
-                        {el.problem}
-                      </p>
-                    </div>
-                  </Segment>
-                ))}
-              </Segment.Group>
-            )}
+                <Segment.Group>
+                  {reportedProblems.map((el, index) => (
+                    <Segment color="red" key={index}>
+                      <div>
+                        <p>
+                          <span style={{ fontSize: ".8rem" }}>
+                            User reporting:{" "}
+                          </span>
+                          {el.name}
+                        </p>
+                        <p>
+                          <span style={{ fontSize: ".8rem" }}>Complaint: </span>
+                          {el.problem}
+                        </p>
+                      </div>
+                    </Segment>
+                  ))}
+                </Segment.Group>
+              )}
           </div>
         )}
       </div>

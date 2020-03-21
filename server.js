@@ -1,83 +1,44 @@
-const next = require("next");
-const express = require("express");
-const PORT = process.env.PORT || 5000;
+const express = require('express')
+const next = require('next')
+const writeFeedback = require("./utils/writeFeedback");
 
-const dev = process.env.NODE_ENV !== "production";
-const nextApp = next({ dev });
-const handle = nextApp.getRequestHandler();
+const port = process.env.PORT || 3000
+const dev = process.env.NODE_ENV !== 'production'
+const app = next({ dev })
+const handle = app.getRequestHandler()
 
-nextApp.prepare().then(() => {
-  const app = express();
-  const writeFeedback = require("./utils/writeFeedback");
-  const compression = require("compression");
-  const helmet = require("helmet");
+app.prepare().then(() => {
+  const server = express()
 
-  // const cors = require("cors");
+  server.get('/a', (req, res) => {
+    return app.render(req, res, '/a', req.query)
+  })
 
-  // var allowedOrigins = [
-  //   "https://localhost:3000",
-  //   "https://localhost:5000",
-  //   "http://localhost:5000",
-  //   "http://localhost:3000"
-  // ];
-  // var corsOptions = {
-  //   origin: function(origin, callback) {
-  //     // console.log(origin);
-  //     if (!origin) return callback(null, true);
-  //     if (allowedOrigins.indexOf(origin) === -1) {
-  //       var msg =
-  //         "The CORS policy for this site does not " +
-  //         "allow access from the specified Origin.";
-  //       return callback(new Error(msg), false);
-  //     }
-  //     return callback(null, true);
-  //   }
-  // };
-  // app.use(cors(corsOptions));
-  // app.use(function(req, res, next) {
-  //   res.setHeader("Access-Control-Allow-Origin", "*");
-  //   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  //   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  //   res.setHeader("Access-Control-Allow-Credentials", true);
-  //   next();
-  // });
-  app.use(compression());
-  app.use(helmet());
+  server.get('/b', (req, res) => {
+    return app.render(req, res, '/b', req.query)
+  })
 
-  // Initialize middleware
-  app.use(express.json({ extended: false }));
-  app.use(express.urlencoded({ extended: true }));
+  server.use(express.json({ extended: false }));
+  server.use(express.urlencoded({ extended: true }));
+   // WARNING! Errors may show if the routes files don't have module.exports = router;
+   server.use("/api/authenticated", require("./routes/checkAuthenticatedRoute"));
+   server.use("/api/user", require("./routes/userRoute"));
+   server.use("/api/auth", require("./routes/authRoute"));
+   server.use("/api/roles", require("./routes/rolesRoute"));
+   server.use("/api/ideas", require("./routes/ideasRoute"));
+   server.use("/api/departments", require("./routes/departmentsRoute"));
+   server.use("/api/categories", require("./routes/categoriesRoute"));
+   server.use("/api/management", require("./routes/managementRoute"));
+   server.use("/api/stats", require("./routes/statsRoute"));
+   server.use("/api/userDevice", require("./routes/userDevice"));
+ 
 
-  // testing route
-  app.get("/hello", async (req, res, next) => {
-    const id = req.params.id;
-    const obj = req.body;
-    res.status(200).send(req);
-  });
-
-  // WARNING! Errors may show if the routes files don't have module.exports = router;
-  app.use("/api/authenticated", require("./routes/checkAuthenticatedRoute"));
-  app.use("/api/user", require("./routes/userRoute"));
-  app.use("/api/auth", require("./routes/authRoute"));
-  app.use("/api/roles", require("./routes/rolesRoute"));
-  app.use("/api/ideas", require("./routes/ideasRoute"));
-  app.use("/api/departments", require("./routes/departmentsRoute"));
-  app.use("/api/categories", require("./routes/categoriesRoute"));
-  app.use("/api/management", require("./routes/managementRoute"));
-  app.use("/api/stats", require("./routes/statsRoute"));
-  app.use("/api/userDevice", require("./routes/userDevice"));
-
-  app.get("*", (req, res) => {
-    return handle(req, res); // for all the react stuff
-  });
-
-  // Handling pages not found
-  app.use((req, res, next) => {
-    res.status(404).json(writeFeedback("Resource not found"));
-  });
+  server.all('*', (req, res) => {
+    return handle(req, res)
+  })
 
   // Global error handling through middleware
-  app.use((err, req, res, next) => {
+  server.use((err, req, res, next) => {
     console.log(err.stack);
     if (err.statusCode) {
       return res.status(err.statusCode).json(writeFeedback(err.message));
@@ -85,5 +46,8 @@ nextApp.prepare().then(() => {
     res.status(500).json(writeFeedback(err.message));
   });
 
-  app.listen(PORT, () => console.log("API is listening on port " + PORT));
-});
+  server.listen(port, err => {
+    if (err) throw err
+    console.log(`> Ready on http://localhost:${port}`)
+  })
+})

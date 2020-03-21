@@ -247,6 +247,7 @@ export default class PortalData extends Component {
                   users={users}
                   departments={departments}
                   roles={roles}
+                  updateValues={this.updateValues}
                 />
               </Segment>{" "}
             </Grid.Column>

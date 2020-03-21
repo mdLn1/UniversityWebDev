@@ -31,7 +31,7 @@ class submitIdea extends Component {
       termsAgreedError: false,
       categories: this.props.categories || [],
       connectionError: this.props.connectionError,
-      countDownTimer: 11,
+      countDownTimer: 3,
       loadingForm: false,
       ideaSubmissionAllowed: false,
       selectedFile: [],
@@ -42,12 +42,14 @@ class submitIdea extends Component {
   static async getInitialProps(ctx) {
     await handleAuthSSR(ctx);
     try {
-      const { token } = cookies(ctx);
-      let resp = await axios.get("/api/categories");
+      let resp = await axios.get("http://localhost:3000/api/categories");
       const { categories } = resp.data;
-      resp = await axios.get("api/management/deadlines");
+
+      resp = await axios.get("http://localhost:3000/api/management/deadlines");
+
       const { deadlines } = resp.data;
-      return { categories, deadlines, token, connectionError: false };
+
+      return { categories, deadlines, connectionError: false };
     } catch (error) {
       return { connectionError: "Failed to connect to the server" };
     }
@@ -73,7 +75,7 @@ class submitIdea extends Component {
     if (this.props.connectionError) {
       setTimeout(() => {
         window.location.reload();
-      }, 10000);
+      }, 3000);
 
       setInterval(
         () =>
@@ -398,10 +400,10 @@ class submitIdea extends Component {
                 </Button>
               </Fragment>
             ) : (
-              <Button color="red" fluid size="large">
-                No idea can be submitted
-              </Button>
-            )}
+                <Button color="red" fluid size="large">
+                  No idea can be submitted
+                </Button>
+              )}
           </Form>
         </div>
       </Layout>

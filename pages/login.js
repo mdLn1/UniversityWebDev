@@ -43,9 +43,9 @@ class LoginForm extends Component {
         if (res.data.user.lastLogin != null) {
           alert(
             "Your last login was on the " +
-              res.data.user.lastLogin.slice(0, 10) +
-              " at " +
-              res.data.user.lastLogin.slice(11, 19)
+            res.data.user.lastLogin.slice(0, 10) +
+            " at " +
+            res.data.user.lastLogin.slice(11, 19)
           );
         } else {
           alert("Welcome! This is your first login!");
@@ -61,9 +61,10 @@ class LoginForm extends Component {
         localStorage.setItem("token", res.data.token);
         Router.replace({ pathname: "/", query: { loginSuccess: true } }, "/");
       } catch (err) {
-        this.setState({
-          apiErrors: err.response.data.errors
-        });
+        if (err.response)
+          this.setState({
+            apiErrors: err.response.data.errors
+          });
       }
     }
   };

@@ -23,9 +23,9 @@ export default class ContentIssues extends Component {
     const { token } = cookies(ctx);
     try {
       axios.defaults.headers.common["x-auth-token"] = token;
-      let resp = await axios.get("/api/management/reported-ideas");
+      let resp = await axios.get("http://localhost:3000/api/management/reported-ideas");
       const { reportedIdeas } = resp.data;
-      resp = await axios.get("/api/management/reported-comments");
+      resp = await axios.get("http://localhost:3000/api/management/reported-comments");
       const { reportedComments } = resp.data;
       return {
         reportedIdeas: reportedIdeas || [],

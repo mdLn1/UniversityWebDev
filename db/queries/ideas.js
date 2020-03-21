@@ -208,12 +208,13 @@ function getAllReportedIdeasQuery() {
       {
         sql: `SELECT DISTINCT author.name,
         author.email,
-        author.ID,
+        author.ID as authorId,
         author.disabled,
         author.hideActivities,
         idea.posted_time,
         idea.Title,
         idea.description,
+        idea.ID as ideaId,
         (SELECT COUNT(*) From ReportedIdeas where ReportedIdeas.idea_id = reportedIdea.idea_id) as reports
         FROM ReportedIdeas as reportedIdea
         LEFT JOIN Ideas idea on reportedIdea.idea_id = idea.ID

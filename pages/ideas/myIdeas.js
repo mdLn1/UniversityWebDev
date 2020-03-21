@@ -31,7 +31,7 @@ class MyIdeas extends Component {
         }
       };
       let res = await axios.get(
-        `api/ideas/user/${userID}?itemsCount=5&pageNo=${1}`,
+        `http://localhost:3000/api/ideas/user/${userID}?itemsCount=5&pageNo=${1}`,
         config
       );
       let ideas = res.data.userIdeas;

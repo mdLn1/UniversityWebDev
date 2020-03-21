@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react";
 import { Header, Message, Divider, Button, Icon } from "semantic-ui-react";
 import axios from "axios";
 import { Cookies } from "react-cookie";
-import FileSaver from "FileSaver";
 const cookies = new Cookies();
 
 export default class DownloadData extends Component {
