@@ -1,12 +1,8 @@
-import React, { Component } from "react";
-import Layout from "../components/Layout";
+import React, { Component, Fragment } from "react";
 import { Header, Menu, Dropdown, Message } from "semantic-ui-react";
 import axios from "axios";
 import { Pagination } from "semantic-ui-react";
-import { Cookies } from "react-cookie";
 import IdeasList from "../components/IdeasList";
-
-const cookies = new Cookies();
 
 class Dashboard extends Component {
   constructor(props) {
@@ -29,7 +25,9 @@ class Dashboard extends Component {
 
   static async getInitialProps({ query }) {
     try {
-      let res = await axios.get("http://localhost:3000/api/stats/MostRecentIdeas");
+      let res = await axios.get(
+        "http://localhost:3000/api/stats/MostRecentIdeas"
+      );
       const { ideas, totalIdeas } = res.data;
       res = await axios.get("http://localhost:3000/api/management/deadlines");
       const { deadlines } = res.data;
@@ -160,7 +158,7 @@ class Dashboard extends Component {
     }
 
     return (
-      <Layout>
+      <Fragment>
         {connectionError && (
           <Message negative>
             <Message.Header>
@@ -232,7 +230,7 @@ class Dashboard extends Component {
             />
           </div>
         </div>
-      </Layout>
+      </Fragment>
     );
   }
 }

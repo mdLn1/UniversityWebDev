@@ -1,29 +1,64 @@
 import "semantic-ui-css/semantic.min.css";
-import React, { Component } from "react"
-import "../custom.css";
+import React, { Component } from "react";
 import axios from "axios";
-const defaultVal = { authenticated: false, user: {}, token: "" }
+import "../custom.css";
+import { AuthContext } from "../context/AuthenticationContext";
+import { Container } from "semantic-ui-react";
+import Navbar from "../components/Navbar";
 
-export const MainContext = React.createContext(defaultVal)
-
-
-// export default function App({ Component, pageProps }) {
-//   axios.defaults.headers.post["Content-Type"] = "application/json";
-//   return (<MainContext.Provider value={}><Component {...pageProps} /></MainContext.Provider>;
-// }
 export default class _app extends Component {
-  onRedirectCallback = appState => {
-    console.log('appState', appState)
-    router.push(appState && appState.targetUrl ? appState.targetUrl : '/')
+  state = {
+    user: null,
+    authenticated: false,
+    token: "",
+    loginUser: (user, token) => {
+      this.setState({ authenticated: true, user: user, token: token });
+    },
+    logoutUser: () => {
+      this.setState({ authenticated: false, user: null, token: "" });
+    }
+  };
+
+  async componentDidMount() {
+    if (typeof Storage !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const config = { headers: { "x-auth-token": token } };
+        try {
+          const res = await axios.get("api/auth/authenticate", config);
+          axios.defaults.headers.common["x-auth-token"] = token;
+          this.setState({
+            user: res.data.user,
+            authenticated: true,
+            token: token
+          });
+        } catch (err) {
+          if (err.response) {
+            console.log(err.response.data);
+          } else {
+            console.log(err);
+          }
+        }
+      }
+    }
   }
+
   render() {
-    const { Component, pageProps, router } = this.props
+    const { Component, pageProps, router } = this.props;
+    const { user, authenticated } = this.state;
     return (
       <React.Fragment>
-        <MainContext.Provider value={defaultVal} onRedirectCallback={this.onRedirectCallback}>
-          <Component {...pageProps} router={router} />
-        </MainContext.Provider>
+        <AuthContext.Provider value={this.state}>
+          <Container>
+            <Navbar
+              role={user?.role ? user.role : ""}
+              name={user?.name ? user.name : ""}
+              authenticated={authenticated}
+            />
+            <Component {...pageProps} router={router} />
+          </Container>
+        </AuthContext.Provider>
       </React.Fragment>
-    )
+    );
   }
 }

@@ -1,10 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Header } from "semantic-ui-react";
-import Layout from "../components/Layout";
 import axios from "axios";
 import PieChart from "../components/PieChart";
+import NotAuthorized from "../components/NotAuthorized";
+import { AuthContext } from "../context/AuthenticationContext";
 
 class Stats extends Component {
+  static contextType = AuthContext;
   state = {
     browserData: this.props.browserData || [],
     osData: this.props.osData || [],
@@ -37,8 +39,15 @@ class Stats extends Component {
   }
 
   render() {
+    if (
+      !this.context.authenticated ||
+      !this.context.user?.role ||
+      this.context.user.role !== "QA Manager"
+    ) {
+      return <NotAuthorized />;
+    }
     return (
-      <Layout>
+      <Fragment>
         <Header as="h2" color="teal" textAlign="center">
           Portal Statistics
         </Header>
@@ -47,7 +56,7 @@ class Stats extends Component {
         <PieChart type={"mostUser"} data={this.state.mostUserSubmitIdeas} />
         <PieChart type={"browser"} data={this.state.browserData} />
         <PieChart type={"os"} data={this.state.osData} />
-      </Layout>
+      </Fragment>
     );
   }
 }

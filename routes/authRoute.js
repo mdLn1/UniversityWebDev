@@ -3,7 +3,11 @@ const { check } = require("express-validator");
 const router = express.Router();
 const exceptionHandler = require("../utils/exceptionHandler");
 const errorChecker = require("../middleware/errorCheckerMiddleware");
-const { userLoginReq, registerUserReq} = require("../controllers/authController");
+const {
+  userLoginReq,
+  registerUserReq,
+  authenticateUserReq
+} = require("../controllers/authController");
 
 //@route POST api/register/
 //@desc Receive registration details
@@ -20,10 +24,8 @@ router.post(
     check("password", "Password needs to be at least 6 characters long")
       .trim()
       .isLength({ min: 8 }),
-    check("role", "Role must be provided")
-      .exists(),
-    check("department", "Department must be provided")
-      .exists(),
+    check("role", "Role must be provided").exists(),
+    check("department", "Department must be provided").exists(),
     errorChecker
   ],
   exceptionHandler(registerUserReq)
@@ -47,5 +49,7 @@ router.post(
   ],
   exceptionHandler(userLoginReq)
 );
+
+router.get("/authenticate", exceptionHandler(authenticateUserReq));
 
 module.exports = router;

@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from "react";
-import Layout from "../../components/Layout";
 import { Router } from "../../routes";
 import {
   Button,
@@ -11,10 +10,11 @@ import {
   TextArea
 } from "semantic-ui-react";
 import axios from "axios";
-import { handleAuthSSR } from "../../utilsNext/authSSR";
-import cookies from "next-cookies";
+import { AuthContext } from "../../context/AuthenticationContext";
+import NotAuthenticated from "../../components/NotAuthenticated";
 
 class submitIdea extends Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
 
@@ -40,7 +40,6 @@ class submitIdea extends Component {
   }
 
   static async getInitialProps(ctx) {
-    await handleAuthSSR(ctx);
     try {
       let resp = await axios.get("http://localhost:3000/api/categories");
       const { categories } = resp.data;
@@ -72,23 +71,24 @@ class submitIdea extends Component {
         }
       }
     }
-    if (this.props.connectionError) {
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+    if (this.context.authenticated) {
+      if (this.props.connectionError) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
 
-      setInterval(
-        () =>
-          this.setState((prevState, props) => ({
-            ...prevState,
-            countDownTimer:
-              prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
-          })),
-        1000
-      );
+        setInterval(
+          () =>
+            this.setState((prevState, props) => ({
+              ...prevState,
+              countDownTimer:
+                prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
+            })),
+          1000
+        );
+      }
     }
   }
-
   onChangeText = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
@@ -307,8 +307,12 @@ class submitIdea extends Component {
         pointing: "below"
       };
     }
+    
+    if (!this.context.authenticated) {
+      return <NotAuthenticated />;
+    }
     return (
-      <Layout>
+      <Fragment>
         <div
           style={{ maxWidth: "32rem", margin: "auto", padding: ".5rem 2rem" }}
         >
@@ -328,7 +332,7 @@ class submitIdea extends Component {
               </Message.Header>
             </Message>
           )}
-          {!ideaSubmissionAllowed && (
+          {!connectionError && !ideaSubmissionAllowed && (
             <Message negative>
               <Message.Header>
                 You can no longer submit ideas, the deadline has passed
@@ -400,13 +404,13 @@ class submitIdea extends Component {
                 </Button>
               </Fragment>
             ) : (
-                <Button color="red" fluid size="large">
-                  No idea can be submitted
-                </Button>
-              )}
+              <Button color="red" fluid size="large">
+                No idea can be submitted
+              </Button>
+            )}
           </Form>
         </div>
-      </Layout>
+      </Fragment>
     );
   }
 }

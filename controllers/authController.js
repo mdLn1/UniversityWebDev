@@ -5,9 +5,9 @@ const CustomError = require("../utils/CustomError");
 const {
   userLoginQuery,
   isEmailRegisteredAlreadyQuery,
-  createUserQuery,
   regUserQuery,
-  userLastLoginQuery
+  userLastLoginQuery,
+  getUserDetailsQuery
 } = require("../db/queries/users");
 
 const { isRoleSelectableQuery } = require("../db/queries/roles");
@@ -65,16 +65,23 @@ const userLoginReq = async (req, res) => {
   });
 
   if (!token) throw new Error("Could not create token, please try again later");
-  await userLastLoginQuery(email);
-  res
-    .status(200)
-    .json({
-      user: { email, name: user.name, lastLogin: user.lastLogin },
-      token
-    });
+  res.status(200).json({
+    user: {
+      ...user
+    },
+    token
+  });
+};
+
+const authenticateUserReq = async (req, res) => {
+  const token = req.header("x-auth-token");
+  const decoded = jwt.verify(token, config.get("jwtSecret"));
+  const user = await getUserDetailsQuery(decoded.user.id);
+  res.status(200).json({ user });
 };
 
 module.exports = {
   userLoginReq,
-  registerUserReq
+  registerUserReq,
+  authenticateUserReq
 };

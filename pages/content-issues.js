@@ -1,14 +1,16 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Grid, Message, Segment, Header, Card, Icon } from "semantic-ui-react";
 import axios from "axios";
 import cookies from "next-cookies";
 import { Cookies } from "react-cookie";
-import Layout from "../components/Layout";
 import ReportedIdea from "../components/ReportedIdea";
 import ReportedComment from "../components/ReportedComment";
 const reactCookies = new Cookies();
+import NotAuthorized from "../components/NotAuthorized";
+import { AuthContext } from "../context/AuthenticationContext";
 
 export default class ContentIssues extends Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -23,9 +25,13 @@ export default class ContentIssues extends Component {
     const { token } = cookies(ctx);
     try {
       axios.defaults.headers.common["x-auth-token"] = token;
-      let resp = await axios.get("http://localhost:3000/api/management/reported-ideas");
+      let resp = await axios.get(
+        "http://localhost:3000/api/management/reported-ideas"
+      );
       const { reportedIdeas } = resp.data;
-      resp = await axios.get("http://localhost:3000/api/management/reported-comments");
+      resp = await axios.get(
+        "http://localhost:3000/api/management/reported-comments"
+      );
       const { reportedComments } = resp.data;
       return {
         reportedIdeas: reportedIdeas || [],
@@ -43,19 +49,25 @@ export default class ContentIssues extends Component {
     }
   }
   componentDidMount() {
-    if (this.props.connectionError) {
-      setTimeout(() => {
-        window.location.reload();
-      }, 5000);
-      setInterval(
-        () =>
-          this.setState((prevState, props) => ({
-            ...prevState,
-            countDownTimer:
-              prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
-          })),
-        1000
-      );
+    if (
+      this.context.authenticated &&
+      this.context.user?.role &&
+      this.state.user.role === "QA Manager"
+    ) {
+      if (this.props.connectionError) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 5000);
+        setInterval(
+          () =>
+            this.setState((prevState, props) => ({
+              ...prevState,
+              countDownTimer:
+                prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
+            })),
+          1000
+        );
+      }
     }
   }
 
@@ -133,6 +145,13 @@ export default class ContentIssues extends Component {
     return false;
   };
   render() {
+    if (
+      !this.context.authenticated ||
+      !this.context.user?.role ||
+      this.state.user.role !== "QA Manager"
+    ) {
+      return <NotAuthorized />;
+    }
     const {
       countDownTimer,
       reportedComments,
@@ -140,7 +159,7 @@ export default class ContentIssues extends Component {
       connectionError
     } = this.state;
     return (
-      <Layout>
+      <Fragment>
         {connectionError && (
           <Message negative>
             <Message.Header>
@@ -200,7 +219,7 @@ export default class ContentIssues extends Component {
             )}
           </Grid.Column>
         </Grid>
-      </Layout>
+      </Fragment>
     );
   }
 }

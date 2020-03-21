@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import Layout from "../components/Layout";
+import React, { Component, Fragment } from "react";
 import { Grid, Segment, Header, Message, GridColumn } from "semantic-ui-react";
 import Deadlines from "../components/Deadlines";
 import axios from "axios";
@@ -7,8 +6,11 @@ import AdminControl from "../components/AdminControl";
 import UserEditPanel from "../components/UserEditPanel";
 import DownloadData from "../components/DownloadData";
 import cookies from "next-cookies";
+import NotAuthorized from "../components/NotAuthorized";
+import { AuthContext } from "../context/AuthenticationContext";
 
 export default class PortalData extends Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -66,19 +68,25 @@ export default class PortalData extends Component {
         this.setState({ currentDeadline: currDeadline });
       }
     }
-    if (this.props.connectionError) {
-      setTimeout(() => {
-        window.location.reload();
-      }, 5000);
-      setInterval(
-        () =>
-          this.setState((prevState, props) => ({
-            ...prevState,
-            countDownTimer:
-              prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
-          })),
-        1000
-      );
+    if (
+      this.context.authenticated &&
+      this.context.user?.role &&
+      this.state.user.role === "QA Manager"
+    ) {
+      if (this.props.connectionError) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 5000);
+        setInterval(
+          () =>
+            this.setState((prevState, props) => ({
+              ...prevState,
+              countDownTimer:
+                prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
+            })),
+          1000
+        );
+      }
     }
   }
   updateValues = (type, values) => {
@@ -86,6 +94,13 @@ export default class PortalData extends Component {
   };
 
   render() {
+    if (
+      !this.context.authenticated ||
+      !this.context.user?.role ||
+      this.context.user.role !== "QA Manager"
+    ) {
+      return <NotAuthorized />;
+    }
     const {
       categories,
       departments,
@@ -155,7 +170,7 @@ export default class PortalData extends Component {
       }
     ];
     return (
-      <Layout>
+      <Fragment>
         {connectionError && (
           <Message negative>
             <Message.Header>
@@ -260,7 +275,7 @@ export default class PortalData extends Component {
             </GridColumn>
           )}
         </Grid>
-      </Layout>
+      </Fragment>
     );
   }
 }

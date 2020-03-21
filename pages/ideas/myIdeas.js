@@ -1,15 +1,14 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Header, Pagination } from "semantic-ui-react";
-import Layout from "../../components/Layout";
 import axios from "axios";
-import Router from "next/router";
-import Link from "next/link";
 import cookies from "next-cookies";
 import jwt_decode from "jwt-decode";
 import MyIdeasList from "../../components/MyIdeasList";
-import { handleAuthSSR } from "../../utilsNext/authSSR";
+import NotAuthenticated from "../../components/NotAuthenticated";
+import { AuthContext } from "../../context/AuthenticationContext";
 
 class MyIdeas extends Component {
+  static contextType = AuthContext;
   state = {
     userID: this.props.userID || "",
     ideas: this.props.ideas || [],
@@ -20,28 +19,31 @@ class MyIdeas extends Component {
   };
 
   static async getInitialProps(props) {
-    await handleAuthSSR(props);
-    const { token } = await cookies(props);
-    let decoded = await jwt_decode(token);
-    let userID = decoded.user.id;
     try {
-      const config = {
-        headers: {
-          "x-auth-token": token
-        }
-      };
-      let res = await axios.get(
-        `http://localhost:3000/api/ideas/user/${userID}?itemsCount=5&pageNo=${1}`,
-        config
-      );
-      let ideas = res.data.userIdeas;
-      let totalIdeas = res.data.totalIdeas;
-      return {
-        token,
-        userID,
-        ideas,
-        numberOfPages: Math.ceil(totalIdeas / 5)
-      };
+      const { token } = cookies(props);
+      if (token) {
+        let decoded = jwt_decode(token);
+        let userID = decoded.user.id;
+        const config = {
+          headers: {
+            "x-auth-token": token
+          }
+        };
+        let res = await axios.get(
+          `http://localhost:3000/api/ideas/user/${userID}?itemsCount=5&pageNo=${1}`,
+          config
+        );
+        let ideas = res.data.userIdeas;
+        let totalIdeas = res.data.totalIdeas;
+        return {
+          token,
+          userID,
+          ideas,
+          numberOfPages: Math.ceil(totalIdeas / 5)
+        };
+      } else {
+        return { connectionError: "connection failed" };
+      }
     } catch (err) {
       return { connectionError: "connection failed" };
     }
@@ -77,9 +79,12 @@ class MyIdeas extends Component {
   };
 
   render() {
+    if (!this.context.authenticated) {
+      return <NotAuthenticated />;
+    }
     const { selectedPage, numberOfPages } = this.state;
     return (
-      <Layout>
+      <Fragment>
         <Header as="h2" color="teal" textAlign="center">
           My Ideas
         </Header>
@@ -92,7 +97,7 @@ class MyIdeas extends Component {
             onPageChange={this.setPageNum}
           />
         </div>
-      </Layout>
+      </Fragment>
     );
   }
 }

@@ -44,7 +44,7 @@ function userLoginQuery(email, password) {
     pool.query(
       {
         sql: `select Users.ID, Users.name, Users.lastLogin, Users.email, Users.password, Roles.role, Departments.department from Users left join Roles on 
-        Users.role_id=Roles.ID left join Departments on Users.department_id=Departments.ID where email = ?`,
+        Users.role_id=Roles.ID left join Departments on Users.department_id=Departments.ID where Users.email = ?`,
         timeout: 40000,
         values: [email]
       },
@@ -150,7 +150,9 @@ function getUserDetailsQuery(id) {
         if (err) return reject(err);
         if (result.length < 1)
           return reject(new CustomError("User not found", 400));
+        result[0].id = result[0].ID;
         delete result[0].ID;
+        delete result[0].password;
         return resolve(result[0]);
       }
     );

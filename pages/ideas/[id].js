@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import Layout from "../../components/Layout";
+import React, { Component, Fragment } from "react";
 import { Header, Message } from "semantic-ui-react";
 import axios from "axios";
 import IdeaDisplay from "../../components/IdeaDisplay";
@@ -64,17 +63,17 @@ export default class displayIdea extends Component {
     const { connectionError } = this.props;
     if (connectionError)
       return (
-        <Layout>
+        <Fragment>
           <Message negative>
             <Message.Header>
               Sorry the connection to the server was interrupted
             </Message.Header>
             <p>{connectionError}</p>
           </Message>
-        </Layout>
+        </Fragment>
       );
     return (
-      <Layout>
+      <Fragment>
         <Header as="h2" color="teal" textAlign="center"></Header>
         <IdeaDisplay idea={this.props.idea} />
         <CommentsArea
@@ -82,7 +81,7 @@ export default class displayIdea extends Component {
           comments={this.props.comments}
           canSubmit={this.state.isCommentSubmissionAllowed}
         ></CommentsArea>
-      </Layout>
+      </Fragment>
     );
   }
 }

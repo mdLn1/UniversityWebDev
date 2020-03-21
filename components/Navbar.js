@@ -1,43 +1,34 @@
 import React, { Component, Fragment } from "react";
 import { Menu, Dropdown, Message } from "semantic-ui-react";
 import Link from "next/link";
-import jwt_decode from "jwt-decode";
-import { Router } from "../routes";
+import Router from "next/router";
 import { Cookies } from "react-cookie";
 const cookies = new Cookies();
-
+import { AuthContext } from "../context/AuthenticationContext";
 class Navbar extends Component {
-  state = {
-    role: "",
-    loggedOut: false
-  };
-
-  componentDidMount() {
-    try {
-      let decoded = jwt_decode(cookies.get("token"));
-      this.setState({ role: decoded.user.role });
-    } catch (err) {
-      console.log("no token");
-    }
-  }
-
+  static contextType = AuthContext;
+  state = { loggedOut: false };
   logout = () => {
     cookies.remove("token");
-    this.setState({ role: "", loggedOut: true });
+    this.setState({ loggedOut: true });
     if (typeof Storage !== "undefined") localStorage.clear();
+    this.context.logoutUser();
     setTimeout(() => this.setState({ loggedOut: false }), 3000);
     Router.push("/");
   };
 
   render() {
+    const { name, role, authenticated } = this.props;
+    const { loggedOut } = this.state;
     return (
       <Fragment>
         <Menu style={{ marginTop: "10px" }}>
           <Link href="/">
             <a className="item">Ideas Portal</a>
           </Link>
+          {name && <Menu.Item name="username">Hello, {name}!</Menu.Item>}
           <Menu.Menu position="right">
-            {this.state.role === "QA Manager" && (
+            {role === "QA Manager" && (
               <Fragment>
                 <Dropdown item text="Admin console">
                   <Dropdown.Menu>
@@ -60,7 +51,7 @@ class Navbar extends Component {
                 </Dropdown>
               </Fragment>
             )}
-            {this.state.role && (
+            {authenticated && (
               <Fragment>
                 <Link href="/ideas/submitIdea">
                   <a className="item">New idea</a>
@@ -77,14 +68,14 @@ class Navbar extends Component {
                 </span>
               </Fragment>
             )}
-            {!this.state.role && (
+            {!authenticated && (
               <Link href="/login">
                 <a className="item">Login</a>
               </Link>
             )}
           </Menu.Menu>
         </Menu>
-        {this.state.loggedOut && (
+        {loggedOut && (
           <Message success header="Success" content="You have logged out" />
         )}
       </Fragment>

@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import Link from "next/link";
 import axios from "axios";
-import Layout from "../components/Layout";
 import { Form, Input, Select, Message, Header } from "semantic-ui-react";
 import isPasswordValid from "../utils/isPasswordValid";
 import Router from "next/router";
@@ -250,7 +249,7 @@ export default class Register extends Component {
     }
 
     return (
-      <Layout>
+      <Fragment>
         <div
           style={{ maxWidth: "32rem", margin: "auto", padding: "5rem 2rem" }}
         >
@@ -342,7 +341,7 @@ export default class Register extends Component {
             </Message>
           </Form>
         </div>
-      </Layout>
+      </Fragment>
     );
   }
 }

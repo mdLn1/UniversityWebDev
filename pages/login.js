@@ -1,16 +1,17 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Button, Form, Header, Message, Container } from "semantic-ui-react";
 import { Cookies } from "react-cookie";
-import Layout from "../components/Layout";
 import axios from "axios";
 import Router from "next/router";
 import Link from "next/link";
 const { detect } = require("detect-browser");
+import { AuthContext } from "../context/AuthenticationContext";
 const localBrowser = detect();
 
 const cookies = new Cookies();
 
 class LoginForm extends Component {
+  static contextType = AuthContext;
   state = {
     email: "",
     password: "",
@@ -43,15 +44,14 @@ class LoginForm extends Component {
         if (res.data.user.lastLogin != null) {
           alert(
             "Your last login was on the " +
-            res.data.user.lastLogin.slice(0, 10) +
-            " at " +
-            res.data.user.lastLogin.slice(11, 19)
+              res.data.user.lastLogin.slice(0, 10) +
+              " at " +
+              res.data.user.lastLogin.slice(11, 19)
           );
         } else {
           alert("Welcome! This is your first login!");
         }
         if (localBrowser) {
-          console.log(localBrowser);
           let browser = localBrowser.name;
           let os = localBrowser.os;
           await axios.post("api/userDevice/", { browser, os });
@@ -59,8 +59,11 @@ class LoginForm extends Component {
         localStorage.setItem("username", res.data.user.name);
         localStorage.setItem("email", email);
         localStorage.setItem("token", res.data.token);
+
+        this.context.loginUser(res.data.user, res.data.token);
         Router.replace({ pathname: "/", query: { loginSuccess: true } }, "/");
       } catch (err) {
+        console.log(err);
         if (err.response)
           this.setState({
             apiErrors: err.response.data.errors
@@ -103,7 +106,7 @@ class LoginForm extends Component {
         pointing: "below"
       };
     return (
-      <Layout>
+      <Fragment>
         <div
           style={{ maxWidth: "32rem", margin: "auto", padding: "5rem 2rem" }}
         >
@@ -140,7 +143,7 @@ class LoginForm extends Component {
             </Link>
           </Message>
         </div>
-      </Layout>
+      </Fragment>
     );
   }
 }
