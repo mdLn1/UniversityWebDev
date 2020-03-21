@@ -9,11 +9,42 @@ import { AuthContext } from "../../context/AuthenticationContext";
 
 class MyIdeas extends Component {
   state = {
-    ideas: [],
+    ideas: this.props.ideas || [],
     apiErrors: [],
+    connectionError: false,
     selectedPage: 1,
-    numberOfPages: 1
+    numberOfPages: this.props.numberOfPages || 1,
+    countDownTimer: 5
   };
+
+  static async getInitialProps(props) {
+    try {
+      const { token } = cookies(props);
+      if (token) {
+        let decoded = jwt_decode(token);
+        let userID = decoded.user.id;
+        const config = {
+          headers: {
+            "x-auth-token": token
+          }
+        };
+        let res = await axios.get(
+          `http://localhost:3000/api/ideas/user/${userID}?itemsCount=5&pageNo=${1}`,
+          config
+        );
+        let ideas = res.data.userIdeas;
+        let totalIdeas = res.data.totalIdeas;
+        return {
+          ideas,
+          numberOfPages: Math.ceil(totalIdeas / 5)
+        };
+      } else {
+        return { connectionError: "connection failed" };
+      }
+    } catch (err) {
+      return { connectionError: "connection failed" };
+    }
+  }
 
   async componentDidMount() {
     if (!this.context.authenticated) {
@@ -22,20 +53,36 @@ class MyIdeas extends Component {
           `http://localhost:3000/api/ideas/user/${this.context.user.id}`
         );
         const { userIdeas, totalIdeas } = res.data;
-        console.log(res.data)
-        this.setState({ ideas: userIdeas, totalPages: Math.ceil(totalIdeas / 5), selectedPage: 1 })
+        console.log(res.data);
+        this.setState({
+          ideas: userIdeas,
+          totalPages: Math.ceil(totalIdeas / 5),
+          selectedPage: 1
+        });
       } catch (err) {
-        if (err.response)
-          console.log(err.response.data)
+        if (err.response) console.log(err.response.data);
       }
-
+    }
+    if (this.props.connectionError) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 6000);
+      setInterval(
+        () =>
+          this.setState((prevState, props) => ({
+            ...prevState,
+            countDownTimer:
+              prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
+          })),
+        1000
+      );
     }
   }
 
   async updateListOfIdeas(activePage = 1) {
     try {
       const res = await axios.get(
-        `/api/ideas/user/${this.context.user.id}?itemsCount=5&pageNo=${activePage}`,
+        `api/ideas/user/${this.context.user.id}?itemsCount=5&pageNo=${activePage}`
       );
       let ideas = res.data.userIdeas;
       let totalIdeas = res.data.totalIdeas;
@@ -59,21 +106,34 @@ class MyIdeas extends Component {
     if (!this.context.authenticated) {
       return <NotAuthenticated />;
     }
-    const { selectedPage, numberOfPages } = this.state;
+    const { selectedPage, numberOfPages, connectionError, ideas } = this.state;
     return (
       <Fragment>
         <Header as="h2" color="teal" textAlign="center">
           My Ideas
         </Header>
-        <MyIdeasList ideas={this.state.ideas} />
-        <div style={{ margin: "2rem auto", textAlign: "center" }}>
-          <Pagination
-            activePage={selectedPage}
-            totalPages={numberOfPages}
-            siblingRange={1}
-            onPageChange={this.setPageNum}
-          />
-        </div>
+        {connectionError && (
+          <Message negative>
+            <Message.Header>
+              Sorry the connection to the server was interrupted
+            </Message.Header>
+            <p>{connectionError}</p>
+            <p>Refreshing automatically in {countDownTimer} seconds</p>
+          </Message>
+        )}
+        {!connectionError && (
+          <Fragment>
+            <MyIdeasList ideas={ideas} />
+            <div style={{ margin: "2rem auto", textAlign: "center" }}>
+              <Pagination
+                activePage={selectedPage}
+                totalPages={numberOfPages}
+                siblingRange={1}
+                onPageChange={this.setPageNum}
+              />
+            </div>
+          </Fragment>
+        )}
       </Fragment>
     );
   }

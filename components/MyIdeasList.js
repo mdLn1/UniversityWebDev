@@ -12,7 +12,7 @@ export default class IdeasList extends Component {
 
   async deleteHandler(ID) {
     try {
-      const res = await axios.delete(`/api/ideas/${ID}`, config);
+      const res = await axios.delete(`/api/ideas/${ID}`);
       alert(res.data.success);
       window.location.reload();
     } catch (err) {
@@ -31,7 +31,7 @@ export default class IdeasList extends Component {
             alignItems: "center"
           }}
         >
-          <Segment color="teal" textAlign="left" fluid>
+          <Segment color="teal" style={{ textAlign: "center" }}>
             <p>No ideas submitted yet.</p>
           </Segment>
         </div>
