@@ -37,6 +37,10 @@ export default class AttachmentsModal extends Component {
 
   handleClose = () => this.setState({ modalOpen: false });
 
+  routeToIdeaHandler(ID) {
+    Router.push(`/ideas/${ID}`);
+  }
+
   render() {
     return (
       <Modal
@@ -57,7 +61,6 @@ export default class AttachmentsModal extends Component {
           {this.state.uploads.length != 0 ? (
             <Button
               color="teal"
-              onClick={() => this.routeToDownloadHandler(this.props.ID)}
             >
               <Icon name="download" />
               <a

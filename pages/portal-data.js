@@ -8,7 +8,7 @@ import DownloadData from "../components/DownloadData";
 import cookies from "next-cookies";
 import NotAuthorized from "../components/NotAuthorized";
 import { AuthContext } from "../context/AuthenticationContext";
-
+import RefreshError from '../components/RefreshError'
 export default class PortalData extends Component {
   static contextType = AuthContext;
   constructor(props) {
@@ -68,26 +68,26 @@ export default class PortalData extends Component {
         this.setState({ currentDeadline: currDeadline });
       }
     }
-    if (
-      this.context.authenticated &&
-      this.context.user?.role &&
-      this.context.user.role === "QA Manager"
-    ) {
-      if (this.props.connectionError) {
-        setTimeout(() => {
-          window.location.reload();
-        }, 5000);
-        setInterval(
-          () =>
-            this.setState((prevState, props) => ({
-              ...prevState,
-              countDownTimer:
-                prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
-            })),
-          1000
-        );
-      }
-    }
+    // if (
+    //   this.context.authenticated &&
+    //   this.context.user?.role &&
+    //   this.context.user.role === "QA Manager"
+    // ) {
+    //   if (this.props.connectionError) {
+    //     setTimeout(() => {
+    //       window.location.reload();
+    //     }, 5000);
+    //     setInterval(
+    //       () =>
+    //         this.setState((prevState, props) => ({
+    //           ...prevState,
+    //           countDownTimer:
+    //             prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
+    //         })),
+    //       1000
+    //     );
+    //   }
+    // }
   }
   updateValues = (type, values) => {
     this.setState({ [type]: values });
@@ -172,13 +172,7 @@ export default class PortalData extends Component {
     return (
       <Fragment>
         {connectionError && (
-          <Message negative>
-            <Message.Header>
-              Sorry the connection to the server was interrupted
-            </Message.Header>
-            <p>{connectionError}</p>
-            <p>Refreshing automatically in {countDownTimer} seconds</p>
-          </Message>
+          <RefreshError pathname="/portal-data" />
         )}
         <Header size="large" style={{ textAlign: "center" }}>
           Portal Data Management

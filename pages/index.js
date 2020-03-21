@@ -11,7 +11,6 @@ class Dashboard extends Component {
     this.state = {
       selectedPage: 1,
       ideas: this.props.ideas || [],
-      selectedPage: 1,
       numberOfPages: this.props.numberOfPages || 1,
       connectionError: this.props.connectionError,
       loginSuccess: false,
@@ -19,17 +18,17 @@ class Dashboard extends Component {
       currentDeadline: null,
       queryLink: "MostRecentIdeas",
       currentSort: 1,
-      countDownTimer: 5
+      countDownTimer: 2
     };
   }
 
   static async getInitialProps({ query }) {
     try {
       let res = await axios.get(
-        "http://localhost:3000/api/stats/MostRecentIdeas"
+        "/api/stats/MostRecentIdeas"
       );
       const { ideas, totalIdeas } = res.data;
-      res = await axios.get("http://localhost:3000/api/management/deadlines");
+      res = await axios.get("/api/management/deadlines");
       const { deadlines } = res.data;
       return {
         query,
@@ -38,12 +37,11 @@ class Dashboard extends Component {
         numberOfPages: Math.ceil(totalIdeas / 5)
       };
     } catch (err) {
-      console.log(err);
       return { query, connectionError: "Failed to fetch data" };
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { query, deadlines } = this.props;
     if (query && query.loginSuccess) {
       this.setState({ loginSuccess: true });
@@ -62,19 +60,43 @@ class Dashboard extends Component {
       setTimeout(() => this.setState({ registrationSuccess: false }), 3000);
     }
     if (this.props.connectionError) {
-      setTimeout(() => {
-        window.location.reload();
-      }, 6000);
-      setInterval(
-        () =>
-          this.setState((prevState, props) => ({
-            ...prevState,
-            countDownTimer:
-              prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
-          })),
-        1000
-      );
+      try {
+        let res = await axios.get(
+          "/api/stats/MostRecentIdeas"
+        );
+        const { ideas, totalIdeas } = res.data;
+        res = await axios.get("/api/management/deadlines");
+        const { deadlines } = res.data;
+        if (deadlines && deadlines.length > 0) {
+          const currDeadline = deadlines.find(
+            x => new Date(x.CommentsSubmissionEnd.split("T")[0]) > new Date()
+          );
+          if (currDeadline) {
+            this.setState({ currentDeadline: currDeadline });
+          }
+        }
+        this.setState({
+          ideas: ideas, deadlines: deadlines, numberOfPages: Math.ceil(totalIdeas / 5),
+          selectedPage: 1, connectionError: false
+        })
+      } catch (err) {
+        console.log(err);
+      }
     }
+    // if (this.props.connectionError) {
+    //   setTimeout(() => {
+    //     window.location.reload();
+    //   }, 1500);
+    //   setInterval(
+    //     () =>
+    //       this.setState((prevState, props) => ({
+    //         ...prevState,
+    //         countDownTimer:
+    //           prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
+    //       })),
+    //     1000
+    //   );
+    // }
   }
 
   onDropdownChange = async (e, data) => {
@@ -163,9 +185,9 @@ class Dashboard extends Component {
           <Message negative>
             <Message.Header>
               Sorry the connection to the server was interrupted
-            </Message.Header>
-            <p>{connectionError}</p>
-            <p>Refreshing automatically in {countDownTimer} seconds</p>
+      </Message.Header>
+            <p>Request failed</p>
+            <p>Refreshing in {countDownTimer}</p>
           </Message>
         )}
         {currentDeadline && (

@@ -26,6 +26,7 @@ export default class IdeasList extends Component {
       return (
         <div
           style={{
+            marginTop: "2rem",
             display: "flex",
             justifyContent: "center",
             alignItems: "center"

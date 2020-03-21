@@ -6,6 +6,7 @@ import ReportedIdea from "../components/ReportedIdea";
 import ReportedComment from "../components/ReportedComment";
 import NotAuthorized from "../components/NotAuthorized";
 import { AuthContext } from "../context/AuthenticationContext";
+import RefreshError from '../components/RefreshError'
 
 export default class ContentIssues extends Component {
   static contextType = AuthContext;
@@ -24,11 +25,11 @@ export default class ContentIssues extends Component {
     try {
       axios.defaults.headers.common["x-auth-token"] = token;
       let resp = await axios.get(
-        "http://localhost:3000/api/management/reported-ideas"
+        "/api/management/reported-ideas"
       );
       const { reportedIdeas } = resp.data;
       resp = await axios.get(
-        "http://localhost:3000/api/management/reported-comments"
+        "/api/management/reported-comments"
       );
       const { reportedComments } = resp.data;
       return {
@@ -46,28 +47,28 @@ export default class ContentIssues extends Component {
       };
     }
   }
-  componentDidMount() {
-    if (
-      this.context.authenticated &&
-      this.context.user?.role &&
-      this.context.user.role === "QA Manager"
-    ) {
-      if (this.props.connectionError) {
-        setTimeout(() => {
-          window.location.reload();
-        }, 5000);
-        setInterval(
-          () =>
-            this.setState((prevState, props) => ({
-              ...prevState,
-              countDownTimer:
-                prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
-            })),
-          1000
-        );
-      }
-    }
-  }
+  // componentDidMount() {
+  //   if (
+  //     this.context.authenticated &&
+  //     this.context.user?.role &&
+  //     this.context.user.role === "QA Manager"
+  //   ) {
+  //     if (this.props.connectionError) {
+  //       setTimeout(() => {
+  //         window.location.reload();
+  //       }, 5000);
+  //       setInterval(
+  //         () =>
+  //           this.setState((prevState, props) => ({
+  //             ...prevState,
+  //             countDownTimer:
+  //               prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
+  //           })),
+  //         1000
+  //       );
+  //     }
+  //   }
+  // }
 
   deleteCommentAction = async commentId => {
     try {
@@ -119,7 +120,7 @@ export default class ContentIssues extends Component {
         ? "show-user-activity"
         : "hide-user-activity";
       const res = await axios.get(`/api/management/${linkRest}/` + userId);
-     
+
       const newList = this.state.reportedIdeas.map(x => {
         if (x.authorId === userId) {
           return {
@@ -157,13 +158,7 @@ export default class ContentIssues extends Component {
     return (
       <Fragment>
         {connectionError && (
-          <Message negative>
-            <Message.Header>
-              Sorry the connection to the server was interrupted
-            </Message.Header>
-            <p>{connectionError}</p>
-            <p>Refreshing automatically in {countDownTimer} seconds</p>
-          </Message>
+          <RefreshError pathname="/content-issues" />
         )}
         <Header size="large" style={{ textAlign: "center" }}>
           Portal Data Management

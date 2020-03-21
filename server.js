@@ -1,23 +1,16 @@
 const express = require("express");
+const server = express();
+const cors = require("cors");
+server.use(cors());
 const next = require("next");
 const writeFeedback = require("./utils/writeFeedback");
-
 const port = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-app.prepare().then(() => {
-  const server = express();
-
-  server.get("/a", (req, res) => {
-    return app.render(req, res, "/a", req.query);
-  });
-
-  server.get("/b", (req, res) => {
-    return app.render(req, res, "/b", req.query);
-  });
-
+app.prepare(cors()).then(() => {
+  
   server.use(express.json({ extended: false }));
   server.use(express.urlencoded({ extended: true }));
   // WARNING! Errors may show if the routes files don't have module.exports = router;

@@ -53,10 +53,10 @@ class Navbar extends Component {
             )}
             {authenticated && (
               <Fragment>
-                <Link href="/ideas/submitIdea">
+                <Link href="/submitIdea">
                   <a className="item">New idea</a>
                 </Link>
-                <Link href="/ideas/myIdeas">
+                <Link href="/myIdeas">
                   <a className="item">My ideas</a>
                 </Link>
                 <span

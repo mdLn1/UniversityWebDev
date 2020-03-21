@@ -1,13 +1,11 @@
 import "semantic-ui-css/semantic.min.css";
 import React, { Component } from "react";
 import axios from "axios";
-import { Cookies } from 'react-cookie'
+import Cookies from "js-cookie"
 import "../custom.css";
 import { AuthContext } from "../context/AuthenticationContext";
 import { Container } from "semantic-ui-react";
 import Navbar from "../components/Navbar";
-axios.defaults.baseURL = "http://localhost:3000/";
-const cookies = new Cookies();
 
 export default class _app extends Component {
   state = {
@@ -23,28 +21,30 @@ export default class _app extends Component {
   };
 
   async componentDidMount() {
-    if (typeof Storage !== "undefined") {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const config = { headers: { "x-auth-token": token } };
-        try {
-          const res = await axios.get("http://localhost:3000/api/auth/authenticate", config);
-          axios.defaults.headers.common["x-auth-token"] = token;
-          cookies.set("token", token);
-          this.setState({
-            user: res.data.user,
-            authenticated: true,
-            token: token
-          });
-        } catch (err) {
-          if (err.response) {
-            console.log(err.response.data);
-          } else {
-            console.log(err);
+    if (Cookies.get("token") !== null) {
+        const token = Cookies.get("token");
+        if (token) {
+          const config = { headers: { "x-auth-token": token } };
+          try {
+            const res = await axios.get("/api/auth/authenticate", config);
+            axios.defaults.headers.common["x-auth-token"] = token;
+            this.setState({
+              user: res.data.user,
+              authenticated: true,
+              token: token
+            });
+          } catch (err) {
+            if (err.response) {
+              if (err.response.data.errors[0].endsWith("expired")) {
+                localStorage.clear();
+                Cookies.remove("token")
+              }
+            } else {
+              console.log(err);
+            }
           }
         }
       }
-    }
   }
 
   render() {

@@ -4,6 +4,7 @@ import axios from "axios";
 import IdeaDisplay from "../../components/IdeaDisplay";
 import CommentsArea from "../../components/CommentsArea";
 import cookies from "next-cookies";
+import RefreshError from '../../components/RefreshError'
 
 export default class displayIdea extends Component {
   constructor(props) {
@@ -63,14 +64,7 @@ export default class displayIdea extends Component {
     const { connectionError } = this.props;
     if (connectionError)
       return (
-        <Fragment>
-          <Message negative>
-            <Message.Header>
-              Sorry the connection to the server was interrupted
-            </Message.Header>
-            <p>{connectionError}</p>
-          </Message>
-        </Fragment>
+        <RefreshError />
       );
     return (
       <Fragment>

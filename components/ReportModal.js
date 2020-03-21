@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from "react";
 import { Button, Modal, Header, Icon, Form, Message } from "semantic-ui-react";
 import axios from "axios";
-import { Cookies } from "react-cookie";
-const cookies = new Cookies();
+import { AuthContext } from '../context/AuthenticationContext'
 
 export default class ReportModal extends Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
   }
@@ -16,10 +16,9 @@ export default class ReportModal extends Component {
   };
 
   handleOpen = () => {
-    const token = cookies.get("token");
-    if (token != null) {
-      this.setState({ modalOpen: true });
-    } else alert("Please login to report an idea.");
+
+    if (!this.context.authenticated) alert("Please login to report an idea.");
+    else this.setState({ modalOpen: true })
   };
 
   handleClose = () => this.setState({ modalOpen: false });
@@ -29,26 +28,16 @@ export default class ReportModal extends Component {
   };
 
   reportIdeaHandler = async () => {
-    const token = cookies.get("token");
     try {
-      const config = {
-        headers: {
-          "x-auth-token": token
-        }
-      };
-      const obj = {
-        ideaID: this.props.ideaId,
-        problem: this.state.problem
-      };
       const res = await axios.post(
         `/api/ideas/${this.props.ideaId}/report`,
-        obj,
-        config
+        { problem: this.state.problem }
       );
       alert(res.data.success);
       this.handleClose();
     } catch (err) {
-      this.setState({ apiErrors: err.response.data.errors });
+      if (err.response)
+        this.setState({ apiErrors: err.response.data.errors });
     }
   };
 

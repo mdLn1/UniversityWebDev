@@ -12,7 +12,7 @@ export default class AttachmentsModal extends Component {
     const { uploads } = this.props;
     if (uploads.length == 0) {
       return (
-        <Container gluid>
+        <Container fluid>
           <Header icon>
             <Icon name="warning" />
             No Uploads for this idea yet.
@@ -25,7 +25,7 @@ export default class AttachmentsModal extends Component {
         <List divided relaxed>
           {uploads.map((el, index) => {
             return (
-              <List.Item>
+              <List.Item key={index}>
                 <List.Icon
                   name="external alternate"
                   size="large"

@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from "react";
-import { Header, Pagination } from "semantic-ui-react";
+import { Header, Pagination, Message } from "semantic-ui-react";
 import axios from "axios";
 import cookies from "next-cookies";
 import jwt_decode from "jwt-decode";
-import MyIdeasList from "../../components/MyIdeasList";
-import NotAuthenticated from "../../components/NotAuthenticated";
-import { AuthContext } from "../../context/AuthenticationContext";
+import MyIdeasList from "../components/MyIdeasList";
+import NotAuthenticated from "../components/NotAuthenticated";
+import { AuthContext } from "../context/AuthenticationContext";
+import RefreshError from '../components/RefreshError'
 
 class MyIdeas extends Component {
   state = {
@@ -29,7 +30,7 @@ class MyIdeas extends Component {
           }
         };
         let res = await axios.get(
-          `http://localhost:3000/api/ideas/user/${userID}?itemsCount=5&pageNo=${1}`,
+          `/api/ideas/user/${userID}?itemsCount=5&pageNo=${1}`,
           config
         );
         let ideas = res.data.userIdeas;
@@ -47,13 +48,12 @@ class MyIdeas extends Component {
   }
 
   async componentDidMount() {
-    if (!this.context.authenticated) {
+    if (this.context.authenticated) {
       try {
         const res = await axios.get(
-          `http://localhost:3000/api/ideas/user/${this.context.user.id}`
+          `/api/ideas/user/${this.context.user.id}`
         );
         const { userIdeas, totalIdeas } = res.data;
-        console.log(res.data);
         this.setState({
           ideas: userIdeas,
           totalPages: Math.ceil(totalIdeas / 5),
@@ -63,26 +63,26 @@ class MyIdeas extends Component {
         if (err.response) console.log(err.response.data);
       }
     }
-    if (this.props.connectionError) {
-      setTimeout(() => {
-        window.location.reload();
-      }, 6000);
-      setInterval(
-        () =>
-          this.setState((prevState, props) => ({
-            ...prevState,
-            countDownTimer:
-              prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
-          })),
-        1000
-      );
-    }
+    // if (this.props.connectionError) {
+    //   setTimeout(() => {
+    //     window.location.reload();
+    //   }, 6000);
+    //   setInterval(
+    //     () =>
+    //       this.setState((prevState, props) => ({
+    //         ...prevState,
+    //         countDownTimer:
+    //           prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
+    //       })),
+    //     1000
+    //   );
+    // }
   }
 
   async updateListOfIdeas(activePage = 1) {
     try {
       const res = await axios.get(
-        `api/ideas/user/${this.context.user.id}?itemsCount=5&pageNo=${activePage}`
+        `/api/ideas/user/${this.context.user.id}?itemsCount=5&pageNo=${activePage}`
       );
       let ideas = res.data.userIdeas;
       let totalIdeas = res.data.totalIdeas;
@@ -106,21 +106,16 @@ class MyIdeas extends Component {
     if (!this.context.authenticated) {
       return <NotAuthenticated />;
     }
-    const { selectedPage, numberOfPages, connectionError, ideas } = this.state;
+    const { selectedPage, numberOfPages, connectionError, ideas, countDownTimer } = this.state;
     return (
       <Fragment>
+        {connectionError && (
+          <RefreshError />
+        )}
         <Header as="h2" color="teal" textAlign="center">
           My Ideas
         </Header>
-        {connectionError && (
-          <Message negative>
-            <Message.Header>
-              Sorry the connection to the server was interrupted
-            </Message.Header>
-            <p>{connectionError}</p>
-            <p>Refreshing automatically in {countDownTimer} seconds</p>
-          </Message>
-        )}
+
         {!connectionError && (
           <Fragment>
             <MyIdeasList ideas={ideas} />

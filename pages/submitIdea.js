@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { Router } from "../../routes";
+import { Router } from "../routes";
 import {
   Button,
   Form,
@@ -9,9 +9,11 @@ import {
   Checkbox,
   TextArea
 } from "semantic-ui-react";
+import Link from "next/link";
 import axios from "axios";
-import { AuthContext } from "../../context/AuthenticationContext";
-import NotAuthenticated from "../../components/NotAuthenticated";
+import { AuthContext } from "../context/AuthenticationContext";
+import NotAuthenticated from "../components/NotAuthenticated";
+import RefreshError from "../components/RefreshError";
 
 class submitIdea extends Component {
   static contextType = AuthContext;
@@ -41,10 +43,10 @@ class submitIdea extends Component {
 
   static async getInitialProps(ctx) {
     try {
-      let resp = await axios.get("http://localhost:3000/api/categories");
+      let resp = await axios.get("/api/categories");
       const { categories } = resp.data;
 
-      resp = await axios.get("http://localhost:3000/api/management/deadlines");
+      resp = await axios.get("/api/management/deadlines");
 
       const { deadlines } = resp.data;
 
@@ -71,23 +73,27 @@ class submitIdea extends Component {
         }
       }
     }
-    if (this.context.authenticated) {
-      if (this.props.connectionError) {
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+    // if (this.context.authenticated) {
+    //   if (this.props.connectionError) {
+    //     setTimeout(() => {
+    //       window.location.reload();
+    //     }, 3000);
 
-        setInterval(
-          () =>
-            this.setState((prevState, props) => ({
-              ...prevState,
-              countDownTimer:
-                prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
-            })),
-          1000
-        );
-      }
-    }
+    //     setInterval(
+    //       () =>
+    //         this.setState((prevState, props) => ({
+    //           ...prevState,
+    //           countDownTimer:
+    //             prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
+    //         })),
+    //       1000
+    //     );
+    //   }
+    // }
+  }
+
+  componentWillUnmount() {
+
   }
   onChangeText = e => {
     this.setState({ [e.target.name]: e.target.value });
@@ -307,7 +313,7 @@ class submitIdea extends Component {
         pointing: "below"
       };
     }
-    
+
     if (!this.context.authenticated) {
       return <NotAuthenticated />;
     }
@@ -317,13 +323,7 @@ class submitIdea extends Component {
           style={{ maxWidth: "32rem", margin: "auto", padding: ".5rem 2rem" }}
         >
           {connectionError && (
-            <Message negative>
-              <Message.Header>
-                Sorry the connection to the server was interrupted
-              </Message.Header>
-              <p>{connectionError}</p>
-              <p>Refreshing automatically in {countDownTimer} seconds</p>
-            </Message>
+            <RefreshError pathname="/submitIdea" />
           )}
           {!currentDeadline && !connectionError && (
             <Message success>
@@ -404,10 +404,10 @@ class submitIdea extends Component {
                 </Button>
               </Fragment>
             ) : (
-              <Button color="red" fluid size="large">
-                No idea can be submitted
-              </Button>
-            )}
+                <Button color="red" fluid size="large">
+                  No idea can be submitted
+                </Button>
+              )}
           </Form>
         </div>
       </Fragment>

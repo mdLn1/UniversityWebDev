@@ -45,7 +45,6 @@ export default class PieChart extends Component {
     }
 
     if (this.props.type == "mostUser") {
-      console.log(data);
       data = this.props.data.map(el => {
         return [el.name, el.number_of_ideas];
       });

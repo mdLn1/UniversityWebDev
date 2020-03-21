@@ -10,7 +10,7 @@ export default class CommentsList extends Component {
 
   render() {
     const { idea } = this.props;
-    let cardHeader = <IdeaHeader ideaTitle={idea.Title} />;
+    let cardHeader = <IdeaHeader ideaTitle={idea.Title} ideaId={idea.ID} />;
 
     let cardDescription = (
       <div>
