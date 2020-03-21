@@ -2,10 +2,8 @@ import React, { Component, Fragment } from "react";
 import { Grid, Message, Segment, Header, Card, Icon } from "semantic-ui-react";
 import axios from "axios";
 import cookies from "next-cookies";
-import { Cookies } from "react-cookie";
 import ReportedIdea from "../components/ReportedIdea";
 import ReportedComment from "../components/ReportedComment";
-const reactCookies = new Cookies();
 import NotAuthorized from "../components/NotAuthorized";
 import { AuthContext } from "../context/AuthenticationContext";
 
@@ -73,7 +71,6 @@ export default class ContentIssues extends Component {
 
   deleteCommentAction = async commentId => {
     try {
-      axios.defaults.headers.common["x-auth-token"] = reactCookies.get("token");
       const res = await axios.delete(
         "/api/management/delete-comment/" + commentId
       );
@@ -92,18 +89,17 @@ export default class ContentIssues extends Component {
     return false;
   };
 
-  blockUserAction = async (userId, isEnabled) => {
+  blockUserAction = async (userId, disabled) => {
     try {
-      const linkRest = isEnabled ? "disable-user" : "enable-user";
-      axios.defaults.headers.common["x-auth-token"] = reactCookies.get("token");
+      const linkRest = disabled === 0 ? "disable-user" : "enable-user";
       const res = await axios.get(`/api/management/${linkRest}/` + userId);
       this.setState(prevState => ({
         ...prevState,
         reportedIdeas: prevState.reportedIdeas.map(x => {
-          if (x.ID === userId) {
+          if (x.authorId === userId) {
             return {
               ...x,
-              disabled: !isEnabled
+              disabled: disabled === 1 ? 0 : 1
             };
           } else return x;
         })
@@ -118,23 +114,23 @@ export default class ContentIssues extends Component {
   };
 
   hideUserActivityAction = async (userId, isActivityHidden) => {
-    console.log(isActivityHidden);
     try {
-      axios.defaults.headers.common["x-auth-token"] = reactCookies.get("token");
-      const linkRest = isActivityHidden
+      const linkRest = isActivityHidden === 1
         ? "show-user-activity"
         : "hide-user-activity";
       const res = await axios.get(`/api/management/${linkRest}/` + userId);
+     
+      const newList = this.state.reportedIdeas.map(x => {
+        if (x.authorId === userId) {
+          return {
+            ...x,
+            hideActivities: isActivityHidden === 1 ? 0 : 1
+          };
+        } else return x;
+      });
       this.setState(prevState => ({
         ...prevState,
-        reportedIdeas: prevState.reportedIdeas.map(x => {
-          if (x.ID === userId) {
-            return {
-              ...x,
-              hideActivities: !isActivityHidden
-            };
-          } else return x;
-        })
+        reportedIdeas: newList
       }));
       return true;
     } catch (err) {
@@ -148,7 +144,7 @@ export default class ContentIssues extends Component {
     if (
       !this.context.authenticated ||
       !this.context.user?.role ||
-      this.state.user.role !== "QA Manager"
+      this.context.user.role !== "QA Manager"
     ) {
       return <NotAuthorized />;
     }
@@ -190,11 +186,11 @@ export default class ContentIssues extends Component {
                 ))}
               </Card.Group>
             ) : (
-              <div style={{ textAlign: "center", marginTop: "2rem" }}>
-                <Icon name="idea" size="huge"></Icon>
-                <Header size="small"> No ideas reported</Header>
-              </div>
-            )}
+                <div style={{ textAlign: "center", marginTop: "2rem" }}>
+                  <Icon name="idea" size="huge"></Icon>
+                  <Header size="small"> No ideas reported</Header>
+                </div>
+              )}
           </Grid.Column>
           <Grid.Column>
             <Header size="medium" style={{ textAlign: "center" }}>
@@ -212,11 +208,11 @@ export default class ContentIssues extends Component {
                 ))}
               </Card.Group>
             ) : (
-              <div style={{ textAlign: "center", marginTop: "2rem" }}>
-                <Icon name="comments" size="huge"></Icon>
-                <Header size="small"> No comments reported</Header>
-              </div>
-            )}
+                <div style={{ textAlign: "center", marginTop: "2rem" }}>
+                  <Icon name="comments" size="huge"></Icon>
+                  <Header size="small"> No comments reported</Header>
+                </div>
+              )}
           </Grid.Column>
         </Grid>
       </Fragment>
