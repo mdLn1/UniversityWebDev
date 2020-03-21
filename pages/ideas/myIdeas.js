@@ -57,7 +57,7 @@ class MyIdeas extends Component {
         }
       };
       const res = await axios.get(
-        `api/ideas/user/${this.state.userID}?itemsCount=5&pageNo=${activePage}`,
+        `/api/ideas/user/${this.state.userID}?itemsCount=5&pageNo=${activePage}`,
         config
       );
       let ideas = res.data.userIdeas;

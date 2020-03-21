@@ -39,7 +39,7 @@ class LoginForm extends Component {
       }));
     } else {
       try {
-        const res = await axios.post("api/auth/login/", { email, password });
+        const res = await axios.post("/api/auth/login/", { email, password });
         cookies.set("token", res.data.token);
         if (res.data.user.lastLogin != null) {
           alert(
@@ -54,7 +54,7 @@ class LoginForm extends Component {
         if (localBrowser) {
           let browser = localBrowser.name;
           let os = localBrowser.os;
-          await axios.post("api/userDevice/", { browser, os });
+          await axios.post("/api/userDevice/", { browser, os });
         }
         localStorage.setItem("username", res.data.user.name);
         localStorage.setItem("email", email);

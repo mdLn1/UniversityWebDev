@@ -5,6 +5,7 @@ import "../custom.css";
 import { AuthContext } from "../context/AuthenticationContext";
 import { Container } from "semantic-ui-react";
 import Navbar from "../components/Navbar";
+axios.defaults.baseURL = "http://localhost:3000/";
 
 export default class _app extends Component {
   state = {
@@ -25,7 +26,7 @@ export default class _app extends Component {
       if (token) {
         const config = { headers: { "x-auth-token": token } };
         try {
-          const res = await axios.get("api/auth/authenticate", config);
+          const res = await axios.get("http://localhost:3000/api/auth/authenticate", config);
           axios.defaults.headers.common["x-auth-token"] = token;
           this.setState({
             user: res.data.user,

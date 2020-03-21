@@ -90,7 +90,7 @@ export default class Deadlines extends Component {
       try {
         axios.defaults.headers.common["x-auth-token"] = cookies.get("token");
         const res = await axios.post(
-          "api/management/deadlines/" + this.props.currDeadline.ID,
+          "/api/management/deadlines/" + this.props.currDeadline.ID,
           {
             ideasSubmissionEnd: currentIdeasSubmissionEnd,
             commentsSubmissionEnd: currentCommentsSubmissionEnd

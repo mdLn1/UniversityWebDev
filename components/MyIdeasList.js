@@ -1,9 +1,7 @@
 import React, { Component, Fragment } from "react";
-import { Card, Button, Icon, Header, Segment } from "semantic-ui-react";
+import { Card, Button, Icon, Segment } from "semantic-ui-react";
 import Link from "next/link";
 import axios from "axios";
-import { Cookies } from "react-cookie";
-const cookies = new Cookies();
 import CommentsModal from "./CommentsModal";
 import AttachmentsModal from "./AttachmentsModal";
 
@@ -13,14 +11,8 @@ export default class IdeasList extends Component {
   }
 
   async deleteHandler(ID) {
-    const token = cookies.get("token");
     try {
-      const config = {
-        headers: {
-          "x-auth-token": token
-        }
-      };
-      const res = await axios.delete(`api/ideas/${ID}`, config);
+      const res = await axios.delete(`/api/ideas/${ID}`, config);
       alert(res.data.success);
       window.location.reload();
     } catch (err) {
@@ -39,7 +31,7 @@ export default class IdeasList extends Component {
             alignItems: "center"
           }}
         >
-          <Segment color="teal" textAlign="left" flex>
+          <Segment color="teal" textAlign="left" fluid>
             <p>No ideas submitted yet.</p>
           </Segment>
         </div>

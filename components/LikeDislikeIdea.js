@@ -23,7 +23,7 @@ export default class LikeDislikeArea extends Component {
           "x-auth-token": cookies.get("token")
         }
       };
-      const res = await axios.get(`api/ideas/${ID}/rate?vote=${vote}`, config);
+      const res = await axios.get(`/api/ideas/${ID}/rate?vote=${vote}`, config);
       console.log(res.data);
       if (vote === 0) {
         alert("You have rated the idea negatively");
