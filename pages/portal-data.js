@@ -71,7 +71,7 @@ export default class PortalData extends Component {
     if (
       this.context.authenticated &&
       this.context.user?.role &&
-      this.state.user.role === "QA Manager"
+      this.context.user.role === "QA Manager"
     ) {
       if (this.props.connectionError) {
         setTimeout(() => {
