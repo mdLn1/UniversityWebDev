@@ -4,13 +4,10 @@ import {
   Button,
   Icon,
   Segment,
-  Checkbox,
   Message
 } from "semantic-ui-react";
 import Link from "next/link";
-import { Cookies } from "react-cookie";
 import axios from "axios";
-const cookies = new Cookies();
 
 export default class ReportedIdea extends Component {
   constructor(props) {
@@ -31,11 +28,9 @@ export default class ReportedIdea extends Component {
   onReveal = async () => {
     if (this.state.reportedProblems.length === 0) {
       try {
-        axios.defaults.headers.common["x-auth-token"] = cookies.get("token");
         const res = await axios.get(
           "/api/management/reported-ideas/" + this.props.idea.ideaId
         );
-        console.log(this.props.idea)
         const { reportedProblems } = res.data;
         this.setState({ reportedProblems });
       } catch (err) {
@@ -79,7 +74,9 @@ export default class ReportedIdea extends Component {
       posted_time,
       Title,
       description,
-      reports
+      reports,
+      disabled,
+      hideActivities
     } = idea;
     const {
       isRevealed,
@@ -119,7 +116,7 @@ export default class ReportedIdea extends Component {
           </Link>
         </div>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          {this.props.idea.hideActivities === 0 || this.props.idea.hideActivities === false ? (
+          {hideActivities === 0 ? (
             <Button
               content="Hide Author Activity"
               color="red"
@@ -134,7 +131,7 @@ export default class ReportedIdea extends Component {
                 style={{ margin: "0 .5rem" }}
               />
             )}
-          {this.props.idea.disabled === 1 || this.props.idea.disabled === true ? (
+          {disabled === 0 ? (
             <Button
               content="Disable Author Account"
               color="red"

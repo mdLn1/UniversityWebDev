@@ -8,57 +8,34 @@ import NotAuthenticated from "../../components/NotAuthenticated";
 import { AuthContext } from "../../context/AuthenticationContext";
 
 class MyIdeas extends Component {
-  static contextType = AuthContext;
   state = {
-    userID: this.props.userID || "",
-    ideas: this.props.ideas || [],
+    ideas: [],
     apiErrors: [],
     selectedPage: 1,
-    numberOfPages: this.props.numberOfPages || 1,
-    token: this.props.token || ""
+    numberOfPages: 1
   };
 
-  static async getInitialProps(props) {
-    try {
-      const { token } = cookies(props);
-      if (token) {
-        let decoded = jwt_decode(token);
-        let userID = decoded.user.id;
-        const config = {
-          headers: {
-            "x-auth-token": token
-          }
-        };
-        let res = await axios.get(
-          `http://localhost:3000/api/ideas/user/${userID}?itemsCount=5&pageNo=${1}`,
-          config
+  async componentDidMount() {
+    if (!this.context.authenticated) {
+      try {
+        const res = await axios.get(
+          `http://localhost:3000/api/ideas/user/${this.context.user.id}`
         );
-        let ideas = res.data.userIdeas;
-        let totalIdeas = res.data.totalIdeas;
-        return {
-          token,
-          userID,
-          ideas,
-          numberOfPages: Math.ceil(totalIdeas / 5)
-        };
-      } else {
-        return { connectionError: "connection failed" };
+        const { userIdeas, totalIdeas } = res.data;
+        console.log(res.data)
+        this.setState({ ideas: userIdeas, totalPages: Math.ceil(totalIdeas / 5), selectedPage: 1 })
+      } catch (err) {
+        if (err.response)
+          console.log(err.response.data)
       }
-    } catch (err) {
-      return { connectionError: "connection failed" };
+
     }
   }
 
   async updateListOfIdeas(activePage = 1) {
     try {
-      const config = {
-        headers: {
-          "x-auth-token": this.state.token
-        }
-      };
       const res = await axios.get(
-        `/api/ideas/user/${this.state.userID}?itemsCount=5&pageNo=${activePage}`,
-        config
+        `/api/ideas/user/${this.context.user.id}?itemsCount=5&pageNo=${activePage}`,
       );
       let ideas = res.data.userIdeas;
       let totalIdeas = res.data.totalIdeas;
@@ -101,5 +78,5 @@ class MyIdeas extends Component {
     );
   }
 }
-
+MyIdeas.contextType = AuthContext;
 export default MyIdeas;

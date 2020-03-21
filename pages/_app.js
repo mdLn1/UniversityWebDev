@@ -1,11 +1,13 @@
 import "semantic-ui-css/semantic.min.css";
 import React, { Component } from "react";
 import axios from "axios";
+import { Cookies } from 'react-cookie'
 import "../custom.css";
 import { AuthContext } from "../context/AuthenticationContext";
 import { Container } from "semantic-ui-react";
 import Navbar from "../components/Navbar";
 axios.defaults.baseURL = "http://localhost:3000/";
+const cookies = new Cookies();
 
 export default class _app extends Component {
   state = {
@@ -28,6 +30,7 @@ export default class _app extends Component {
         try {
           const res = await axios.get("http://localhost:3000/api/auth/authenticate", config);
           axios.defaults.headers.common["x-auth-token"] = token;
+          cookies.set("token", token);
           this.setState({
             user: res.data.user,
             authenticated: true,
