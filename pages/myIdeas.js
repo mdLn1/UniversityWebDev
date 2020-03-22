@@ -60,7 +60,7 @@ class MyIdeas extends Component {
           selectedPage: 1
         });
       } catch (err) {
-        if (err.response) console.log(err.response.data);
+        if (err.response) this.setState({ apiErrors: err.response.data.errors })
       }
     }
     // if (this.props.connectionError) {

@@ -17,12 +17,19 @@ class LoginForm extends Component {
     password: "",
     emailError: false,
     passwordError: false,
-    apiErrors: []
+    apiErrors: [],
+    loading: true
   };
 
   componentDidMount() {
     if (this.context.authenticated) {
+      this.setState({ loading: false })
+
       history.back();
+
+    } else {
+      this.setState({ loading: false })
+
     }
 
   }
@@ -32,6 +39,7 @@ class LoginForm extends Component {
   };
 
   loginHandler = async e => {
+    this.setState({ loading: true })
     e.preventDefault();
     const { email, password } = this.state;
     const emailError = !(
@@ -42,7 +50,8 @@ class LoginForm extends Component {
       this.setState(prevState => ({
         ...prevState,
         emailError,
-        passwordError
+        passwordError,
+        loading: false
       }));
     } else {
       try {
@@ -70,11 +79,11 @@ class LoginForm extends Component {
         this.context.loginUser(res.data.user, res.data.token);
         Router.replace({ pathname: "/", query: { loginSuccess: true } }, "/");
       } catch (err) {
-        console.log(err);
         if (err.response)
           this.setState({
             apiErrors: err.response.data.errors
           });
+        this.setState({ loading: false })
       }
     }
   };
@@ -124,6 +133,7 @@ class LoginForm extends Component {
               padding: "1.5rem",
               borderRadius: "1rem"
             }}
+            loading={this.state.loading}
             onSubmit={this.loginHandler}
           >
             <Header as="h2" color="teal" textAlign="center">
