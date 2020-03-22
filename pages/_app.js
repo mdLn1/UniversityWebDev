@@ -6,6 +6,7 @@ import "../custom.css";
 import { AuthContext } from "../context/AuthenticationContext";
 import { Container } from "semantic-ui-react";
 import Navbar from "../components/Navbar";
+import Router from "next/router";
 
 export default class _app extends Component {
   state = {
@@ -21,30 +22,32 @@ export default class _app extends Component {
   };
 
   async componentDidMount() {
-    if (Cookies.get("token") !== null) {
-        const token = Cookies.get("token");
-        if (token) {
-          const config = { headers: { "x-auth-token": token } };
-          try {
-            const res = await axios.get("/api/auth/authenticate", config);
-            axios.defaults.headers.common["x-auth-token"] = token;
-            this.setState({
-              user: res.data.user,
-              authenticated: true,
-              token: token
-            });
-          } catch (err) {
-            if (err.response) {
-              if (err.response.data.errors[0].endsWith("expired")) {
-                localStorage.clear();
-                Cookies.remove("token")
-              }
-            } else {
-              console.log(err);
+    if (typeof Storage !== undefined) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const config = { headers: { "x-auth-token": token } };
+        try {
+          const res = await axios.get("/api/auth/authenticate", config);
+          axios.defaults.headers.common["x-auth-token"] = token;
+          Cookies.set("token", token)
+          this.setState({
+            user: res.data.user,
+            authenticated: true,
+            token: token
+          });
+          Router.push("/login")
+        } catch (err) {
+          if (err.response) {
+            if (err.response.data.errors[0].endsWith("expired")) {
+              localStorage.clear();
+              Cookies.remove("token")
             }
+          } else {
+            console.log(err);
           }
         }
       }
+    }
   }
 
   render() {

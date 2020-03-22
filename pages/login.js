@@ -20,6 +20,13 @@ class LoginForm extends Component {
     apiErrors: []
   };
 
+  componentDidMount() {
+    if (this.context.authenticated) {
+      history.back();
+    }
+
+  }
+
   handleInputChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
@@ -44,9 +51,9 @@ class LoginForm extends Component {
         if (res.data.user.lastLogin != null) {
           alert(
             "Your last login was on the " +
-              res.data.user.lastLogin.slice(0, 10) +
-              " at " +
-              res.data.user.lastLogin.slice(11, 19)
+            res.data.user.lastLogin.slice(0, 10) +
+            " at " +
+            res.data.user.lastLogin.slice(11, 19)
           );
         } else {
           alert("Welcome! This is your first login!");

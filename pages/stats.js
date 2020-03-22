@@ -20,9 +20,10 @@ class Stats extends Component {
   };
 
   static async getInitialProps(props) {
+    const { token } = cookies(props);
     try {
-      const { token } = cookies(props);
-      axios.defaults.headers.common["x-auth-token"] = token;
+      if (token)
+        axios.defaults.headers.common["x-auth-token"] = token;
       const resBrowser = await axios.get(`/api/userDevice/browser`);
       const { browserData } = resBrowser.data;
       const resOs = await axios.get(`/api/userDevice/os`);
@@ -41,7 +42,6 @@ class Stats extends Component {
         mostUserSubmitIdeas
       };
     } catch (err) {
-      console.log(err)
       return { connectionError: "Connection failed" }
     }
   }
