@@ -5,7 +5,14 @@ const {
   getMostViewedIdeasQuery,
   getNumberOfIdeasPerUserQuery,
   getOldestIdeasQuery,
-  getUsersWithMostCommentsQuery
+  getUsersWithMostCommentsQuery,
+  getAllVisibleIdeasCountQuery,
+  getAnonymousCommentsCountQuery,
+  getAnonymousPostsCountQuery,
+  getNoCommentPostsCountQuery,
+  getAllCommentsCountQuery,
+  getContributorsCountPerDepartmentQuery,
+  getIdeasCountPerDepartmentQuery
 } = require("../db/queries/stats");
 
 const { getIdeasCountQuery } = require("../db/queries/ideas");
@@ -66,30 +73,33 @@ getOldestIdeasReq = async (req, res) => {
   res.status(200).json({ ideas: oldestIdeas, totalIdeas });
 };
 
-getMostRecentActiveUsersReq = async (req, res) => {
-  let { itemsCount, pageNo } = req.query;
-  const data = await getMostRecentActiveUsersQuery();
-  res.status(200).json(data);
-};
+getIdeasCommentsStatsReq = async (req, res) => {
+  const usersOrderedByNumberOfIdeas = await getNumberOfIdeasPerUserQuery();
+  const usersOrderedByComments = await getUsersWithMostCommentsQuery();
+  const allVisibleIdeasCount = await getAllVisibleIdeasCountQuery();
+  const anonymousCommentsCount = await getAnonymousCommentsCountQuery();
+  const anonymousPostsCount = await getAnonymousPostsCountQuery();
+  const noCommentsPostsCount = await getNoCommentPostsCountQuery();
+  const commentsCount = await getAllCommentsCountQuery();
+  const contributorsPerDepartmentCount = await getContributorsCountPerDepartmentQuery();
+  const ideasPerDepartmentCount = await getIdeasCountPerDepartmentQuery();
 
-getNumberOfIdeasPerUserReq = async (req, res) => {
-  let { itemsCount, pageNo } = req.query;
-  const data = await getNumberOfIdeasPerUserQuery();
-  res.status(200).json(data);
+  res.status(200).json({
+    usersOrderedByComments,
+    usersOrderedByNumberOfIdeas,
+    allVisibleIdeasCount,
+    anonymousCommentsCount,
+    anonymousPostsCount,
+    noCommentsPostsCount,
+    commentsCount,
+    contributorsPerDepartmentCount,
+    ideasPerDepartmentCount
+  });
 };
-
-getUsersWithMostCommentsReq = async (req, res) => {
-  let { itemsCount, pageNo } = req.query;
-  const data = await getUsersWithMostCommentsQuery();
-  res.status(200).json(data);
-};
-
 module.exports = {
   getHighestRatedIdeasReq,
-  getMostRecentActiveUsersReq,
-  getNumberOfIdeasPerUserReq,
   getMostViewedIdeasReq,
   getMostRecentIdeasReq,
-  getUsersWithMostCommentsReq,
-  getOldestIdeasReq
+  getOldestIdeasReq,
+  getIdeasCommentsStatsReq
 };
