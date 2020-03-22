@@ -53,27 +53,17 @@ export default class PieChart extends Component {
     }
 
     return (
-      <Segment color="teal" textAlign="left">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center"
-          }}
-        >
-          <Chart
-            width={"500px"}
-            height={"300px"}
-            chartType="PieChart"
-            loader={<div>Loading Chart</div>}
-            data={data}
-            options={{
-              title: title
-            }}
-            rootProps={{ "data-testid": "1" }}
-          />
-        </div>
-      </Segment>
+      <Chart
+        width={"50rem"}
+        height={"30rem"}
+        chartType="PieChart"
+        loader={<div>Loading Chart</div>}
+        data={data}
+        options={{
+          title: title
+        }}
+        rootProps={{ "data-testid": "1" }}
+      />
     );
   }
 }

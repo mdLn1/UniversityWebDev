@@ -3,12 +3,10 @@ const router = express.Router();
 const exceptionHandler = require("../utils/exceptionHandler");
 const {
   getHighestRatedIdeasReq,
-  getMostRecentActiveUsersReq,
-  getNumberOfIdeasPerUserReq,
   getMostViewedIdeasReq,
   getMostRecentIdeasReq,
-  getUsersWithMostCommentsReq,
-  getOldestIdeasReq
+  getOldestIdeasReq,
+  getIdeasCommentsStatsReq
 } = require("../controllers/statsController");
 
 const paginationMiddleware = require("../utils/paginationMiddleware");
@@ -38,32 +36,14 @@ router.get(
 );
 
 //@desc Returns ideas with highest ratings
-//@access Public
+//@access Public F
 router.get(
   "/HighestRatedIdeas",
   paginationMiddleware,
   exceptionHandler(getHighestRatedIdeasReq)
 );
 
-//@desc Returns users that submitted the most recent posts
-//@access Public
-router.get(
-  "/MostRecentActiveUser",
-  paginationMiddleware,
-  getMostRecentActiveUsersReq
-);
-
-//@desc Returns the number of ideas per user
-//@access Public
-router.get("/IdeasPerUser", paginationMiddleware, getNumberOfIdeasPerUserReq);
-
-//@desc Returns users with most comments
-//@access Public
-router.get(
-  "/UserWithMostComments",
-  paginationMiddleware,
-  getUsersWithMostCommentsReq
-);
+router.get("/ideas-comments-stats", exceptionHandler(getIdeasCommentsStatsReq));
 
 // Exports routes binded to this routers context.
 module.exports = router;

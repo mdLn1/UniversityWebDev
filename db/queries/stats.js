@@ -27,7 +27,7 @@ function getHighestRatedIdeasQuery(itemsCount, pageNo, userId = -1) {
   );
 }
 //@desc Returns idea with most views
-function getMostViewedIdeasQuery(itemsCount, pageNo, userId=-1) {
+function getMostViewedIdeasQuery(itemsCount, pageNo, userId = -1) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
@@ -53,7 +53,7 @@ function getMostViewedIdeasQuery(itemsCount, pageNo, userId=-1) {
   );
 }
 //@desc Returns most recent ideas with a limit of 5
-function getMostRecentIdeasQuery(itemsCount, pageNo, userId=-1) {
+function getMostRecentIdeasQuery(itemsCount, pageNo, userId = -1) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
@@ -69,7 +69,7 @@ function getMostRecentIdeasQuery(itemsCount, pageNo, userId=-1) {
           ORDER BY i.posted_time DESC
           LIMIT ? OFFSET ?`,
         timeout: 40000,
-        values: [userId,itemsCount, itemsCount * (pageNo - 1)]
+        values: [userId, itemsCount, itemsCount * (pageNo - 1)]
       },
       (error, result) => {
         if (error) return reject(error);
@@ -78,7 +78,7 @@ function getMostRecentIdeasQuery(itemsCount, pageNo, userId=-1) {
     )
   );
 }
-function getOldestIdeasQuery(itemsCount, pageNo, userId=-1) {
+function getOldestIdeasQuery(itemsCount, pageNo, userId = -1) {
   return new Promise((resolve, reject) =>
     pool.query(
       {
@@ -94,7 +94,7 @@ function getOldestIdeasQuery(itemsCount, pageNo, userId=-1) {
         ORDER BY i.posted_time ASC
         LIMIT ? OFFSET ?`,
         timeout: 40000,
-        values: [userId,itemsCount, itemsCount * (pageNo - 1)]
+        values: [userId, itemsCount, itemsCount * (pageNo - 1)]
       },
       (error, result) => {
         if (error) return reject(error);
@@ -112,7 +112,7 @@ function getNumberOfIdeasPerUserQuery() {
           FROM Ideas AS i
           INNER JOIN Users AS u ON u.ID = i.user_id
           GROUP BY u.email
-          ORDER BY COUNT(i.user_id) DESC`,
+          ORDER BY COUNT(i.user_id) DESC LIMIT 5`,
         timeout: 40000,
         values: []
       },
@@ -128,10 +128,11 @@ function getMostRecentActiveUsersQuery() {
   return new Promise((resolve, reject) =>
     pool.query(
       {
-        sql: `SELECT DISTINCT u.name, u.lastLogin
+        sql: `SELECT DISTINCT u.name, i.posted_time
           FROM Ideas AS i
           INNER JOIN Users AS u ON u.ID = i.user_id
-          ORDER BY posted_time DESC`,
+          where i.posted_time IS NOT NULL
+          ORDER BY i.posted_time DESC LIMIT 5`,
         timeout: 40000,
         values: []
       },
@@ -147,11 +148,11 @@ function getUsersWithMostCommentsQuery() {
   return new Promise((resolve, reject) =>
     pool.query(
       {
-        sql: `SELECT u.email, COUNT(c.user_id) AS number_of_comments
+        sql: `SELECT u.email, u.name, COUNT(c.user_id) AS number_of_comments
           FROM Users as u
           INNER JOIN Comments AS c ON u.ID = c.user_id
           GROUP BY u.email
-          ORDER BY number_of_comments DESC`,
+          ORDER BY number_of_comments DESC LIMIT 5`,
         timeout: 40000,
         values: []
       },
@@ -163,6 +164,136 @@ function getUsersWithMostCommentsQuery() {
   );
 }
 
+function getAnonymousPostsCountQuery() {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: `SELECT COUNT(*)
+        FROM Ideas
+        WHERE isAnonymous=1 and hidden=0`,
+        timeout: 40000,
+        values: []
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result[0]["COUNT(*)"]);
+      }
+    )
+  );
+}
+function getAnonymousCommentsCountQuery() {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: `SELECT COUNT(*)
+        FROM Comments
+        WHERE isAnonymous=1`,
+        timeout: 40000,
+        values: []
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result[0]["COUNT(*)"]);
+      }
+    )
+  );
+}
+
+function getNoCommentPostsCountQuery() {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: `SELECT COUNT(*)
+        FROM Ideas AS i
+        LEFT OUTER JOIN Comments AS c ON i.ID = c.idea_id
+        WHERE i.hidden = 0 and c.idea_id IS NULL`,
+        timeout: 40000,
+        values: []
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result[0]["COUNT(*)"]);
+      }
+    )
+  );
+}
+
+function getAllCommentsCountQuery() {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: `SELECT COUNT(*)
+        FROM Comments`,
+        timeout: 40000,
+        values: []
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result[0]["COUNT(*)"]);
+      }
+    )
+  );
+}
+
+function getAllVisibleIdeasCountQuery() {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: `SELECT COUNT(*)
+        FROM Ideas where hidden=0`,
+        timeout: 40000,
+        values: []
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result[0]["COUNT(*)"]);
+      }
+    )
+  );
+}
+
+function getContributorsCountPerDepartmentQuery() {
+  return new Promise((resolve, reject) =>
+    pool.query(
+      {
+        sql: `SELECT COUNT(u.ID) AS contributors, d.department
+        FROM Users AS u
+        INNER JOIN Departments As d
+        ON u.department_id = d.ID
+        where u.hideActivities = 0
+        GROUP BY d.department`,
+        timeout: 40000,
+        values: []
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result);
+      }
+    )
+  );
+}
+
+function getIdeasCountPerDepartmentQuery() {
+  return new Promise((resolve, reject) =>
+  pool.query(
+    {
+      sql: `SELECT d.department, COUNT(i.ID) AS NumberIdeas
+      FROM Ideas AS i
+      INNER JOIN Users AS u ON u.ID = i.user_id
+      INNER JOIN Departments AS d ON d.ID = u.department_id
+      where i.hidden = 0
+      GROUP BY d.department`,
+      timeout: 40000,
+      values: []
+    },
+    (error, result) => {
+      if (error) return reject(error);
+      return resolve(result);
+    }
+  )
+);
+}
+
 module.exports = {
   getHighestRatedIdeasQuery,
   getMostViewedIdeasQuery,
@@ -170,5 +301,12 @@ module.exports = {
   getMostRecentIdeasQuery,
   getUsersWithMostCommentsQuery,
   getNumberOfIdeasPerUserQuery,
-  getOldestIdeasQuery
+  getOldestIdeasQuery,
+  getAnonymousCommentsCountQuery,
+  getAnonymousPostsCountQuery,
+  getNoCommentPostsCountQuery,
+  getAllVisibleIdeasCountQuery,
+  getAllCommentsCountQuery,
+  getContributorsCountPerDepartmentQuery,
+  getIdeasCountPerDepartmentQuery
 };
