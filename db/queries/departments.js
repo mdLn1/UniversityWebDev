@@ -82,7 +82,7 @@ function isDepartmentSelectableQuery(role) {
   return new Promise((resolve, reject) => {
     pool.query(
       {
-        sql: "select isSelectable from Roles where role = ?",
+        sql: "select isSelectable from Departments where department = ?",
         timeout: 40000,
         values: [role]
       },
