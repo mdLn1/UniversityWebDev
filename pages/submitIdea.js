@@ -9,7 +9,6 @@ import {
   Checkbox,
   TextArea
 } from "semantic-ui-react";
-import Link from "next/link";
 import axios from "axios";
 import { AuthContext } from "../context/AuthenticationContext";
 import NotAuthenticated from "../components/NotAuthenticated";
@@ -90,10 +89,6 @@ class submitIdea extends Component {
     //     );
     //   }
     // }
-  }
-
-  componentWillUnmount() {
-
   }
   onChangeText = e => {
     this.setState({ [e.target.name]: e.target.value });
@@ -182,7 +177,7 @@ class submitIdea extends Component {
       try {
         const config = {
           headers: {
-            "x-auth-token": this.props.token,
+            "x-auth-token": this.context.token,
             "Content-Type": "multipart/form-data"
           }
         };

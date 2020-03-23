@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Form, Button, Message, Checkbox, Segment } from "semantic-ui-react";
 import { Cookies } from "react-cookie";
 import axios from "axios";
-const cookies = new Cookies();
 import CommentsList from "./CommentsList";
 
 export default class CommentsArea extends Component {
@@ -29,12 +28,6 @@ export default class CommentsArea extends Component {
   submitComment = async e => {
     e.preventDefault();
     try {
-      const config = {
-        headers: {
-          "x-auth-token": cookies.get("token")
-        }
-      };
-
       const obj = {
         comment: this.state.comment,
         isAnonymous: this.state.anonComment,
@@ -42,17 +35,18 @@ export default class CommentsArea extends Component {
       };
       const res = await axios.post(
         `/api/ideas/${this.props.ID}/comments/`,
-        obj,
-        config
+        obj
       );
       const comment = res.data;
       this.setState(prevState => ({
-        comments: [comment, ...prevState.comments]
+        ...prevState,
+        comments: [comment, ...prevState.comments],
+        anonComment: false,
+        comment: ""
       }));
-      this.setState({ comment: "" });
     } catch (err) {
-      this.setState({ apiErrors: err.response.data.errors });
-      console.log(err);
+      if (err.response)
+        this.setState({ apiErrors: err.response.data.errors });
     }
   };
 
@@ -73,6 +67,7 @@ export default class CommentsArea extends Component {
               <Form.Field name="anonComment">
                 <Checkbox
                   label="Anonymous"
+                  checked={this.state.anonComment}
                   onClick={this.anonCommentCheckboxChangeHandler}
                 />
               </Form.Field>
@@ -84,12 +79,12 @@ export default class CommentsArea extends Component {
               />
             </Form>
           ) : (
-            <Message negative>
-              <Message.Header>
-                Comments can no longer be submitted
+              <Message negative>
+                <Message.Header>
+                  Comments can no longer be submitted
               </Message.Header>
-            </Message>
-          )}
+              </Message>
+            )}
           {this.state.apiErrors.length > 0 && (
             <Message negative>
               <Message.Header>

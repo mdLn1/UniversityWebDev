@@ -3,7 +3,7 @@ import { Card } from "semantic-ui-react";
 import IdeaFooter from "../components/IdeaFooter";
 import IdeaHeader from "../components/IdeaHeader";
 
-export default class CommentsList extends Component {
+export default class IdeaDisplay extends Component {
   constructor(props) {
     super(props);
   }

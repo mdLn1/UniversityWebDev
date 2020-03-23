@@ -71,8 +71,13 @@ export default class AdminControl extends Component {
           text: el[this.props.dropDownProp],
           value: el.id
         })),
-        itemsList: newItems
+        itemsList: newItems,
+        values: {}
       });
+      var inputs = document.querySelectorAll(".form-inputs");
+      inputs.forEach(el => {
+        el.value = "";
+        });
       this.props.updateValues(this.props.title, newItems);
       setTimeout(
         () => this.setState({ success: false, successMessage: "" }),
@@ -296,6 +301,7 @@ export default class AdminControl extends Component {
                       <Form.Field
                         control={Input}
                         key={el.name}
+                        className={"form-inputs"}
                         type="text"
                         label={el.label}
                         placeholder={el.label}
@@ -357,7 +363,7 @@ export default class AdminControl extends Component {
                       name={el.name}
                       required={el.required}
                       toggle
-                      defaultChecked={el.value}
+                      checked={el.value === true}
                       onChange={this.onValueChangeCreate}
                     />
                   );

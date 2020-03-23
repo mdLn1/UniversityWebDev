@@ -30,7 +30,8 @@ export default class AttachmentsModal extends Component {
         downloadAll
       }));
     } catch (err) {
-      console.log(err);
+      if (err.response)
+        console.log(err.response.data.errors)
     }
     this.setState({ modalOpen: true });
   };
@@ -44,6 +45,8 @@ export default class AttachmentsModal extends Component {
   render() {
     return (
       <Modal
+        open={this.state.modalOpen}
+        onClose={this.handleClose}
         trigger={
           <Button size="tiny" onClick={this.handleOpen}>
             Attachments ({this.props.uploadsCount})
@@ -58,7 +61,7 @@ export default class AttachmentsModal extends Component {
           </Modal.Description>
         </Modal.Content>
         <Modal.Actions>
-          {this.state.uploads.length != 0 ? (
+          {this.state.uploads.length != 0 &&
             <Button
               color="teal"
             >
@@ -71,12 +74,11 @@ export default class AttachmentsModal extends Component {
               >
                 Download Zip
               </a>
-            </Button>
-          ) : null}
+            </Button>}
 
           <Button
             primary
-            onClick={() => this.routeToIdeaHandler(this.props.ID)}
+            onClick={this.handleClose}
           >
             Go To Idea <Icon name="right chevron" />
           </Button>
