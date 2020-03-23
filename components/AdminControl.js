@@ -20,6 +20,7 @@ export default class AdminControl extends Component {
       selectedAction: "Create",
       selectedItemValues: null,
       objError: false,
+      fields: this.props.fields,
       itemsList: this.props.listItems || [],
       listOptions: this.props.listOptions || [],
       success: false,
@@ -63,7 +64,7 @@ export default class AdminControl extends Component {
       values.id = ID;
 
       const newItems = [...this.state.itemsList, values];
-      this.setState({
+      this.setState(prevState => ({
         success: true,
         successMessage: "Successfully created",
         listOptions: newItems.map(el => ({
@@ -71,13 +72,17 @@ export default class AdminControl extends Component {
           text: el[this.props.dropDownProp],
           value: el.id
         })),
+        values: {},
         itemsList: newItems,
-        values: {}
-      });
-      var inputs = document.querySelectorAll(".form-inputs");
+        fields: prevState.fields
+      }));
+      var inputs =
+        document.querySelectorAll(
+          `.${this.props.title}-input input[type="text"]`
+        ) || [];
       inputs.forEach(el => {
         el.value = "";
-        });
+      });
       this.props.updateValues(this.props.title, newItems);
       setTimeout(
         () => this.setState({ success: false, successMessage: "" }),
@@ -119,7 +124,7 @@ export default class AdminControl extends Component {
       this.props.updateValues(this.props.title, newItems);
       setTimeout(
         () => this.setState({ success: false, successMessage: "" }),
-        5000
+        3000
       );
     } catch (err) {
       if (err.response) {
@@ -148,7 +153,7 @@ export default class AdminControl extends Component {
       }));
       setTimeout(
         () => this.setState({ success: false, successMessage: "" }),
-        5000
+        3000
       );
       this.props.updateValues(this.props.title, newItems);
     } catch (err) {
@@ -201,7 +206,7 @@ export default class AdminControl extends Component {
     }
   };
   render() {
-    const { itemName, objName, fields } = this.props;
+    const { itemName, objName } = this.props;
     let { title } = this.props;
     title = title[0].toUpperCase() + title.slice(1);
     const {
@@ -212,7 +217,9 @@ export default class AdminControl extends Component {
       selectedItemValues,
       errors,
       success,
-      successMessage
+      successMessage,
+      fields,
+      values
     } = this.state;
 
     const objProps = {
@@ -301,7 +308,6 @@ export default class AdminControl extends Component {
                       <Form.Field
                         control={Input}
                         key={el.name}
-                        className={"form-inputs"}
                         type="text"
                         label={el.label}
                         placeholder={el.label}
@@ -363,22 +369,30 @@ export default class AdminControl extends Component {
                       name={el.name}
                       required={el.required}
                       toggle
-                      checked={el.value === true}
+                      checked={
+                        values[el.name] !== null
+                          ? values[el.name] == 1
+                            ? true
+                            : false
+                          : el.value
+                      }
                       onChange={this.onValueChangeCreate}
                     />
                   );
                 } else {
                   return (
-                    <Form.Field
-                      control={Input}
-                      required={el.required}
-                      key={index}
-                      type="text"
-                      label={el.label}
-                      placeholder={el.label}
-                      name={el.name}
-                      onChange={this.onValueChangeCreate}
-                    />
+                    <div className={`${this.props.title}-input`} key={index}>
+                      <Form.Field
+                        control={Input}
+                        required={el.required}
+                        key={index}
+                        type="text"
+                        label={el.label}
+                        placeholder={el.label}
+                        name={el.name}
+                        onChange={this.onValueChangeCreate}
+                      />
+                    </div>
                   );
                 }
               })}
