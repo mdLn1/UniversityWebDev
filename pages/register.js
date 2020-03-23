@@ -5,27 +5,6 @@ import { Form, Input, Select, Message, Header } from "semantic-ui-react";
 import isPasswordValid from "../utils/isPasswordValid";
 import Router from "next/router";
 
-export async function getStaticProps() {
-  try {
-    let res = await axios.get("http:/localhost:3000/api/departments");
-    const { departments } = res.data || [];
-    res = await axios.get("http:/localhost:3000/api/roles");
-    const { roles } = res.data || [];
-    return {
-      props: {
-        departments: departments.filter(x => x.isSelectable),
-        roles: roles.filter(x => x.isSelectable)
-      }
-    };
-  } catch (err) {
-    return {
-      props: {
-        connectionError: "Could not connect to server"
-      }
-    };
-  }
-}
-
 export default class Register extends Component {
   constructor(props) {
     super(props);
@@ -45,6 +24,23 @@ export default class Register extends Component {
       countDownTimer: 5,
       apiErrors: []
     };
+  }
+  static async getInitialProps(props) {
+    try {
+      let res = await axios.get("http://localhost:3000/api/departments");
+      const { departments } = res.data || [];
+      res = await axios.get("http://localhost:3000/api/roles");
+      const { roles } = res.data || [];
+      return {
+        departments: departments.filter(x => x.isSelectable),
+        roles: roles.filter(x => x.isSelectable)
+      };
+    } catch (err) {
+      console.log(err);
+      return {
+        connectionError: "Could not connect to server"
+      };
+    }
   }
   componentDidMount() {
     if (this.props.connectionError) {
@@ -113,7 +109,10 @@ export default class Register extends Component {
         localStorage.setItem("username", name);
         localStorage.setItem("email", email);
         localStorage.setItem("token", res.data.token);
-        Router.replace({ pathname: "/", query: { registrationSuccess: true } }, "/");
+        Router.replace(
+          { pathname: "/", query: { registrationSuccess: true } },
+          "/"
+        );
       } catch (err) {
         this.setState({
           apiErrors: err.response.data.errors
