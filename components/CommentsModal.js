@@ -2,13 +2,12 @@ import React, { Component, Fragment } from "react";
 import { Button, Modal, Header, Icon, Image } from "semantic-ui-react";
 import axios from "axios";
 import CommentsList from "./CommentsList";
-import { Router } from "../routes";
+import Link from "next/link";
 
 export default class CommentsModal extends Component {
   constructor(props) {
     super(props);
   }
-
   state = {
     modalOpen: false,
     apiErrors: [],
@@ -31,10 +30,6 @@ export default class CommentsModal extends Component {
   };
   handleClose = () => this.setState({ modalOpen: false });
 
-  routeToIdeaHandler(ID) {
-    Router.push(`/ideas/${ID}`);
-  }
-
   render() {
     return (
       <Modal
@@ -52,12 +47,13 @@ export default class CommentsModal extends Component {
           </Modal.Description>
         </Modal.Content>
         <Modal.Actions>
-          <Button
-            primary
-            onClick={() => this.routeToIdeaHandler(this.props.ID)}
-          >
-            Go To Idea <Icon name="right chevron" />
-          </Button>
+          <Link  href="/ideas/[id]" as={`/ideas/${this.props.ID}`}>
+            <Button
+              primary
+            >
+              Go To Idea <Icon name="right chevron" />
+            </Button>
+          </Link>
         </Modal.Actions>
       </Modal>
     );

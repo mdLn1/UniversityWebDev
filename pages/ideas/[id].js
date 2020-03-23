@@ -18,9 +18,6 @@ export default class displayIdea extends Component {
 
   static async getInitialProps(props) {
     const ID = props.query.id;
-    let idea;
-    let comments, deadlines;
-
     const { token } = cookies(props);
     try {
       const config = {
@@ -29,9 +26,9 @@ export default class displayIdea extends Component {
         }
       };
       let res = await axios.get(`/api/ideas/${ID}`, config);
-      idea = res.data[0];
+      const idea = res.data[0];
       const cmtsRes = await axios.get(`/api/ideas/${ID}/comments`);
-      comments = cmtsRes.data;
+      const comments = cmtsRes.data;
       res = await axios.get("/api/management/deadlines");
       const { deadlines } = res.data;
       await axios.get(`/api/ideas/${ID}/increase-views`);

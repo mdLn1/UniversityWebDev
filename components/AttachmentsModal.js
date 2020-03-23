@@ -80,7 +80,7 @@ export default class AttachmentsModal extends Component {
             primary
             onClick={this.handleClose}
           >
-            Go To Idea <Icon name="right chevron" />
+            Hide panel <Icon name="down chevron" />
           </Button>
         </Modal.Actions>
       </Modal>
