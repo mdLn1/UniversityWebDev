@@ -24,9 +24,7 @@ class Dashboard extends Component {
 
   static async getInitialProps({ query }) {
     try {
-      let res = await axios.get(
-        "/api/stats/MostRecentIdeas"
-      );
+      let res = await axios.get("/api/stats/MostRecentIdeas");
       const { ideas, totalIdeas } = res.data;
       res = await axios.get("/api/management/deadlines");
       const { deadlines } = res.data;
@@ -61,9 +59,7 @@ class Dashboard extends Component {
     }
     if (this.props.connectionError) {
       try {
-        let res = await axios.get(
-          "/api/stats/MostRecentIdeas"
-        );
+        let res = await axios.get("/api/stats/MostRecentIdeas");
         const { ideas, totalIdeas } = res.data;
         res = await axios.get("/api/management/deadlines");
         const { deadlines } = res.data;
@@ -76,9 +72,12 @@ class Dashboard extends Component {
           }
         }
         this.setState({
-          ideas: ideas, deadlines: deadlines, numberOfPages: Math.ceil(totalIdeas / 5),
-          selectedPage: 1, connectionError: false
-        })
+          ideas: ideas,
+          deadlines: deadlines,
+          numberOfPages: Math.ceil(totalIdeas / 5),
+          selectedPage: 1,
+          connectionError: false
+        });
       } catch (err) {
         console.log(err);
       }
@@ -185,9 +184,17 @@ class Dashboard extends Component {
           <Message negative>
             <Message.Header>
               Sorry the connection to the server was interrupted
-      </Message.Header>
+            </Message.Header>
             <p>Request failed</p>
-            <p>Refreshing in {countDownTimer}</p>
+            <p>
+              Please try refreshing the web page or click{" "}
+              <span
+                style={{ color: "blue" }}
+                onClick={() => window.location.reload()}
+              >
+                refresh
+              </span>
+            </p>
           </Message>
         )}
         {currentDeadline && (

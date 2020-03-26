@@ -1,0 +1,34 @@
+/* Hide the links inside the navigation menu (except for logo/home) */
+.mobile.nav {
+    display: none;
+}
+@media screen and (max-width: 600px) {
+  .mobile #myLinks {
+    display: none;
+    border: 1px solid rgba(34,36,38,.15);
+  }
+  .mobile #myLinks .item {
+      display: block;
+      padding: .7rem;
+      border-bottom: 1px solid rgba(34,36,38,.15);
+  }
+  .ui.menu {
+      margin: 0px;
+  }
+  .large-screen.nav {
+    display: none;
+  }
+
+  .mobile.nav span.icon {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .mobile.nav {
+    display: block;
+    overflow: hidden;
+    position: relative;
+  }
+}
