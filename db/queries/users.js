@@ -176,6 +176,25 @@ function updateUserDetailsQuery(name, email, id) {
   });
 }
 
+function updateUserLastLoginQuery(id) {
+  const date = new Date()
+    .toISOString()
+    .slice(0, 19)
+    .replace("T", " ");
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: "update Users set lastLogin = ? where id = ?",
+        timeout: 40000,
+        values: [date, id]
+      },
+      (err, result) => {
+        return resolve();
+      }
+    );
+  });
+}
+
 // Updates user details
 function adminUpdateUserDetailsQuery(
   name,
@@ -288,5 +307,6 @@ module.exports = {
   isAccountDisabledQuery,
   adminEnableDisableUserAccountQuery,
   hideShowUserActivityQuery,
-  regUserQuery
+  regUserQuery,
+  updateUserLastLoginQuery
 };

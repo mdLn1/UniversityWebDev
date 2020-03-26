@@ -14,6 +14,7 @@ export default class _app extends Component {
     authenticated: false,
     token: "",
     loginUser: (user, token) => {
+      axios.defaults.headers.common["x-auth-token"] = token;
       this.setState({ authenticated: true, user: user, token: token });
     },
     logoutUser: () => {
@@ -38,7 +39,7 @@ export default class _app extends Component {
           Router.push("/login")
         } catch (err) {
           if (err.response) {
-            if (err.response.data.errors[0].endsWith("expired")) {
+            if (err.response.data.errors[0].trim().endsWith("expired")) {
               localStorage.clear();
               Cookies.remove("token")
             }

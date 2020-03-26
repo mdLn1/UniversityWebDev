@@ -12,7 +12,7 @@ class Dashboard extends Component {
       selectedPage: 1,
       ideas: this.props.ideas || [],
       numberOfPages: this.props.numberOfPages || 1,
-      connectionError: this.props.connectionError,
+      connectionError: this.props.connectionError || false,
       loginSuccess: false,
       registrationSuccess: false,
       currentDeadline: null,
@@ -57,45 +57,33 @@ class Dashboard extends Component {
       this.setState({ registrationSuccess: true });
       setTimeout(() => this.setState({ registrationSuccess: false }), 3000);
     }
-    if (this.props.connectionError) {
-      try {
-        let res = await axios.get("/api/stats/MostRecentIdeas");
-        const { ideas, totalIdeas } = res.data;
-        res = await axios.get("/api/management/deadlines");
-        const { deadlines } = res.data;
-        if (deadlines && deadlines.length > 0) {
-          const currDeadline = deadlines.find(
-            x => new Date(x.CommentsSubmissionEnd.split("T")[0]) > new Date()
-          );
-          if (currDeadline) {
-            this.setState({ currentDeadline: currDeadline });
+    if (this.state.connectionError) {
+      setTimeout(async () => {
+        try {
+          let res = await axios.get("/api/stats/MostRecentIdeas");
+          const { ideas, totalIdeas } = res.data;
+          res = await axios.get("/api/management/deadlines");
+          const { deadlines } = res.data;
+          if (deadlines && deadlines.length > 0) {
+            const currDeadline = deadlines.find(
+              x => new Date(x.CommentsSubmissionEnd.split("T")[0]) > new Date()
+            );
+            if (currDeadline) {
+              this.setState({ currentDeadline: currDeadline });
+            }
           }
+          this.setState({
+            ideas: ideas,
+            deadlines: deadlines,
+            numberOfPages: Math.ceil(totalIdeas / 5),
+            selectedPage: 1,
+            connectionError: false
+          });
+        } catch (err) {
+          console.log(err);
         }
-        this.setState({
-          ideas: ideas,
-          deadlines: deadlines,
-          numberOfPages: Math.ceil(totalIdeas / 5),
-          selectedPage: 1,
-          connectionError: false
-        });
-      } catch (err) {
-        console.log(err);
-      }
+      }, 3000)
     }
-    // if (this.props.connectionError) {
-    //   setTimeout(() => {
-    //     window.location.reload();
-    //   }, 1500);
-    //   setInterval(
-    //     () =>
-    //       this.setState((prevState, props) => ({
-    //         ...prevState,
-    //         countDownTimer:
-    //           prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
-    //       })),
-    //     1000
-    //   );
-    // }
   }
 
   onDropdownChange = async (e, data) => {
@@ -187,13 +175,7 @@ class Dashboard extends Component {
             </Message.Header>
             <p>Request failed</p>
             <p>
-              Please try refreshing the web page or click{" "}
-              <span
-                style={{ color: "blue" }}
-                onClick={() => window.location.reload()}
-              >
-                refresh
-              </span>
+              Page is reloading in {countDownTimer} seconds, please wait.
             </p>
           </Message>
         )}

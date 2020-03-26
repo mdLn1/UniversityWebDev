@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
+const checkIfLoggedInMiddleware = require("../middleware/checkIfLoggedInMiddleware");
 const exceptionHandler = require("../utils/exceptionHandler");
 const {
   updateUserDetailsReq,
   updateUserPasswordReq,
-  getUserDetailsReq
+  getUserDetailsReq,
+  updateUserLastLoginReq
 } = require("../controllers/userController");
 const errorChecker = require("../middleware/errorCheckerMiddleware");
 const { check } = require("express-validator");
@@ -36,6 +38,8 @@ router.post(
   [authMiddleware],
   exceptionHandler(updateUserPasswordReq)
 );
+
+router.post("/update-last-login", checkIfLoggedInMiddleware, exceptionHandler(updateUserLastLoginReq));
 
 //@route GET api/user/
 //@desc Return user details
