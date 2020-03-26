@@ -4,8 +4,10 @@ import axios from "axios";
 import { Form, Input, Select, Message, Header } from "semantic-ui-react";
 import isPasswordValid from "../utils/isPasswordValid";
 import Router from "next/router";
+import {AuthContext} from "../context/AuthenticationContext"
 
 export default class Register extends Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -109,6 +111,7 @@ export default class Register extends Component {
         localStorage.setItem("username", name);
         localStorage.setItem("email", email);
         localStorage.setItem("token", res.data.token);
+        this.context.loginUser(res.data.user, res.data.token);
         Router.replace(
           { pathname: "/", query: { registrationSuccess: true } },
           "/"

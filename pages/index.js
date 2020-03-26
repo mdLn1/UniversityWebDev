@@ -55,7 +55,7 @@ class Dashboard extends Component {
     }
     if (query && query.registrationSuccess) {
       this.setState({ registrationSuccess: true });
-      setTimeout(() => this.setState({ registrationSuccess: false }), 3000);
+      setTimeout(() => this.setState({ registrationSuccess: false }), 5000);
     }
     if (this.state.connectionError) {
       setTimeout(async () => {
