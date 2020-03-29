@@ -108,10 +108,10 @@ export default class Register extends Component {
           department: departmentSelected,
           name
         });
-        localStorage.setItem("username", name);
-        localStorage.setItem("email", email);
-        localStorage.setItem("token", res.data.token);
-        this.context.loginUser(res.data.user, res.data.token);
+        //localStorage.setItem("username", name);
+        //localStorage.setItem("email", email);
+        //localStorage.setItem("token", res.data.token);
+        //this.context.loginUser(res.data.user, res.data.token);
         Router.replace(
           { pathname: "/", query: { registrationSuccess: true } },
           "/"

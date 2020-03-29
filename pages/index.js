@@ -18,7 +18,7 @@ class Dashboard extends Component {
       currentDeadline: null,
       queryLink: "MostRecentIdeas",
       currentSort: 1,
-      countDownTimer: 2
+      countDownTimer: 4
     };
   }
 
@@ -82,7 +82,14 @@ class Dashboard extends Component {
         } catch (err) {
           console.log(err);
         }
-      }, 3000)
+      }, 4000)
+
+      setInterval(() => {
+        if (this.state.countDownTimer > 0)
+          this.setState(prevState => ({ ...prevState, countDownTimer: prevState.countDownTimer - 1 }))
+        else
+          this.setState({ countDownTimer: 4 })
+      }, 1000)
     }
   }
 
@@ -169,13 +176,12 @@ class Dashboard extends Component {
     return (
       <Fragment>
         {connectionError && (
-          <Message negative>
+          <Message info>
             <Message.Header>
-              Sorry the connection to the server was interrupted
+              The Page is Loading, Please Wait.
             </Message.Header>
-            <p>Request failed</p>
             <p>
-              Page is reloading in {countDownTimer} seconds, please wait.
+              Fetching data.  {countDownTimer} seconds, please wait.{countDownTimer % 2 ? ".." : " ."}
             </p>
           </Message>
         )}
@@ -213,11 +219,11 @@ class Dashboard extends Component {
               />
             </Menu>
           </div>
-          {registrationSuccess && name && (
+          {registrationSuccess && (
             <Message
               success
               header="Registration successful"
-              content={"You are now logged in as " + name}
+              content={"Please login to the system."}
             />
           )}
           {loginSuccess && name && (
