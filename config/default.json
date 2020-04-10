@@ -1,22 +1,3 @@
 {
-    "jwtSecret": "uifgdahsigouhasouygfuyigasgadhgdiasuhw9u87wqtyew8q09()jnckl3127952-",
-    "roles": {
-        "admin": "QA Manager",
-        "coordinator": "QA Coordinator"
-    },
-    "database_credentials": {
-        "host": "entwebdev.cxcnuff93kd9.eu-west-2.rds.amazonaws.com",
-        "database": "entwebdev",
-        "user": "admin",
-        "password": "Gabriel1234!",
-        "port": 3306
-    },
-    "unsigned_upload_preset": "th12e0km",
-    "email": "theseven.devteam@gmail.com",
-    "pass": "Gabriel1234!",
-    "cloud_name": "mdln97",
-    "api_key": "737562788677313",
-    "api_secret": "EM-0wrg11zgW4_KpjSrNlavkvoU",
-    "server_route": "http://localhost:3000/",
-    "test_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im5hbWUiOiJhZG1pbiIsImxhc3RMb2dpbiI6IjIwMjAtMDMtMDhUMTg6MjY6MDAuMDAwWiIsImVtYWlsIjoiYWRtaW5AZ3JlLmFjLnVrIiwicm9sZSI6IlFBIE1hbmFnZXIiLCJkZXBhcnRtZW50IjoiU01UIiwiaWQiOjF9LCJpYXQiOjE1ODQxMDcxMzMsImV4cCI6MTU4NDE0MzEzM30.IMM76ztQY0V82mwzFLzizbsaVA9MMKxMeG-jNPnRWKE"
+    "deleted": "Sensitive information hidden from users"
 }
