@@ -3,11 +3,18 @@ const {
   updateUserDetailsQuery,
   getUserDetailsQuery,
   updateUserPasswordQuery,
-  getAllUsersQuery
+  getAllUsersQuery,
+  updateUserLastLoginQuery
 } = require("../db/queries/users");
 const isEmailValid = require("../utils/isEmailValid");
 const isPasswordValid = require("../utils/isPasswordValid");
 const bcrypt = require("bcryptjs");
+
+const updateUserLastLoginReq = async (req, res) => {
+  if (req.user)
+    await updateUserLastLoginQuery(req.user.id);
+  res.status(204).send();
+}
 
 const updateUserDetailsReq = async (req, res) => {
   const { id } = req.user;
@@ -69,5 +76,6 @@ module.exports = {
   updateUserDetailsReq,
   updateUserPasswordReq,
   getUserDetailsReq,
-  getAllUsersReq
+  getAllUsersReq,
+  updateUserLastLoginReq
 };

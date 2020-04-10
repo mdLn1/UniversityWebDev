@@ -4,8 +4,10 @@ import axios from "axios";
 import { Form, Input, Select, Message, Header } from "semantic-ui-react";
 import isPasswordValid from "../utils/isPasswordValid";
 import Router from "next/router";
+import {AuthContext} from "../context/AuthenticationContext"
 
 export default class Register extends Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -21,15 +23,15 @@ export default class Register extends Component {
       nameError: false,
       passwordError: false,
       confirmPasswordError: false,
-      countDownTimer: 5,
+      countDownTimer: 3,
       apiErrors: []
     };
   }
   static async getInitialProps(props) {
     try {
-      let res = await axios.get("http://localhost:3000/api/departments");
+      let res = await axios.get("/api/departments");
       const { departments } = res.data || [];
-      res = await axios.get("http://localhost:3000/api/roles");
+      res = await axios.get("/api/roles");
       const { roles } = res.data || [];
       return {
         departments: departments.filter(x => x.isSelectable),
@@ -46,7 +48,7 @@ export default class Register extends Component {
     if (this.props.connectionError) {
       setTimeout(() => {
         window.location.reload();
-      }, 5000);
+      }, 3000);
       setInterval(
         () =>
           this.setState((prevState, props) => ({
@@ -106,9 +108,10 @@ export default class Register extends Component {
           department: departmentSelected,
           name
         });
-        localStorage.setItem("username", name);
-        localStorage.setItem("email", email);
-        localStorage.setItem("token", res.data.token);
+        //localStorage.setItem("username", name);
+        //localStorage.setItem("email", email);
+        //localStorage.setItem("token", res.data.token);
+        //this.context.loginUser(res.data.user, res.data.token);
         Router.replace(
           { pathname: "/", query: { registrationSuccess: true } },
           "/"
@@ -176,7 +179,7 @@ export default class Register extends Component {
     };
     if (nameError)
       nameInputProps.error = {
-        content: "Please enter a valid first name",
+        content: "Please enter a valid username, min 5 characters",
         pointing: "below"
       };
     const passwordInputProps = {
@@ -192,7 +195,7 @@ export default class Register extends Component {
     };
     if (passwordError)
       passwordInputProps.error = {
-        content: "Please enter a password, minimum 8 characters",
+        content: "Password must be 8 characters long and contain at least 1 uppercase, 1 lowercase and 1 digit",
         pointing: "below"
       };
 

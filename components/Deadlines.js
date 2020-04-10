@@ -168,6 +168,8 @@ export default class Deadlines extends Component {
         <br />
         <Divider horizontal>Edit deadline</Divider>
         <Form>
+          
+          <label>Ideas Deadline</label>
           <Form.Field
             type="date"
             control={Input}
@@ -176,6 +178,8 @@ export default class Deadlines extends Component {
             fluid
             onChange={this.onSelectChange}
           />
+          
+          <label>Comments Deadline</label>
           <Form.Field
             control={Input}
             type="date"

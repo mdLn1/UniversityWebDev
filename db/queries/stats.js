@@ -14,7 +14,7 @@ function getHighestRatedIdeasQuery(itemsCount, pageNo, userId = -1) {
         (SELECT vote FROM Ratings WHERE user_id=? and i.ID=idea_id) as voted,
         (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
         (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS uploadsCount
-                FROM Ideas as i
+                FROM Ideas as i where hidden=0
                 ORDER BY (positiveVotes - negativeVotes) DESC LIMIT ? OFFSET ?`,
         timeout: 40000,
         values: [userId, itemsCount, itemsCount * (pageNo - 1)]
@@ -40,7 +40,7 @@ function getMostViewedIdeasQuery(itemsCount, pageNo, userId = -1) {
         (SELECT vote FROM Ratings WHERE user_id=? and i.ID=idea_id) as voted,
         (SELECT tag FROM Categories WHERE ID = i.category_id) AS category,
         (SELECT COUNT(*) FROM Uploads WHERE idea_id = i.ID) AS uploadsCount
-                FROM Ideas as i
+                FROM Ideas as i where hidden=0
                 ORDER BY i.views DESC LIMIT ? OFFSET ?`,
         timeout: 40000,
         values: [userId, itemsCount, itemsCount * (pageNo - 1)]

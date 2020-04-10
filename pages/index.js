@@ -12,13 +12,13 @@ class Dashboard extends Component {
       selectedPage: 1,
       ideas: this.props.ideas || [],
       numberOfPages: this.props.numberOfPages || 1,
-      connectionError: this.props.connectionError,
+      connectionError: this.props.connectionError || false,
       loginSuccess: false,
       registrationSuccess: false,
       currentDeadline: null,
       queryLink: "MostRecentIdeas",
       currentSort: 1,
-      countDownTimer: 2
+      countDownTimer: 4
     };
   }
 
@@ -55,47 +55,42 @@ class Dashboard extends Component {
     }
     if (query && query.registrationSuccess) {
       this.setState({ registrationSuccess: true });
-      setTimeout(() => this.setState({ registrationSuccess: false }), 3000);
+      setTimeout(() => this.setState({ registrationSuccess: false }), 5000);
     }
-    if (this.props.connectionError) {
-      try {
-        let res = await axios.get("/api/stats/MostRecentIdeas");
-        const { ideas, totalIdeas } = res.data;
-        res = await axios.get("/api/management/deadlines");
-        const { deadlines } = res.data;
-        if (deadlines && deadlines.length > 0) {
-          const currDeadline = deadlines.find(
-            x => new Date(x.CommentsSubmissionEnd.split("T")[0]) > new Date()
-          );
-          if (currDeadline) {
-            this.setState({ currentDeadline: currDeadline });
+    if (this.state.connectionError) {
+      setTimeout(async () => {
+        try {
+          let res = await axios.get("/api/stats/MostRecentIdeas");
+          const { ideas, totalIdeas } = res.data;
+          res = await axios.get("/api/management/deadlines");
+          const { deadlines } = res.data;
+          if (deadlines && deadlines.length > 0) {
+            const currDeadline = deadlines.find(
+              x => new Date(x.CommentsSubmissionEnd.split("T")[0]) > new Date()
+            );
+            if (currDeadline) {
+              this.setState({ currentDeadline: currDeadline });
+            }
           }
+          this.setState({
+            ideas: ideas,
+            deadlines: deadlines,
+            numberOfPages: Math.ceil(totalIdeas / 5),
+            selectedPage: 1,
+            connectionError: false
+          });
+        } catch (err) {
+          console.log(err);
         }
-        this.setState({
-          ideas: ideas,
-          deadlines: deadlines,
-          numberOfPages: Math.ceil(totalIdeas / 5),
-          selectedPage: 1,
-          connectionError: false
-        });
-      } catch (err) {
-        console.log(err);
-      }
+      }, 4000)
+
+      setInterval(() => {
+        if (this.state.countDownTimer > 0)
+          this.setState(prevState => ({ ...prevState, countDownTimer: prevState.countDownTimer - 1 }))
+        else
+          this.setState({ countDownTimer: 4 })
+      }, 1000)
     }
-    // if (this.props.connectionError) {
-    //   setTimeout(() => {
-    //     window.location.reload();
-    //   }, 1500);
-    //   setInterval(
-    //     () =>
-    //       this.setState((prevState, props) => ({
-    //         ...prevState,
-    //         countDownTimer:
-    //           prevState.countDownTimer > 0 ? prevState.countDownTimer - 1 : 0
-    //       })),
-    //     1000
-    //   );
-    // }
   }
 
   onDropdownChange = async (e, data) => {
@@ -181,19 +176,12 @@ class Dashboard extends Component {
     return (
       <Fragment>
         {connectionError && (
-          <Message negative>
+          <Message info>
             <Message.Header>
-              Sorry the connection to the server was interrupted
+              The Page is Loading, Please Wait.
             </Message.Header>
-            <p>Request failed</p>
             <p>
-              Please try refreshing the web page or click{" "}
-              <span
-                style={{ color: "blue" }}
-                onClick={() => window.location.reload()}
-              >
-                refresh
-              </span>
+              Fetching data.  {countDownTimer} seconds, please wait.{countDownTimer % 2 ? ".." : " ."}
             </p>
           </Message>
         )}
@@ -231,11 +219,11 @@ class Dashboard extends Component {
               />
             </Menu>
           </div>
-          {registrationSuccess && name && (
+          {registrationSuccess && (
             <Message
               success
               header="Registration successful"
-              content={"You are now logged in as " + name}
+              content={"Please login to the system."}
             />
           )}
           {loginSuccess && name && (
